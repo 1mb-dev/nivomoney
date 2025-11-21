@@ -1,0 +1,131 @@
+version: '3.9'
+
+services:
+  # PostgreSQL - Primary database
+  postgres:
+    image: postgres:15-alpine
+    container_name: nivo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nivo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nivo_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-nivo}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nivo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nivo-network
+
+  # Redis - Caching and session storage
+  redis:
+    image: redis:7-alpine
+    container_name: nivo-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-nivo_redis_password}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nivo-network
+
+  # NSQ Lookup - Service discovery for NSQ
+  nsqlookupd:
+    image: nsqio/nsq:v1.2.1
+    container_name: nivo-nsqlookupd
+    restart: unless-stopped
+    command: /nsqlookupd
+    ports:
+      - "${NSQLOOKUPD_TCP_PORT:-4160}:4160"
+      - "${NSQLOOKUPD_HTTP_PORT:-4161}:4161"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:4161/ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nivo-network
+
+  # NSQ Daemon - Message queue daemon
+  nsqd:
+    image: nsqio/nsq:v1.2.1
+    container_name: nivo-nsqd
+    restart: unless-stopped
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160 --broadcast-address=nsqd
+    depends_on:
+      - nsqlookupd
+    ports:
+      - "${NSQD_TCP_PORT:-4150}:4150"
+      - "${NSQD_HTTP_PORT:-4151}:4151"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:4151/ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nivo-network
+
+  # NSQ Admin - Web UI for NSQ
+  nsqadmin:
+    image: nsqio/nsq:v1.2.1
+    container_name: nivo-nsqadmin
+    restart: unless-stopped
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    depends_on:
+      - nsqlookupd
+    ports:
+      - "${NSQADMIN_PORT:-4171}:4171"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:4171/ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nivo-network
+
+  # Prometheus - Metrics collection (for future observability)
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: nivo-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./scripts/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:9090/-/healthy || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nivo-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+
+networks:
+  nivo-network:
+    driver: bridge

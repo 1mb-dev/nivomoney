@@ -1,0 +1,33 @@
+# Prometheus configuration for Nivo
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'nivo-local'
+    environment: 'development'
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Placeholder for Nivo services (to be added as services are developed)
+  # - job_name: 'gateway'
+  #   static_configs:
+  #     - targets: ['host.docker.internal:8080']
+  #       labels:
+  #         service: 'gateway'
+  #
+  # - job_name: 'identity'
+  #   static_configs:
+  #     - targets: ['host.docker.internal:8081']
+  #       labels:
+  #         service: 'identity'
+  #
+  # - job_name: 'ledger'
+  #   static_configs:
+  #     - targets: ['host.docker.internal:8082']
+  #       labels:
+  #         service: 'ledger'
