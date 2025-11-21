@@ -1,0 +1,166 @@
+# golangci-lint configuration for Nivo
+# https://golangci-lint.run/usage/configuration/
+
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+  go: '1.25'
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+
+linters:
+  enable:
+    # Default linters
+    - errcheck      # Check for unchecked errors
+    - gosimple      # Simplify code
+    - govet         # Vet examines Go source code
+    - ineffassign   # Detect ineffectual assignments
+    - staticcheck   # Go static analysis
+    - typecheck     # Type-check code
+    - unused        # Check for unused code
+
+    # Additional recommended linters
+    - gofmt         # Check formatting
+    - goimports     # Check import formatting
+    - misspell      # Fix commonly misspelled words
+    - unconvert     # Remove unnecessary type conversions
+    - unparam       # Find unused function parameters
+    - gosec         # Security-focused linter
+    - gocritic      # Comprehensive code analysis
+    - bodyclose     # Check HTTP response body is closed
+    - noctx         # Find HTTP requests without context
+    - sqlclosecheck # Check SQL rows/statements are closed
+    - rowserrcheck  # Check Rows.Err is checked
+    - exportloopref # Check for pointer loop variable references
+    - gocyclo       # Check cyclomatic complexity
+    - dupl          # Check for duplicate code
+    - goconst       # Find repeated strings that should be constants
+    - prealloc      # Find slice declarations that could be preallocated
+    - revive        # Fast, configurable, extensible linter
+
+  disable:
+    - exhaustruct   # Too strict for structs
+    - gochecknoglobals # Allow globals where appropriate
+    - gochecknoinits   # Allow init functions
+    - gomnd            # Magic number detection too strict
+    - wsl              # Whitespace linter too opinionated
+    - nlreturn         # Return statement style too opinionated
+    - lll              # Line length limit disabled (use gofmt)
+    - funlen           # Function length not always meaningful
+    - godox            # Allow TODOs in code
+    - testpackage      # Allow tests in same package
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+    exclude-functions:
+      - (io.Closer).Close
+      - (*database/sql.Rows).Close
+      - (*database/sql.Stmt).Close
+
+  govet:
+    enable-all: true
+    disable:
+      - shadow  # Variable shadowing can be intentional
+
+  gocyclo:
+    min-complexity: 15
+
+  dupl:
+    threshold: 100
+
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+
+  misspell:
+    locale: US
+
+  gosec:
+    excludes:
+      - G104  # Duplicates errcheck
+      - G204  # Subprocess with variable - needed for scripts
+
+  revive:
+    confidence: 0.8
+    rules:
+      - name: exported
+        disabled: false
+      - name: unexported-return
+        disabled: false
+      - name: var-naming
+        disabled: false
+      - name: error-return
+        disabled: false
+      - name: error-strings
+        disabled: false
+      - name: error-naming
+        disabled: false
+      - name: if-return
+        disabled: false
+      - name: increment-decrement
+        disabled: false
+      - name: var-declaration
+        disabled: false
+      - name: package-comments
+        disabled: true  # Not all packages need comments
+      - name: range
+        disabled: false
+      - name: receiver-naming
+        disabled: false
+      - name: time-naming
+        disabled: false
+      - name: indent-error-flow
+        disabled: false
+      - name: errorf
+        disabled: false
+      - name: context-as-argument
+        disabled: false
+      - name: context-keys-type
+        disabled: false
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: false
+
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+        - goconst
+
+    # Exclude known false positives
+    - linters:
+        - staticcheck
+      text: "SA1019"  # Deprecated functions - we may need to support them
+
+    # Allow long lines in generated code
+    - path: ".*\\.pb\\.go"
+      linters:
+        - lll
+
+    # Exclude main.go from some checks
+    - path: main\.go
+      linters:
+        - gocyclo
+        - gocritic
+
+  exclude-use-default: false
+
+severity:
+  default-severity: error
+  rules:
+    - linters:
+        - revive
+        - stylecheck
+      severity: warning
