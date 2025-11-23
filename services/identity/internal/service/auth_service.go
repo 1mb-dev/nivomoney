@@ -11,27 +11,56 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/vnykmshr/nivo/services/identity/internal/models"
-	"github.com/vnykmshr/nivo/services/identity/internal/repository"
 	"github.com/vnykmshr/nivo/shared/errors"
 	sharedModels "github.com/vnykmshr/nivo/shared/models"
 )
 
+// UserRepositoryInterface defines the interface for user repository operations.
+type UserRepositoryInterface interface {
+	Create(ctx context.Context, user *models.User) *errors.Error
+	GetByEmail(ctx context.Context, email string) (*models.User, *errors.Error)
+	GetByID(ctx context.Context, id string) (*models.User, *errors.Error)
+	Update(ctx context.Context, user *models.User) *errors.Error
+	UpdateStatus(ctx context.Context, userID string, status models.UserStatus) *errors.Error
+}
+
+// KYCRepositoryInterface defines the interface for KYC repository operations.
+type KYCRepositoryInterface interface {
+	GetByUserID(ctx context.Context, userID string) (*models.KYCInfo, *errors.Error)
+	Create(ctx context.Context, kyc *models.KYCInfo) *errors.Error
+	UpdateStatus(ctx context.Context, userID string, status models.KYCStatus, reason string) *errors.Error
+}
+
+// SessionRepositoryInterface defines the interface for session repository operations.
+type SessionRepositoryInterface interface {
+	Create(ctx context.Context, session *models.Session) *errors.Error
+	GetByTokenHash(ctx context.Context, tokenHash string) (*models.Session, *errors.Error)
+	DeleteByTokenHash(ctx context.Context, tokenHash string) *errors.Error
+	DeleteByUserID(ctx context.Context, userID string) *errors.Error
+}
+
+// RBACClientInterface defines the interface for RBAC client operations.
+type RBACClientInterface interface {
+	AssignDefaultRole(ctx context.Context, userID string) error
+	GetUserPermissions(ctx context.Context, userID string) (*UserPermissionsResponse, error)
+}
+
 // AuthService handles authentication and authorization.
 type AuthService struct {
-	userRepo    *repository.UserRepository
-	kycRepo     *repository.KYCRepository
-	sessionRepo *repository.SessionRepository
-	rbacClient  *RBACClient
+	userRepo    UserRepositoryInterface
+	kycRepo     KYCRepositoryInterface
+	sessionRepo SessionRepositoryInterface
+	rbacClient  RBACClientInterface
 	jwtSecret   string
 	jwtExpiry   time.Duration
 }
 
 // NewAuthService creates a new authentication service.
 func NewAuthService(
-	userRepo *repository.UserRepository,
-	kycRepo *repository.KYCRepository,
-	sessionRepo *repository.SessionRepository,
-	rbacClient *RBACClient,
+	userRepo UserRepositoryInterface,
+	kycRepo KYCRepositoryInterface,
+	sessionRepo SessionRepositoryInterface,
+	rbacClient RBACClientInterface,
 	jwtSecret string,
 	jwtExpiry time.Duration,
 ) *AuthService {
