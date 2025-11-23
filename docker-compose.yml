@@ -118,6 +118,158 @@ services:
     networks:
       - nivo-network
 
+  # Identity Service - Authentication and KYC
+  identity-service:
+    build:
+      context: .
+      dockerfile: services/identity/Dockerfile
+    container_name: nivo-identity
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: 8080
+      ENVIRONMENT: development
+      DATABASE_URL: postgres://${POSTGRES_USER:-nivo}:${POSTGRES_PASSWORD:-nivo_dev_password}@postgres:5432/${POSTGRES_DB:-nivo}?sslmode=disable
+      MIGRATIONS_DIR: ./migrations
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      JWT_EXPIRY_HOURS: ${JWT_EXPIRY_HOURS:-24}
+      TIMEZONE: Asia/Kolkata
+      DEFAULT_CURRENCY: INR
+      COUNTRY_CODE: IN
+    ports:
+      - "${IDENTITY_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nivo-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8080/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # Ledger Service - Double-entry bookkeeping
+  ledger-service:
+    build:
+      context: .
+      dockerfile: services/ledger/Dockerfile
+    container_name: nivo-ledger
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: 8081
+      ENVIRONMENT: development
+      DATABASE_URL: postgres://${POSTGRES_USER:-nivo}:${POSTGRES_PASSWORD:-nivo_dev_password}@postgres:5432/${POSTGRES_DB:-nivo}?sslmode=disable
+      MIGRATIONS_DIR: ./migrations
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      TIMEZONE: Asia/Kolkata
+      DEFAULT_CURRENCY: INR
+      COUNTRY_CODE: IN
+    ports:
+      - "${LEDGER_PORT:-8081}:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nivo-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8081/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # RBAC Service - Role-Based Access Control
+  rbac-service:
+    build:
+      context: .
+      dockerfile: services/rbac/Dockerfile
+    container_name: nivo-rbac
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: 8082
+      ENVIRONMENT: development
+      DATABASE_URL: postgres://${POSTGRES_USER:-nivo}:${POSTGRES_PASSWORD:-nivo_dev_password}@postgres:5432/${POSTGRES_DB:-nivo}?sslmode=disable
+      MIGRATIONS_DIR: ./migrations
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      TIMEZONE: Asia/Kolkata
+      DEFAULT_CURRENCY: INR
+      COUNTRY_CODE: IN
+    ports:
+      - "${RBAC_PORT:-8082}:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nivo-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8082/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # Wallet Service - User wallet management
+  wallet-service:
+    build:
+      context: .
+      dockerfile: services/wallet/Dockerfile
+    container_name: nivo-wallet
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: 8083
+      ENVIRONMENT: development
+      DATABASE_URL: postgres://${POSTGRES_USER:-nivo}:${POSTGRES_PASSWORD:-nivo_dev_password}@postgres:5432/${POSTGRES_DB:-nivo}?sslmode=disable
+      MIGRATIONS_DIR: ./migrations
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      TIMEZONE: Asia/Kolkata
+      DEFAULT_CURRENCY: INR
+      COUNTRY_CODE: IN
+    ports:
+      - "${WALLET_PORT:-8083}:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ledger-service:
+        condition: service_healthy
+    networks:
+      - nivo-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8083/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # Transaction Service - Money transfers and transactions
+  transaction-service:
+    build:
+      context: .
+      dockerfile: services/transaction/Dockerfile
+    container_name: nivo-transaction
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: 8084
+      ENVIRONMENT: development
+      DATABASE_URL: postgres://${POSTGRES_USER:-nivo}:${POSTGRES_PASSWORD:-nivo_dev_password}@postgres:5432/${POSTGRES_DB:-nivo}?sslmode=disable
+      MIGRATIONS_DIR: ./migrations
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      TIMEZONE: Asia/Kolkata
+      DEFAULT_CURRENCY: INR
+      COUNTRY_CODE: IN
+    ports:
+      - "${TRANSACTION_PORT:-8084}:8084"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      wallet-service:
+        condition: service_healthy
+      ledger-service:
+        condition: service_healthy
+    networks:
+      - nivo-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8084/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
 volumes:
   postgres_data:
     driver: local

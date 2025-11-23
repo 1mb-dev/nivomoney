@@ -36,14 +36,10 @@ help:
 # Build targets
 build:
 	@echo "Building all services..."
-	@go build -o bin/gateway ./gateway
-	@echo "Gateway built successfully"
-	@for service in services/*; do \
-		if [ -d "$$service" ] && [ -f "$$service/main.go" ]; then \
-			echo "Building $$service..."; \
-			go build -o bin/$$(basename $$service) ./$$service; \
-		fi \
-	done
+	@echo "Building Identity Service..."
+	@go build -o bin/identity-service ./services/identity/cmd/server
+	@echo "Building Ledger Service..."
+	@go build -o bin/ledger-service ./services/ledger/cmd/server
 	@echo "Build complete!"
 
 build-all: build
@@ -99,8 +95,20 @@ docker-logs:
 
 # Development targets
 run:
-	@echo "Starting services..."
-	@echo "Note: Implement service runners as services are developed"
+	@echo "Starting services locally requires PostgreSQL running on localhost:5432"
+	@echo "Use 'make docker-up' to start all infrastructure"
+	@echo ""
+	@echo "Then run services individually:"
+	@echo "  make run-identity   (port 8080)"
+	@echo "  make run-ledger     (port 8081)"
+
+run-identity:
+	@echo "Running Identity Service..."
+	@go run ./services/identity/cmd/server/main.go
+
+run-ledger:
+	@echo "Running Ledger Service..."
+	@go run ./services/ledger/cmd/server/main.go
 
 migrate-up:
 	@echo "Running migrations..."
