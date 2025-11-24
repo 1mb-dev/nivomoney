@@ -124,7 +124,7 @@ func (r *WalletRepository) ListByUserID(ctx context.Context, userID string, stat
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to list wallets")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	wallets := make([]*models.Wallet, 0)
 	for rows.Next() {

@@ -212,7 +212,7 @@ func (r *UserRepository) List(ctx context.Context, limit, offset int) ([]*models
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to list users")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	users := make([]*models.User, 0)
 

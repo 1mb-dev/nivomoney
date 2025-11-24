@@ -23,7 +23,7 @@ func Recovery(log *logger.Logger) Middleware {
 
 					// Return 500 Internal Server Error
 					w.WriteHeader(http.StatusInternalServerError)
-					w.Write([]byte(`{"error": "internal server error"}`))
+					_, _ = w.Write([]byte(`{"error": "internal server error"}`))
 				}
 			}()
 
@@ -57,5 +57,5 @@ func RecoveryWithHandler(log *logger.Logger, handler func(http.ResponseWriter, *
 func defaultPanicHandler(w http.ResponseWriter, r *http.Request, err interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusInternalServerError)
-	fmt.Fprintf(w, `{"error": "internal server error", "message": "%v"}`, err)
+	_, _ = fmt.Fprintf(w, `{"error": "internal server error", "message": "%v"}`, err)
 }

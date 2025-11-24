@@ -109,7 +109,7 @@ func (r *RiskEventRepository) GetByTransactionID(ctx context.Context, transactio
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to get risk events by transaction")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var events []*models.RiskEvent
 	for rows.Next() {
@@ -160,7 +160,7 @@ func (r *RiskEventRepository) GetByUserID(ctx context.Context, userID string, li
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to get risk events by user")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var events []*models.RiskEvent
 	for rows.Next() {

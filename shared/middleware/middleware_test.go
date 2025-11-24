@@ -70,7 +70,7 @@ func TestChain(t *testing.T) {
 	t.Run("works with no middleware", func(t *testing.T) {
 		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("ok"))
+			_, _ = w.Write([]byte("ok"))
 		})
 
 		chained := Chain(handler)
@@ -127,7 +127,7 @@ func TestResponseWriter(t *testing.T) {
 		rec := httptest.NewRecorder()
 		rw := NewResponseWriter(rec)
 
-		rw.Write([]byte("test"))
+		_, _ = rw.Write([]byte("test"))
 
 		if rw.StatusCode != http.StatusOK {
 			t.Errorf("expected status %d, got %d", http.StatusOK, rw.StatusCode)
@@ -158,9 +158,9 @@ func TestResponseWriter(t *testing.T) {
 		rec := httptest.NewRecorder()
 		rw := NewResponseWriter(rec)
 
-		rw.Write([]byte("hello"))
-		rw.Write([]byte(" "))
-		rw.Write([]byte("world"))
+		_, _ = rw.Write([]byte("hello"))
+		_, _ = rw.Write([]byte(" "))
+		_, _ = rw.Write([]byte("world"))
 
 		expected := len("hello world")
 		if rw.BytesWritten != expected {

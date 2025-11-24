@@ -106,7 +106,7 @@ func (r *RiskRuleRepository) GetAll(ctx context.Context, enabledOnly bool) ([]*m
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to get risk rules")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var rules []*models.RiskRule
 	for rows.Next() {
@@ -152,7 +152,7 @@ func (r *RiskRuleRepository) GetByType(ctx context.Context, ruleType models.Rule
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to get risk rules by type")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var rules []*models.RiskRule
 	for rows.Next() {

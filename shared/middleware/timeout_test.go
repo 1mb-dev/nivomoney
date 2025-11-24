@@ -13,7 +13,7 @@ func TestTimeout(t *testing.T) {
 		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Fast handler that completes immediately
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("success"))
+			_, _ = w.Write([]byte("success"))
 		})
 
 		middleware := Timeout(1 * time.Second)
@@ -40,7 +40,7 @@ func TestTimeout(t *testing.T) {
 			select {
 			case <-time.After(200 * time.Millisecond):
 				w.WriteHeader(http.StatusOK)
-				w.Write([]byte("too late"))
+				_, _ = w.Write([]byte("too late"))
 			case <-r.Context().Done():
 				// Context cancelled, handler should stop
 				return
@@ -218,7 +218,7 @@ func TestTimeout(t *testing.T) {
 		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("X-Custom-Header", "custom-value")
 			w.WriteHeader(http.StatusCreated)
-			w.Write([]byte("custom response"))
+			_, _ = w.Write([]byte("custom response"))
 		})
 
 		middleware := Timeout(1 * time.Second)

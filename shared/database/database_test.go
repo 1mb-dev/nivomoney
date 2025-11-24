@@ -74,7 +74,7 @@ func TestConnect(t *testing.T) {
 	if db == nil {
 		return
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	// Verify connection is working
 	ctx := context.Background()
@@ -88,7 +88,7 @@ func TestHealthCheck(t *testing.T) {
 	if db == nil {
 		return
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	ctx := context.Background()
 	if err := db.HealthCheck(ctx); err != nil {
@@ -101,7 +101,7 @@ func TestStats(t *testing.T) {
 	if db == nil {
 		return
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	stats := db.Stats()
 
@@ -116,7 +116,7 @@ func TestTransaction(t *testing.T) {
 	if db == nil {
 		return
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	ctx := context.Background()
 
@@ -178,7 +178,7 @@ func TestTransactionWithOptions(t *testing.T) {
 	if db == nil {
 		return
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	ctx := context.Background()
 
@@ -212,7 +212,7 @@ func TestQueryRowContext(t *testing.T) {
 	if db == nil {
 		return
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	ctx := context.Background()
 
@@ -231,7 +231,7 @@ func TestQueryContext(t *testing.T) {
 	if db == nil {
 		return
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	ctx := context.Background()
 
@@ -239,7 +239,7 @@ func TestQueryContext(t *testing.T) {
 	if err != nil {
 		t.Fatalf("QueryContext failed: %v", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	count := 0
 	for rows.Next() {
@@ -255,7 +255,7 @@ func TestExecContext(t *testing.T) {
 	if db == nil {
 		return
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	ctx := context.Background()
 

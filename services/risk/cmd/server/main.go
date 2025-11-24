@@ -39,7 +39,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("[%s] Failed to connect to database: %v", serviceName, err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	log.Printf("[%s] Connected to database successfully", serviceName)
 

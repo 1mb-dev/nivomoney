@@ -69,7 +69,7 @@ func TestRecovery(t *testing.T) {
 
 		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("success"))
+			_, _ = w.Write([]byte("success"))
 		})
 
 		middleware := Recovery(log)
@@ -187,7 +187,7 @@ func TestRecoveryWithHandler(t *testing.T) {
 			customHandlerCalled = true
 			capturedPanic = err
 			w.WriteHeader(http.StatusTeapot) // Use unusual status to verify custom handler
-			w.Write([]byte("custom recovery"))
+			_, _ = w.Write([]byte("custom recovery"))
 		}
 
 		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

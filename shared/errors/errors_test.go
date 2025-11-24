@@ -61,7 +61,7 @@ func TestError_WithDetails(t *testing.T) {
 		"issue": "invalid format",
 	}
 
-	err.WithDetails(details)
+	_ = err.WithDetails(details)
 
 	if len(err.Details) != 2 {
 		t.Errorf("Expected 2 details, got %d", len(err.Details))
@@ -73,8 +73,8 @@ func TestError_WithDetails(t *testing.T) {
 
 func TestError_AddDetail(t *testing.T) {
 	err := New(ErrCodeValidation, "validation failed")
-	err.AddDetail("field", "username")
-	err.AddDetail("min_length", 3)
+	_ = err.AddDetail("field", "username")
+	_ = err.AddDetail("min_length", 3)
 
 	if len(err.Details) != 2 {
 		t.Errorf("Expected 2 details, got %d", len(err.Details))

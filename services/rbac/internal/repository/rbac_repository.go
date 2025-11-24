@@ -131,7 +131,7 @@ func (r *RBACRepository) ListRoles(ctx context.Context, activeOnly bool) ([]mode
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to list roles")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var roles []models.Role
 	for rows.Next() {
@@ -235,7 +235,7 @@ func (r *RBACRepository) GetRoleHierarchy(ctx context.Context, roleID string) ([
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to get role hierarchy")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var roles []models.Role
 	for rows.Next() {
@@ -374,7 +374,7 @@ func (r *RBACRepository) ListPermissions(ctx context.Context, service string) ([
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to list permissions")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var permissions []models.Permission
 	for rows.Next() {
@@ -451,7 +451,7 @@ func (r *RBACRepository) GetRolePermissions(ctx context.Context, roleID string) 
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to get role permissions")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var permissions []models.Permission
 	for rows.Next() {
@@ -538,7 +538,7 @@ func (r *RBACRepository) GetUserRoles(ctx context.Context, userID string) ([]mod
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to get user roles")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var userRoles []models.UserRole
 	for rows.Next() {
@@ -589,7 +589,7 @@ func (r *RBACRepository) GetUserPermissions(ctx context.Context, userID string) 
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to get user permissions")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var permissions []models.Permission
 	for rows.Next() {

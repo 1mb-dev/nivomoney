@@ -263,7 +263,7 @@ func TestCORS(t *testing.T) {
 		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			handlerCalled = true
 			w.WriteHeader(http.StatusCreated)
-			w.Write([]byte("created"))
+			_, _ = w.Write([]byte("created"))
 		})
 
 		middleware := CORS(config)

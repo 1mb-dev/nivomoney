@@ -33,7 +33,7 @@ func (h *RBACHandler) CreateRole(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.CreateRoleRequest](body)
@@ -100,7 +100,7 @@ func (h *RBACHandler) UpdateRole(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.UpdateRoleRequest](body)
@@ -164,7 +164,7 @@ func (h *RBACHandler) CreatePermission(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.CreatePermissionRequest](body)
@@ -232,7 +232,7 @@ func (h *RBACHandler) AssignPermissionToRole(w http.ResponseWriter, r *http.Requ
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.AssignPermissionToRoleRequest](body)
@@ -317,7 +317,7 @@ func (h *RBACHandler) AssignRoleToUser(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.AssignRoleToUserRequest](body)
@@ -406,7 +406,7 @@ func (h *RBACHandler) CheckPermission(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.CheckPermissionRequest](body)
@@ -433,7 +433,7 @@ func (h *RBACHandler) CheckPermissions(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.CheckPermissionsRequest](body)

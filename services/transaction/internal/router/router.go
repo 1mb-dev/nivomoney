@@ -15,7 +15,7 @@ func SetupRoutes(transactionHandler *handler.TransactionHandler, jwtSecret strin
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"status":"healthy","service":"transaction"}`))
+		_, _ = w.Write([]byte(`{"status":"healthy","service":"transaction"}`))
 	})
 
 	// Setup auth middleware

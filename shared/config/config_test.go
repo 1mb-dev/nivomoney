@@ -71,7 +71,7 @@ func TestLoad(t *testing.T) {
 			// Set environment variables
 			os.Clearenv()
 			for k, v := range tt.envVars {
-				os.Setenv(k, v)
+				_ = os.Setenv(k, v)
 			}
 
 			cfg, err := Load()
@@ -201,7 +201,7 @@ func TestGetEnvHelpers(t *testing.T) {
 	os.Clearenv()
 
 	// Test getEnv
-	os.Setenv("TEST_STRING", "value")
+	_ = os.Setenv("TEST_STRING", "value")
 	if got := getEnv("TEST_STRING", "default"); got != "value" {
 		t.Errorf("getEnv() = %v, want %v", got, "value")
 	}
@@ -210,7 +210,7 @@ func TestGetEnvHelpers(t *testing.T) {
 	}
 
 	// Test getEnvAsInt
-	os.Setenv("TEST_INT", "42")
+	_ = os.Setenv("TEST_INT", "42")
 	if got := getEnvAsInt("TEST_INT", 0); got != 42 {
 		t.Errorf("getEnvAsInt() = %v, want %v", got, 42)
 	}
@@ -219,7 +219,7 @@ func TestGetEnvHelpers(t *testing.T) {
 	}
 
 	// Test getEnvAsBool
-	os.Setenv("TEST_BOOL", "true")
+	_ = os.Setenv("TEST_BOOL", "true")
 	if got := getEnvAsBool("TEST_BOOL", false); got != true {
 		t.Errorf("getEnvAsBool() = %v, want %v", got, true)
 	}
@@ -228,7 +228,7 @@ func TestGetEnvHelpers(t *testing.T) {
 	}
 
 	// Test getEnvAsDuration
-	os.Setenv("TEST_DURATION", "5s")
+	_ = os.Setenv("TEST_DURATION", "5s")
 	if got := getEnvAsDuration("TEST_DURATION", 0); got != 5*time.Second {
 		t.Errorf("getEnvAsDuration() = %v, want %v", got, 5*time.Second)
 	}

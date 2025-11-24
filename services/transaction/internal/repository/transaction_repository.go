@@ -172,7 +172,7 @@ func (r *TransactionRepository) ListByWallet(ctx context.Context, walletID strin
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to list transactions")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	transactions := make([]*models.Transaction, 0)
 	for rows.Next() {

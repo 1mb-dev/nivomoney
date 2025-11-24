@@ -182,7 +182,7 @@ func (r *AccountRepository) List(ctx context.Context, accountType *models.Accoun
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to list accounts")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	accounts := make([]*models.Account, 0)
 	for rows.Next() {

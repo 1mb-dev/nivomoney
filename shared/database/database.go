@@ -75,7 +75,7 @@ func Connect(cfg Config) (*DB, error) {
 	defer cancel()
 
 	if err := db.PingContext(ctx); err != nil {
-		sqlDB.Close()
+		_ = sqlDB.Close()
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
@@ -98,7 +98,7 @@ func NewFromURL(url string) (*DB, error) {
 	defer cancel()
 
 	if err := db.PingContext(ctx); err != nil {
-		sqlDB.Close()
+		_ = sqlDB.Close()
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 

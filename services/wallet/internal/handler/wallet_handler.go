@@ -30,7 +30,7 @@ func (h *WalletHandler) CreateWallet(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request (gopantic v1.2.0+ supports json.RawMessage)
 	req, parseErr := model.ParseInto[models.CreateWalletRequest](body)
@@ -124,7 +124,7 @@ func (h *WalletHandler) FreezeWallet(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.FreezeWalletRequest](body)
@@ -174,7 +174,7 @@ func (h *WalletHandler) CloseWallet(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.CloseWalletRequest](body)

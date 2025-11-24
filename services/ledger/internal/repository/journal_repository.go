@@ -179,7 +179,7 @@ func (r *JournalEntryRepository) GetLinesByEntryID(ctx context.Context, entryID 
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to get ledger lines")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	lines := make([]models.LedgerLine, 0)
 	for rows.Next() {
@@ -292,7 +292,7 @@ func (r *JournalEntryRepository) List(ctx context.Context, status *models.EntryS
 	if err != nil {
 		return nil, errors.DatabaseWrap(err, "failed to list journal entries")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	entries := make([]*models.JournalEntry, 0)
 	for rows.Next() {

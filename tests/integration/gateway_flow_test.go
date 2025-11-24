@@ -63,16 +63,16 @@ type Wallet struct {
 
 // Transaction represents a transaction
 type Transaction struct {
-	ID              string    `json:"id"`
-	Type            string    `json:"type"`
-	FromWalletID    string    `json:"from_wallet_id,omitempty"`
-	ToWalletID      string    `json:"to_wallet_id"`
-	Amount          string    `json:"amount"`
-	Currency        string    `json:"currency"`
-	Status          string    `json:"status"`
-	Description     string    `json:"description,omitempty"`
-	IdempotencyKey  string    `json:"idempotency_key,omitempty"`
-	CreatedAt       time.Time `json:"created_at"`
+	ID             string    `json:"id"`
+	Type           string    `json:"type"`
+	FromWalletID   string    `json:"from_wallet_id,omitempty"`
+	ToWalletID     string    `json:"to_wallet_id"`
+	Amount         string    `json:"amount"`
+	Currency       string    `json:"currency"`
+	Status         string    `json:"status"`
+	Description    string    `json:"description,omitempty"`
+	IdempotencyKey string    `json:"idempotency_key,omitempty"`
+	CreatedAt      time.Time `json:"created_at"`
 }
 
 // TestClient is a helper for making HTTP requests
@@ -275,7 +275,7 @@ func TestWalletCreationAndManagement(t *testing.T) {
 	}
 	loginResp, _ := client.Post("/api/v1/identity/auth/login", loginReq, false)
 	var loginData LoginResponse
-	json.Unmarshal(loginResp.Data, &loginData)
+	_ = json.Unmarshal(loginResp.Data, &loginData)
 	client.SetAuthToken(loginData.Token)
 
 	var walletID string
@@ -379,14 +379,14 @@ func TestTransactionFlow(t *testing.T) {
 	}
 	loginResp, _ := client.Post("/api/v1/identity/auth/login", loginReq, false)
 	var loginData LoginResponse
-	json.Unmarshal(loginResp.Data, &loginData)
+	_ = json.Unmarshal(loginResp.Data, &loginData)
 	client.SetAuthToken(loginData.Token)
 
 	// Create and activate wallet
 	createWalletReq := map[string]interface{}{"currency": "INR"}
 	walletResp, _ := client.Post("/api/v1/wallet/wallets", createWalletReq, true)
 	var wallet Wallet
-	json.Unmarshal(walletResp.Data, &wallet)
+	_ = json.Unmarshal(walletResp.Data, &wallet)
 	walletID := wallet.ID
 
 	// Activate wallet
@@ -522,7 +522,7 @@ func TestEndToEndUserJourney(t *testing.T) {
 	t.Log("Step 6: Create Second Wallet for Transfer")
 	secondWalletResp, _ := client.Post("/api/v1/wallet/wallets", createWalletReq, true)
 	var secondWallet Wallet
-	json.Unmarshal(secondWalletResp.Data, &secondWallet)
+	_ = json.Unmarshal(secondWalletResp.Data, &secondWallet)
 	client.Post(fmt.Sprintf("/api/v1/wallet/wallets/%s/activate", secondWallet.ID), nil, true)
 	t.Logf("Created second wallet: %s", secondWallet.ID)
 

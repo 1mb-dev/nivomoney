@@ -14,7 +14,7 @@ func SetupRoutes(rbacHandler *RBACHandler, jwtSecret string) http.Handler {
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"status":"healthy","service":"rbac"}`))
+		_, _ = w.Write([]byte(`{"status":"healthy","service":"rbac"}`))
 	})
 
 	// Setup auth middleware

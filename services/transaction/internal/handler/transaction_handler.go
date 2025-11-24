@@ -31,7 +31,7 @@ func (h *TransactionHandler) CreateTransfer(w http.ResponseWriter, r *http.Reque
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.CreateTransferRequest](body)
@@ -56,7 +56,7 @@ func (h *TransactionHandler) CreateDeposit(w http.ResponseWriter, r *http.Reques
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.CreateDepositRequest](body)
@@ -81,7 +81,7 @@ func (h *TransactionHandler) CreateWithdrawal(w http.ResponseWriter, r *http.Req
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.CreateWithdrawalRequest](body)
@@ -179,7 +179,7 @@ func (h *TransactionHandler) ReverseTransaction(w http.ResponseWriter, r *http.R
 		response.Error(w, errors.BadRequest("failed to read request body"))
 		return
 	}
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 
 	// Parse and validate request
 	req, parseErr := model.ParseInto[models.ReverseTransactionRequest](body)

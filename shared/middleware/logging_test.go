@@ -21,7 +21,7 @@ func TestLogging(t *testing.T) {
 
 		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("ok"))
+			_, _ = w.Write([]byte("ok"))
 		})
 
 		middleware := Logging(log)
@@ -71,7 +71,7 @@ func TestLogging(t *testing.T) {
 
 		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusCreated)
-			w.Write([]byte("created"))
+			_, _ = w.Write([]byte("created"))
 		})
 
 		middleware := Logging(log)
@@ -175,7 +175,7 @@ func TestLogging(t *testing.T) {
 
 		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("error"))
+			_, _ = w.Write([]byte("error"))
 		})
 
 		middleware := Logging(log)

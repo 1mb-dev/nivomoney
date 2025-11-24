@@ -59,5 +59,5 @@ func (r *Router) SetupRoutes() http.Handler {
 func (r *Router) healthCheck(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"service":"risk","status":"healthy","version":"1.0.0"}`))
+	_, _ = w.Write([]byte(`{"service":"risk","status":"healthy","version":"1.0.0"}`))
 }

@@ -30,7 +30,7 @@ func Timeout(duration time.Duration) Middleware {
 			case <-ctx.Done():
 				// Timeout or cancellation
 				w.WriteHeader(http.StatusGatewayTimeout)
-				w.Write([]byte(`{"error": "request timeout"}`))
+				_, _ = w.Write([]byte(`{"error": "request timeout"}`))
 			}
 		})
 	}
