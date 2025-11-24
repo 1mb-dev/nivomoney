@@ -56,7 +56,6 @@ func (r *Router) SetupRoutes() http.Handler {
 		r.metrics.Middleware("risk"),
 		middleware.RequestID(),
 		middleware.Logging(log),
-		middleware.CORS(middleware.DefaultCORSConfig()),
 	)
 
 	return handler

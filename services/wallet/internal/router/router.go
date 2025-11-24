@@ -59,7 +59,5 @@ func SetupRoutes(walletHandler *handler.WalletHandler, jwtSecret string) http.Ha
 	// Apply request ID
 	handler = middleware.RequestID()(handler)
 
-	// Apply CORS
-	corsMiddleware := middleware.CORS(middleware.DefaultCORSConfig())
-	return corsMiddleware(handler)
+	return handler
 }

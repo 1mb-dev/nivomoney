@@ -83,7 +83,5 @@ func SetupRoutes(rbacHandler *RBACHandler, jwtSecret string) http.Handler {
 	// Apply request ID
 	handler = middleware.RequestID()(handler)
 
-	// Apply CORS
-	corsMiddleware := middleware.CORS(middleware.DefaultCORSConfig())
-	return corsMiddleware(handler)
+	return handler
 }

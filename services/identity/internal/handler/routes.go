@@ -85,9 +85,6 @@ func (r *Router) applyMiddleware(handler http.Handler) http.Handler {
 	// Apply request ID generation/extraction
 	handler = middleware.RequestID()(handler)
 
-	// Apply CORS
-	handler = middleware.CORS(middleware.DefaultCORSConfig())(handler)
-
 	return handler
 }
 
