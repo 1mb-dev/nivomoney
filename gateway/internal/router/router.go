@@ -86,5 +86,7 @@ func (r *Router) healthCheck(w http.ResponseWriter, req *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(health)
+	if err := json.NewEncoder(w).Encode(health); err != nil {
+		r.logger.WithError(err).Error("failed to encode health check response")
+	}
 }

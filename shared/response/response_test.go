@@ -14,11 +14,7 @@ func TestJSON(t *testing.T) {
 		rec := httptest.NewRecorder()
 
 		data := map[string]string{"message": "hello"}
-		err := JSON(rec, http.StatusOK, data)
-
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
+		JSON(rec, http.StatusOK, data)
 
 		if rec.Code != http.StatusOK {
 			t.Errorf("expected status 200, got %d", rec.Code)
@@ -57,11 +53,7 @@ func TestSuccess(t *testing.T) {
 		rec := httptest.NewRecorder()
 
 		data := map[string]string{"key": "value"}
-		err := Success(rec, http.StatusOK, data)
-
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
+		Success(rec, http.StatusOK, data)
 
 		var response Response
 		if err := json.Unmarshal(rec.Body.Bytes(), &response); err != nil {
@@ -93,11 +85,7 @@ func TestSuccessWithMeta(t *testing.T) {
 			Timestamp: "2024-01-01T00:00:00Z",
 		}
 
-		err := SuccessWithMeta(rec, http.StatusOK, data, meta)
-
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
+		SuccessWithMeta(rec, http.StatusOK, data, meta)
 
 		var response Response
 		if err := json.Unmarshal(rec.Body.Bytes(), &response); err != nil {
@@ -163,7 +151,7 @@ func TestError(t *testing.T) {
 		Error(rec, err)
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		if response.Error.Details == nil {
 			t.Fatal("expected details to be set")
@@ -187,7 +175,7 @@ func TestErrorWithMeta(t *testing.T) {
 		ErrorWithMeta(rec, err, meta)
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		if response.Success {
 			t.Error("expected success to be false")
@@ -217,7 +205,7 @@ func TestBadRequest(t *testing.T) {
 	}
 
 	var response Response
-	json.Unmarshal(rec.Body.Bytes(), &response)
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 	if response.Success {
 		t.Error("expected success to be false")
@@ -238,7 +226,7 @@ func TestUnauthorized(t *testing.T) {
 	}
 
 	var response Response
-	json.Unmarshal(rec.Body.Bytes(), &response)
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 	if response.Error.Code != string(errors.ErrCodeUnauthorized) {
 		t.Error("expected unauthorized code")
@@ -255,7 +243,7 @@ func TestForbidden(t *testing.T) {
 	}
 
 	var response Response
-	json.Unmarshal(rec.Body.Bytes(), &response)
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 	if response.Error.Code != string(errors.ErrCodeForbidden) {
 		t.Error("expected forbidden code")
@@ -272,7 +260,7 @@ func TestNotFound(t *testing.T) {
 	}
 
 	var response Response
-	json.Unmarshal(rec.Body.Bytes(), &response)
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 	if response.Error.Message != "account not found" {
 		t.Errorf("expected message 'account not found', got %s", response.Error.Message)
@@ -289,7 +277,7 @@ func TestConflict(t *testing.T) {
 	}
 
 	var response Response
-	json.Unmarshal(rec.Body.Bytes(), &response)
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 	if response.Error.Code != string(errors.ErrCodeConflict) {
 		t.Error("expected conflict code")
@@ -306,7 +294,7 @@ func TestInternalError(t *testing.T) {
 	}
 
 	var response Response
-	json.Unmarshal(rec.Body.Bytes(), &response)
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 	if response.Error.Code != string(errors.ErrCodeInternal) {
 		t.Error("expected internal error code")
@@ -328,7 +316,7 @@ func TestCreated(t *testing.T) {
 	}
 
 	var response Response
-	json.Unmarshal(rec.Body.Bytes(), &response)
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 	if !response.Success {
 		t.Error("expected success to be true")
@@ -347,7 +335,7 @@ func TestOK(t *testing.T) {
 	}
 
 	var response Response
-	json.Unmarshal(rec.Body.Bytes(), &response)
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 	if !response.Success {
 		t.Error("expected success to be true")
@@ -380,7 +368,7 @@ func TestPaginated(t *testing.T) {
 		Paginated(rec, data, 2, 10, 35)
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		if !response.Success {
 			t.Error("expected success to be true")
@@ -423,7 +411,7 @@ func TestPaginated(t *testing.T) {
 		Paginated(rec, []int{1, 2}, 1, 10, 25)
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		p := response.Meta.Pagination
 
@@ -442,7 +430,7 @@ func TestPaginated(t *testing.T) {
 		Paginated(rec, []int{21, 22}, 3, 10, 25)
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		p := response.Meta.Pagination
 
@@ -461,7 +449,7 @@ func TestPaginated(t *testing.T) {
 		Paginated(rec, []int{1, 2, 3}, 1, 10, 3)
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		p := response.Meta.Pagination
 
@@ -480,7 +468,7 @@ func TestPaginated(t *testing.T) {
 		Paginated(rec, []int{}, 1, 10, 0)
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		p := response.Meta.Pagination
 
@@ -499,7 +487,7 @@ func TestPaginated(t *testing.T) {
 		Paginated(rec, []int{1, 2}, 1, 10, 20)
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		p := response.Meta.Pagination
 
@@ -525,7 +513,7 @@ func TestValidationError(t *testing.T) {
 		}
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		if response.Success {
 			t.Error("expected success to be false")
@@ -560,7 +548,7 @@ func TestResponseStructure(t *testing.T) {
 		Success(rec, http.StatusOK, map[string]string{"key": "value"})
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		if !response.Success {
 			t.Error("expected success field to be true")
@@ -581,7 +569,7 @@ func TestResponseStructure(t *testing.T) {
 		Error(rec, errors.BadRequest("test error"))
 
 		var response Response
-		json.Unmarshal(rec.Body.Bytes(), &response)
+		_ = json.Unmarshal(rec.Body.Bytes(), &response)
 
 		if response.Success {
 			t.Error("expected success field to be false")

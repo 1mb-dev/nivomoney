@@ -3,6 +3,7 @@ package response
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/vnykmshr/nivo/shared/errors"
@@ -41,23 +42,27 @@ type Pagination struct {
 }
 
 // JSON writes a JSON response with the given status code and data.
-func JSON(w http.ResponseWriter, statusCode int, data interface{}) error {
+// Errors during encoding are logged but not returned since the HTTP connection
+// may already be broken and there's no meaningful recovery action.
+func JSON(w http.ResponseWriter, statusCode int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	return json.NewEncoder(w).Encode(data)
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		log.Printf("[response] Failed to encode JSON response: %v", err)
+	}
 }
 
 // Success writes a success response.
-func Success(w http.ResponseWriter, statusCode int, data interface{}) error {
-	return JSON(w, statusCode, Response{
+func Success(w http.ResponseWriter, statusCode int, data interface{}) {
+	JSON(w, statusCode, Response{
 		Success: true,
 		Data:    data,
 	})
 }
 
 // SuccessWithMeta writes a success response with metadata.
-func SuccessWithMeta(w http.ResponseWriter, statusCode int, data interface{}, meta *Meta) error {
-	return JSON(w, statusCode, Response{
+func SuccessWithMeta(w http.ResponseWriter, statusCode int, data interface{}, meta *Meta) {
+	JSON(w, statusCode, Response{
 		Success: true,
 		Data:    data,
 		Meta:    meta,
@@ -65,10 +70,10 @@ func SuccessWithMeta(w http.ResponseWriter, statusCode int, data interface{}, me
 }
 
 // Error writes an error response from an errors.Error.
-func Error(w http.ResponseWriter, err *errors.Error) error {
+func Error(w http.ResponseWriter, err *errors.Error) {
 	statusCode := err.HTTPStatusCode()
 
-	return JSON(w, statusCode, Response{
+	JSON(w, statusCode, Response{
 		Success: false,
 		Error: &ErrorData{
 			Code:    string(err.Code),
@@ -79,10 +84,10 @@ func Error(w http.ResponseWriter, err *errors.Error) error {
 }
 
 // ErrorWithMeta writes an error response with metadata.
-func ErrorWithMeta(w http.ResponseWriter, err *errors.Error, meta *Meta) error {
+func ErrorWithMeta(w http.ResponseWriter, err *errors.Error, meta *Meta) {
 	statusCode := err.HTTPStatusCode()
 
-	return JSON(w, statusCode, Response{
+	JSON(w, statusCode, Response{
 		Success: false,
 		Error: &ErrorData{
 			Code:    string(err.Code),
@@ -94,53 +99,52 @@ func ErrorWithMeta(w http.ResponseWriter, err *errors.Error, meta *Meta) error {
 }
 
 // BadRequest writes a 400 Bad Request response.
-func BadRequest(w http.ResponseWriter, message string) error {
-	return Error(w, errors.BadRequest(message))
+func BadRequest(w http.ResponseWriter, message string) {
+	Error(w, errors.BadRequest(message))
 }
 
 // Unauthorized writes a 401 Unauthorized response.
-func Unauthorized(w http.ResponseWriter, message string) error {
-	return Error(w, errors.Unauthorized(message))
+func Unauthorized(w http.ResponseWriter, message string) {
+	Error(w, errors.Unauthorized(message))
 }
 
 // Forbidden writes a 403 Forbidden response.
-func Forbidden(w http.ResponseWriter, message string) error {
-	return Error(w, errors.Forbidden(message))
+func Forbidden(w http.ResponseWriter, message string) {
+	Error(w, errors.Forbidden(message))
 }
 
 // NotFound writes a 404 Not Found response.
-func NotFound(w http.ResponseWriter, resource string) error {
-	return Error(w, errors.NotFound(resource))
+func NotFound(w http.ResponseWriter, resource string) {
+	Error(w, errors.NotFound(resource))
 }
 
 // Conflict writes a 409 Conflict response.
-func Conflict(w http.ResponseWriter, message string) error {
-	return Error(w, errors.Conflict(message))
+func Conflict(w http.ResponseWriter, message string) {
+	Error(w, errors.Conflict(message))
 }
 
 // InternalError writes a 500 Internal Server Error response.
-func InternalError(w http.ResponseWriter, message string) error {
-	return Error(w, errors.Internal(message))
+func InternalError(w http.ResponseWriter, message string) {
+	Error(w, errors.Internal(message))
 }
 
 // Created writes a 201 Created response.
-func Created(w http.ResponseWriter, data interface{}) error {
-	return Success(w, http.StatusCreated, data)
+func Created(w http.ResponseWriter, data interface{}) {
+	Success(w, http.StatusCreated, data)
 }
 
 // OK writes a 200 OK response.
-func OK(w http.ResponseWriter, data interface{}) error {
-	return Success(w, http.StatusOK, data)
+func OK(w http.ResponseWriter, data interface{}) {
+	Success(w, http.StatusOK, data)
 }
 
 // NoContent writes a 204 No Content response.
-func NoContent(w http.ResponseWriter) error {
+func NoContent(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNoContent)
-	return nil
 }
 
 // Paginated writes a paginated response with metadata.
-func Paginated(w http.ResponseWriter, data interface{}, page, pageSize int, totalItems int64) error {
+func Paginated(w http.ResponseWriter, data interface{}, page, pageSize int, totalItems int64) {
 	totalPages := int((totalItems + int64(pageSize) - 1) / int64(pageSize))
 	if totalPages == 0 {
 		totalPages = 1
@@ -155,14 +159,14 @@ func Paginated(w http.ResponseWriter, data interface{}, page, pageSize int, tota
 		HasPrev:    page > 1,
 	}
 
-	return SuccessWithMeta(w, http.StatusOK, data, &Meta{
+	SuccessWithMeta(w, http.StatusOK, data, &Meta{
 		Pagination: pagination,
 	})
 }
 
 // ValidationError writes a validation error response.
-func ValidationError(w http.ResponseWriter, details map[string]interface{}) error {
+func ValidationError(w http.ResponseWriter, details map[string]interface{}) {
 	err := errors.Validation("validation failed")
 	err.Details = details
-	return Error(w, err)
+	Error(w, err)
 }
