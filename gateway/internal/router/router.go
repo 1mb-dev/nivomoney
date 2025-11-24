@@ -8,6 +8,7 @@ import (
 	"github.com/vnykmshr/nivo/gateway/internal/middleware"
 	"github.com/vnykmshr/nivo/gateway/internal/proxy"
 	"github.com/vnykmshr/nivo/shared/logger"
+	"github.com/vnykmshr/nivo/shared/metrics"
 	sharedMiddleware "github.com/vnykmshr/nivo/shared/middleware"
 )
 
@@ -16,6 +17,7 @@ type Router struct {
 	gateway   *proxy.Gateway
 	validator *middleware.JWTValidator
 	logger    *logger.Logger
+	metrics   *metrics.Collector
 }
 
 // NewRouter creates a new router with all handlers and middleware.
@@ -29,6 +31,7 @@ func NewRouter(gateway *proxy.Gateway, log *logger.Logger) *Router {
 		gateway:   gateway,
 		validator: middleware.NewJWTValidator(jwtSecret),
 		logger:    log,
+		metrics:   metrics.NewCollector("gateway"),
 	}
 }
 
@@ -39,6 +42,9 @@ func (r *Router) SetupRoutes() http.Handler {
 	// Health check endpoint (gateway-level)
 	mux.HandleFunc("GET /health", r.healthCheck)
 	mux.HandleFunc("GET /api/health", r.healthCheck)
+
+	// Metrics endpoint (Prometheus)
+	mux.Handle("GET /metrics", metrics.Handler())
 
 	// Public routes (no authentication required)
 	// Authentication endpoints - these should go directly to identity service
@@ -58,6 +64,9 @@ func (r *Router) SetupRoutes() http.Handler {
 
 // applyMiddleware applies the middleware chain to the handler.
 func (r *Router) applyMiddleware(handler http.Handler) http.Handler {
+	// Apply metrics (outermost layer - captures everything)
+	handler = r.metrics.Middleware("gateway")(handler)
+
 	// Apply CORS
 	handler = sharedMiddleware.CORS(sharedMiddleware.DefaultCORSConfig())(handler)
 
