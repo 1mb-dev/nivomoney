@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/vnykmshr/nivo/services/ledger/internal/service"
+	"github.com/vnykmshr/nivo/shared/metrics"
 	"github.com/vnykmshr/nivo/shared/middleware"
 )
 
@@ -11,6 +12,7 @@ import (
 type Router struct {
 	ledgerHandler *LedgerHandler
 	jwtSecret     string
+	metrics       *metrics.Collector
 }
 
 // NewRouter creates a new router with all handlers.
@@ -18,6 +20,7 @@ func NewRouter(ledgerService *service.LedgerService, jwtSecret string) *Router {
 	return &Router{
 		ledgerHandler: NewLedgerHandler(ledgerService),
 		jwtSecret:     jwtSecret,
+		metrics:       metrics.NewCollector("ledger"),
 	}
 }
 
@@ -27,6 +30,9 @@ func (r *Router) SetupRoutes() http.Handler {
 
 	// Health check endpoint (public)
 	mux.HandleFunc("GET /health", healthCheck)
+
+	// Metrics endpoint
+	mux.Handle("GET /metrics", metrics.Handler())
 
 	// Setup auth middleware
 	authConfig := middleware.AuthConfig{
@@ -74,9 +80,20 @@ func (r *Router) SetupRoutes() http.Handler {
 	mux.Handle("POST /api/v1/journal-entries/{id}/reverse",
 		authMiddleware(middleware.RequirePermission("ledger:entry:reverse")(http.HandlerFunc(r.ledgerHandler.ReverseJournalEntry))))
 
-	// Apply CORS middleware
-	corsMiddleware := middleware.CORS(middleware.DefaultCORSConfig())
-	return corsMiddleware(mux)
+	// Apply middleware chain
+	handler := r.applyMiddleware(mux)
+	return handler
+}
+
+// applyMiddleware applies the middleware chain to the handler.
+func (r *Router) applyMiddleware(handler http.Handler) http.Handler {
+	// Apply metrics (outermost layer)
+	handler = r.metrics.Middleware("ledger")(handler)
+
+	// Apply CORS
+	handler = middleware.CORS(middleware.DefaultCORSConfig())(handler)
+
+	return handler
 }
 
 // healthCheck is a simple health check endpoint.

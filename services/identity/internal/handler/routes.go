@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/vnykmshr/nivo/services/identity/internal/service"
+	"github.com/vnykmshr/nivo/shared/metrics"
 	"github.com/vnykmshr/nivo/shared/middleware"
 )
 
@@ -11,6 +12,7 @@ import (
 type Router struct {
 	authHandler    *AuthHandler
 	authMiddleware *AuthMiddleware
+	metrics        *metrics.Collector
 }
 
 // NewRouter creates a new router with all handlers and middleware.
@@ -18,6 +20,7 @@ func NewRouter(authService *service.AuthService) *Router {
 	return &Router{
 		authHandler:    NewAuthHandler(authService),
 		authMiddleware: NewAuthMiddleware(authService),
+		metrics:        metrics.NewCollector("identity"),
 	}
 }
 
@@ -66,9 +69,23 @@ func (r *Router) SetupRoutes() http.Handler {
 	// Health check endpoint
 	mux.HandleFunc("GET /health", healthCheck)
 
-	// Apply CORS middleware
-	corsMiddleware := middleware.CORS(middleware.DefaultCORSConfig())
-	return corsMiddleware(mux)
+	// Metrics endpoint
+	mux.Handle("GET /metrics", metrics.Handler())
+
+	// Apply middleware chain
+	handler := r.applyMiddleware(mux)
+	return handler
+}
+
+// applyMiddleware applies the middleware chain to the handler.
+func (r *Router) applyMiddleware(handler http.Handler) http.Handler {
+	// Apply metrics (outermost layer)
+	handler = r.metrics.Middleware("identity")(handler)
+
+	// Apply CORS
+	handler = middleware.CORS(middleware.DefaultCORSConfig())(handler)
+
+	return handler
 }
 
 // healthCheck is a simple health check endpoint.

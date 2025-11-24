@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/vnykmshr/nivo/services/transaction/internal/handler"
+	"github.com/vnykmshr/nivo/shared/metrics"
 	"github.com/vnykmshr/nivo/shared/middleware"
 )
 
@@ -17,6 +18,9 @@ func SetupRoutes(transactionHandler *handler.TransactionHandler, jwtSecret strin
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"status":"healthy","service":"transaction"}`))
 	})
+
+	// Metrics endpoint
+	mux.Handle("GET /metrics", metrics.Handler())
 
 	// Setup auth middleware
 	authConfig := middleware.AuthConfig{
@@ -57,7 +61,11 @@ func SetupRoutes(transactionHandler *handler.TransactionHandler, jwtSecret strin
 
 	mux.Handle("POST /api/v1/transactions/{id}/reverse", moneyRateLimit(authMiddleware(reverseTransactionPerm(http.HandlerFunc(transactionHandler.ReverseTransaction)))))
 
-	// Apply CORS middleware
+	// Apply middleware chain
+	metricsCollector := metrics.NewCollector("transaction")
+	handler := metricsCollector.Middleware("transaction")(mux)
+
+	// Apply CORS
 	corsMiddleware := middleware.CORS(middleware.DefaultCORSConfig())
-	return corsMiddleware(mux)
+	return corsMiddleware(handler)
 }

@@ -5,18 +5,21 @@ import (
 
 	"github.com/vnykmshr/nivo/services/risk/internal/service"
 	"github.com/vnykmshr/nivo/shared/logger"
+	"github.com/vnykmshr/nivo/shared/metrics"
 	"github.com/vnykmshr/nivo/shared/middleware"
 )
 
 // Router handles HTTP routing for the Risk Service
 type Router struct {
 	riskHandler *RiskHandler
+	metrics     *metrics.Collector
 }
 
 // NewRouter creates a new router
 func NewRouter(riskService *service.RiskService) *Router {
 	return &Router{
 		riskHandler: NewRiskHandler(riskService),
+		metrics:     metrics.NewCollector("risk"),
 	}
 }
 
@@ -26,6 +29,9 @@ func (r *Router) SetupRoutes() http.Handler {
 
 	// Health check endpoint
 	mux.HandleFunc("GET /health", r.healthCheck)
+
+	// Metrics endpoint
+	mux.Handle("GET /metrics", metrics.Handler())
 
 	// Risk evaluation endpoint (called by transaction service)
 	mux.HandleFunc("POST /api/v1/risk/evaluate", r.riskHandler.EvaluateTransaction)
@@ -47,6 +53,7 @@ func (r *Router) SetupRoutes() http.Handler {
 
 	// Apply middleware using Chain
 	handler := middleware.Chain(mux,
+		r.metrics.Middleware("risk"),
 		middleware.RequestID(),
 		middleware.Logging(log),
 		middleware.CORS(middleware.DefaultCORSConfig()),

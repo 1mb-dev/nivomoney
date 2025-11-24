@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/vnykmshr/nivo/services/wallet/internal/handler"
+	"github.com/vnykmshr/nivo/shared/metrics"
 	"github.com/vnykmshr/nivo/shared/middleware"
 )
 
@@ -17,6 +18,9 @@ func SetupRoutes(walletHandler *handler.WalletHandler, jwtSecret string) http.Ha
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"status":"healthy","service":"wallet"}`))
 	})
+
+	// Metrics endpoint
+	mux.Handle("GET /metrics", metrics.Handler())
 
 	// Setup auth middleware
 	authConfig := middleware.AuthConfig{
@@ -48,7 +52,11 @@ func SetupRoutes(walletHandler *handler.WalletHandler, jwtSecret string) http.Ha
 	// User wallets listing
 	mux.Handle("GET /api/v1/users/{userId}/wallets", authMiddleware(readWalletPerm(http.HandlerFunc(walletHandler.ListUserWallets))))
 
-	// Apply CORS middleware
+	// Apply middleware chain
+	metricsCollector := metrics.NewCollector("wallet")
+	handler := metricsCollector.Middleware("wallet")(mux)
+
+	// Apply CORS
 	corsMiddleware := middleware.CORS(middleware.DefaultCORSConfig())
-	return corsMiddleware(mux)
+	return corsMiddleware(handler)
 }

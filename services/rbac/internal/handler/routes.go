@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/vnykmshr/nivo/shared/metrics"
 	"github.com/vnykmshr/nivo/shared/middleware"
 )
 
@@ -16,6 +17,9 @@ func SetupRoutes(rbacHandler *RBACHandler, jwtSecret string) http.Handler {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"status":"healthy","service":"rbac"}`))
 	})
+
+	// Metrics endpoint
+	mux.Handle("GET /metrics", metrics.Handler())
 
 	// Setup auth middleware
 	authConfig := middleware.AuthConfig{
@@ -72,7 +76,11 @@ func SetupRoutes(rbacHandler *RBACHandler, jwtSecret string) http.Handler {
 	mux.Handle("POST /api/v1/check-permission", authMiddleware(http.HandlerFunc(rbacHandler.CheckPermission)))
 	mux.Handle("POST /api/v1/check-permissions", authMiddleware(http.HandlerFunc(rbacHandler.CheckPermissions)))
 
-	// Apply CORS middleware
+	// Apply middleware chain
+	metricsCollector := metrics.NewCollector("rbac")
+	handler := metricsCollector.Middleware("rbac")(mux)
+
+	// Apply CORS
 	corsMiddleware := middleware.CORS(middleware.DefaultCORSConfig())
-	return corsMiddleware(mux)
+	return corsMiddleware(handler)
 }
