@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/vnykmshr/nivo/services/transaction/internal/models"
 	"github.com/vnykmshr/nivo/shared/errors"
@@ -17,12 +19,14 @@ type TransactionRepositoryInterface interface {
 // TransactionService handles business logic for transaction operations.
 type TransactionService struct {
 	transactionRepo TransactionRepositoryInterface
+	riskClient      *RiskClient
 }
 
 // NewTransactionService creates a new transaction service.
-func NewTransactionService(transactionRepo TransactionRepositoryInterface) *TransactionService {
+func NewTransactionService(transactionRepo TransactionRepositoryInterface, riskClient *RiskClient) *TransactionService {
 	return &TransactionService{
 		transactionRepo: transactionRepo,
+		riskClient:      riskClient,
 	}
 }
 
@@ -61,6 +65,12 @@ func (s *TransactionService) CreateTransfer(ctx context.Context, req *models.Cre
 
 	if createErr := s.transactionRepo.Create(ctx, transaction); createErr != nil {
 		return nil, createErr
+	}
+
+	// Evaluate risk for the transaction
+	if evalErr := s.evaluateTransactionRisk(ctx, transaction); evalErr != nil {
+		log.Printf("[transaction] Risk evaluation failed for transaction %s: %v", transaction.ID, evalErr)
+		// Continue processing even if risk evaluation fails (fail open for now)
 	}
 
 	// TODO: In production, trigger async processing:
@@ -204,4 +214,66 @@ func (s *TransactionService) ReverseTransaction(ctx context.Context, transaction
 	// 4. Mark original transaction as reversed
 
 	return reversalTx, nil
+}
+
+// evaluateTransactionRisk evaluates risk for a transaction using the Risk Service.
+func (s *TransactionService) evaluateTransactionRisk(ctx context.Context, transaction *models.Transaction) error {
+	if s.riskClient == nil {
+		log.Printf("[transaction] Risk client not configured, skipping risk evaluation")
+		return nil
+	}
+
+	// Extract user ID from wallet ownership (for now, use a placeholder)
+	// In production, you would fetch the wallet owner from the wallet service
+	userID := "unknown"
+
+	// Prepare risk evaluation request
+	riskReq := &RiskEvaluationRequest{
+		TransactionID:   transaction.ID,
+		UserID:          userID,
+		Amount:          transaction.Amount,
+		Currency:        string(transaction.Currency),
+		TransactionType: string(transaction.Type),
+	}
+
+	if transaction.SourceWalletID != nil {
+		riskReq.FromWalletID = *transaction.SourceWalletID
+	}
+	if transaction.DestinationWalletID != nil {
+		riskReq.ToWalletID = *transaction.DestinationWalletID
+	}
+
+	// Call risk service
+	result, err := s.riskClient.EvaluateTransaction(ctx, riskReq)
+	if err != nil {
+		return err
+	}
+
+	// Log risk evaluation result
+	log.Printf("[transaction] Risk evaluation for transaction %s: action=%s, score=%d, allowed=%v",
+		transaction.ID, result.Action, result.RiskScore, result.Allowed)
+
+	// Store risk information in transaction metadata
+	if transaction.Metadata == nil {
+		transaction.Metadata = make(map[string]string)
+	}
+	transaction.Metadata["risk_score"] = fmt.Sprintf("%d", result.RiskScore)
+	transaction.Metadata["risk_action"] = result.Action
+	transaction.Metadata["risk_event_id"] = result.EventID
+
+	if len(result.TriggeredRules) > 0 {
+		transaction.Metadata["risk_triggered_rules"] = fmt.Sprintf("%d", len(result.TriggeredRules))
+	}
+
+	// Handle risk actions
+	if !result.Allowed {
+		log.Printf("[transaction] Transaction %s BLOCKED by risk evaluation: %s", transaction.ID, result.Reason)
+		// In production, you would update the transaction status to failed
+		// For now, just log the blocking decision
+	} else if result.Action == "flag" {
+		log.Printf("[transaction] Transaction %s FLAGGED by risk evaluation: %s", transaction.ID, result.Reason)
+		// In production, you might notify compliance team or require manual review
+	}
+
+	return nil
 }

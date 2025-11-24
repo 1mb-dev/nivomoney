@@ -250,6 +250,7 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER:-nivo}:${POSTGRES_PASSWORD:-nivo_dev_password}@postgres:5432/${POSTGRES_DB:-nivo}?sslmode=disable
       MIGRATIONS_DIR: ./migrations
       JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      RISK_SERVICE_URL: http://risk-service:8085
       TIMEZONE: Asia/Kolkata
       DEFAULT_CURRENCY: INR
       COUNTRY_CODE: IN
@@ -261,6 +262,8 @@ services:
       wallet-service:
         condition: service_healthy
       ledger-service:
+        condition: service_healthy
+      risk-service:
         condition: service_healthy
     networks:
       - nivo-network

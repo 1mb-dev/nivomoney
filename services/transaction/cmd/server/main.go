@@ -54,8 +54,13 @@ func main() {
 	// Initialize repository layer
 	transactionRepo := repository.NewTransactionRepository(db.DB)
 
+	// Initialize Risk Service client
+	riskServiceURL := getEnvOrDefault("RISK_SERVICE_URL", "http://risk-service:8085")
+	riskClient := service.NewRiskClient(riskServiceURL)
+	log.Printf("[%s] Risk Service URL: %s", serviceName, riskServiceURL)
+
 	// Initialize service layer
-	transactionService := service.NewTransactionService(transactionRepo)
+	transactionService := service.NewTransactionService(transactionRepo, riskClient)
 
 	// Initialize handler layer
 	transactionHandler := handler.NewTransactionHandler(transactionService)
