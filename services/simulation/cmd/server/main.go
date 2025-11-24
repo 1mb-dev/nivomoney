@@ -1,0 +1,138 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/vnykmshr/nivo/services/simulation/internal/handler"
+	"github.com/vnykmshr/nivo/services/simulation/internal/service"
+	"github.com/vnykmshr/nivo/shared/config"
+	"github.com/vnykmshr/nivo/shared/database"
+)
+
+const (
+	serviceName = "simulation"
+	apiVersion  = "v1"
+)
+
+func main() {
+	// Load configuration
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("[%s] Failed to load configuration: %v", serviceName, err)
+	}
+
+	// Setup logging
+	log.Printf("[%s] Starting Simulation Engine Service...", serviceName)
+	log.Printf("[%s] Environment: %s", serviceName, cfg.Environment)
+	log.Printf("[%s] Port: %d", serviceName, cfg.ServicePort)
+
+	// Connect to database
+	db, err := database.NewFromURL(cfg.DatabaseURL)
+	if err != nil {
+		log.Fatalf("[%s] Failed to connect to database: %v", serviceName, err)
+	}
+	defer func() { _ = db.Close() }()
+
+	log.Printf("[%s] Connected to database successfully", serviceName)
+
+	// Get Gateway URL and admin token
+	gatewayURL := getEnvOrDefault("GATEWAY_URL", "http://gateway:8000")
+	adminToken := os.Getenv("ADMIN_TOKEN")
+	if adminToken == "" {
+		log.Printf("[%s] WARNING: ADMIN_TOKEN not set - simulation may fail", serviceName)
+	}
+
+	log.Printf("[%s] Gateway URL: %s", serviceName, gatewayURL)
+
+	// Initialize gateway client
+	gatewayClient := service.NewGatewayClient(gatewayURL, adminToken)
+
+	// Initialize simulation engine
+	simulationEngine := service.NewSimulationEngine(db.DB, gatewayClient)
+
+	// Initialize handler
+	simulationHandler := handler.NewSimulationHandler(simulationEngine)
+
+	// Setup routes
+	mux := http.NewServeMux()
+
+	// Health check
+	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"status":"healthy","service":"simulation"}`))
+	})
+
+	// Simulation control endpoints
+	mux.HandleFunc("GET /api/v1/simulation/status", simulationHandler.GetStatus)
+	mux.HandleFunc("POST /api/v1/simulation/start", simulationHandler.StartSimulation)
+	mux.HandleFunc("POST /api/v1/simulation/stop", simulationHandler.StopSimulation)
+
+	log.Printf("[%s] Routes configured", serviceName)
+
+	// Auto-start simulation if enabled
+	autoStart := getEnvOrDefault("AUTO_START_SIMULATION", "true")
+	if autoStart == "true" {
+		log.Printf("[%s] Auto-starting simulation...", serviceName)
+		go func() {
+			// Wait a bit for services to be ready
+			time.Sleep(10 * time.Second)
+			simulationEngine.Start(context.Background())
+		}()
+	}
+
+	// Create HTTP server
+	addr := fmt.Sprintf(":%d", cfg.ServicePort)
+	srv := &http.Server{
+		Addr:         addr,
+		Handler:      mux,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
+	// Start server in a goroutine
+	go func() {
+		log.Printf("[%s] Server listening on %s", serviceName, addr)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("[%s] Server failed to start: %v", serviceName, err)
+		}
+	}()
+
+	// Setup graceful shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+	// Wait for interrupt signal
+	<-quit
+	log.Printf("[%s] Shutting down server...", serviceName)
+
+	// Stop simulation
+	simulationEngine.Stop()
+
+	// Create shutdown context with timeout
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	// Shutdown server
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Printf("[%s] Server forced to shutdown: %v", serviceName, err)
+	}
+
+	log.Printf("[%s] Server stopped gracefully", serviceName)
+}
+
+// getEnvOrDefault returns the environment variable value or a default value.
+func getEnvOrDefault(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return defaultValue
+}

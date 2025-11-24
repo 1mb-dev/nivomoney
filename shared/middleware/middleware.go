@@ -50,3 +50,10 @@ func (rw *ResponseWriter) Write(b []byte) (int, error) {
 	rw.BytesWritten += n
 	return n, err
 }
+
+// Flush implements http.Flusher to support streaming responses like SSE.
+func (rw *ResponseWriter) Flush() {
+	if flusher, ok := rw.ResponseWriter.(http.Flusher); ok {
+		flusher.Flush()
+	}
+}

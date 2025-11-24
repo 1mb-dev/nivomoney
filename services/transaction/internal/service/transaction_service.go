@@ -7,6 +7,7 @@ import (
 
 	"github.com/vnykmshr/nivo/services/transaction/internal/models"
 	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/vnykmshr/nivo/shared/events"
 )
 
 // TransactionRepositoryInterface defines the interface for transaction repository operations.
@@ -20,13 +21,15 @@ type TransactionRepositoryInterface interface {
 type TransactionService struct {
 	transactionRepo TransactionRepositoryInterface
 	riskClient      *RiskClient
+	eventPublisher  *events.Publisher
 }
 
 // NewTransactionService creates a new transaction service.
-func NewTransactionService(transactionRepo TransactionRepositoryInterface, riskClient *RiskClient) *TransactionService {
+func NewTransactionService(transactionRepo TransactionRepositoryInterface, riskClient *RiskClient, eventPublisher *events.Publisher) *TransactionService {
 	return &TransactionService{
 		transactionRepo: transactionRepo,
 		riskClient:      riskClient,
+		eventPublisher:  eventPublisher,
 	}
 }
 
@@ -65,6 +68,19 @@ func (s *TransactionService) CreateTransfer(ctx context.Context, req *models.Cre
 
 	if createErr := s.transactionRepo.Create(ctx, transaction); createErr != nil {
 		return nil, createErr
+	}
+
+	// Publish transaction.created event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishTransactionEvent("transaction.created", transaction.ID, map[string]interface{}{
+			"type":                  string(transaction.Type),
+			"status":                string(transaction.Status),
+			"amount":                transaction.Amount,
+			"currency":              transaction.Currency,
+			"source_wallet_id":      transaction.SourceWalletID,
+			"destination_wallet_id": transaction.DestinationWalletID,
+			"description":           transaction.Description,
+		})
 	}
 
 	// Evaluate risk for the transaction
@@ -113,6 +129,18 @@ func (s *TransactionService) CreateDeposit(ctx context.Context, req *models.Crea
 		return nil, createErr
 	}
 
+	// Publish transaction.created event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishTransactionEvent("transaction.created", transaction.ID, map[string]interface{}{
+			"type":                  string(transaction.Type),
+			"status":                string(transaction.Status),
+			"amount":                transaction.Amount,
+			"currency":              transaction.Currency,
+			"destination_wallet_id": transaction.DestinationWalletID,
+			"description":           transaction.Description,
+		})
+	}
+
 	// TODO: Trigger async processing for deposit
 	// 1. Verify external payment received
 	// 2. Create ledger entry
@@ -149,6 +177,18 @@ func (s *TransactionService) CreateWithdrawal(ctx context.Context, req *models.C
 
 	if createErr := s.transactionRepo.Create(ctx, transaction); createErr != nil {
 		return nil, createErr
+	}
+
+	// Publish transaction.created event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishTransactionEvent("transaction.created", transaction.ID, map[string]interface{}{
+			"type":             string(transaction.Type),
+			"status":           string(transaction.Status),
+			"amount":           transaction.Amount,
+			"currency":         transaction.Currency,
+			"source_wallet_id": transaction.SourceWalletID,
+			"description":      transaction.Description,
+		})
 	}
 
 	// TODO: Trigger async processing for withdrawal

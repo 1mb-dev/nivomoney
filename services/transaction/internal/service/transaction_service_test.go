@@ -66,7 +66,7 @@ func setupTestService() (*TransactionService, *mockTransactionRepository) {
 	repo := &mockTransactionRepository{
 		transactions: make(map[string]*models.Transaction),
 	}
-	service := NewTransactionService(repo, nil) // nil riskClient for tests
+	service := NewTransactionService(repo, nil, nil) // nil riskClient and eventPublisher for tests
 	return service, repo
 }
 

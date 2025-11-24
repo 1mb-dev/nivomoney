@@ -16,6 +16,7 @@ import (
 	"github.com/vnykmshr/nivo/services/transaction/internal/service"
 	"github.com/vnykmshr/nivo/shared/config"
 	"github.com/vnykmshr/nivo/shared/database"
+	"github.com/vnykmshr/nivo/shared/events"
 )
 
 const (
@@ -59,8 +60,16 @@ func main() {
 	riskClient := service.NewRiskClient(riskServiceURL)
 	log.Printf("[%s] Risk Service URL: %s", serviceName, riskServiceURL)
 
+	// Initialize event publisher
+	gatewayURL := getEnvOrDefault("GATEWAY_URL", "http://gateway:8000")
+	eventPublisher := events.NewPublisher(events.PublishConfig{
+		GatewayURL:  gatewayURL,
+		ServiceName: serviceName,
+	})
+	log.Printf("[%s] Event publisher initialized (Gateway: %s)", serviceName, gatewayURL)
+
 	// Initialize service layer
-	transactionService := service.NewTransactionService(transactionRepo, riskClient)
+	transactionService := service.NewTransactionService(transactionRepo, riskClient, eventPublisher)
 
 	// Initialize handler layer
 	transactionHandler := handler.NewTransactionHandler(transactionService)

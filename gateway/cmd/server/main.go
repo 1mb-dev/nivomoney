@@ -10,9 +10,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/vnykmshr/nivo/gateway/internal/handler"
 	"github.com/vnykmshr/nivo/gateway/internal/proxy"
 	"github.com/vnykmshr/nivo/gateway/internal/router"
 	"github.com/vnykmshr/nivo/shared/config"
+	"github.com/vnykmshr/nivo/shared/events"
 	"github.com/vnykmshr/nivo/shared/logger"
 )
 
@@ -47,8 +49,17 @@ func main() {
 	gateway := proxy.NewGateway(registry)
 	log.Printf("[%s] Gateway proxy initialized", serviceName)
 
+	// Initialize SSE broker
+	broker := events.NewBroker()
+	broker.Start()
+	log.Printf("[%s] SSE event broker started", serviceName)
+
+	// Initialize SSE handler
+	sseHandler := handler.NewSSEHandler(broker, appLogger)
+	log.Printf("[%s] SSE handler initialized", serviceName)
+
 	// Initialize router
-	apiRouter := router.NewRouter(gateway, appLogger)
+	apiRouter := router.NewRouter(gateway, sseHandler, appLogger)
 	httpHandler := apiRouter.SetupRoutes()
 	log.Printf("[%s] Routes configured", serviceName)
 

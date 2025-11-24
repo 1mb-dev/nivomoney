@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/vnykmshr/nivo/gateway/internal/handler"
 	"github.com/vnykmshr/nivo/gateway/internal/middleware"
 	"github.com/vnykmshr/nivo/gateway/internal/proxy"
 	"github.com/vnykmshr/nivo/shared/logger"
@@ -14,24 +15,26 @@ import (
 
 // Router configures HTTP routes for the API Gateway.
 type Router struct {
-	gateway   *proxy.Gateway
-	validator *middleware.JWTValidator
-	logger    *logger.Logger
-	metrics   *metrics.Collector
+	gateway    *proxy.Gateway
+	sseHandler *handler.SSEHandler
+	validator  *middleware.JWTValidator
+	logger     *logger.Logger
+	metrics    *metrics.Collector
 }
 
 // NewRouter creates a new router with all handlers and middleware.
-func NewRouter(gateway *proxy.Gateway, log *logger.Logger) *Router {
+func NewRouter(gateway *proxy.Gateway, sseHandler *handler.SSEHandler, log *logger.Logger) *Router {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
 		panic("JWT_SECRET environment variable is required")
 	}
 
 	return &Router{
-		gateway:   gateway,
-		validator: middleware.NewJWTValidator(jwtSecret),
-		logger:    log,
-		metrics:   metrics.NewCollector("gateway"),
+		gateway:    gateway,
+		sseHandler: sseHandler,
+		validator:  middleware.NewJWTValidator(jwtSecret),
+		logger:     log,
+		metrics:    metrics.NewCollector("gateway"),
 	}
 }
 
@@ -50,6 +53,11 @@ func (r *Router) SetupRoutes() http.Handler {
 	// Authentication endpoints - these should go directly to identity service
 	mux.HandleFunc("POST /api/v1/identity/auth/register", r.gateway.ProxyRequest)
 	mux.HandleFunc("POST /api/v1/identity/auth/login", r.gateway.ProxyRequest)
+
+	// SSE endpoints (authentication optional, can subscribe to public events)
+	mux.HandleFunc("GET /api/v1/events", r.sseHandler.HandleEvents)
+	mux.HandleFunc("GET /api/v1/events/stats", r.sseHandler.HandleStats)
+	mux.HandleFunc("POST /api/v1/events/broadcast", r.sseHandler.HandleBroadcast)
 
 	// Protected routes (authentication required)
 	// All other API routes require authentication

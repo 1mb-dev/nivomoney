@@ -12,6 +12,7 @@ import (
 
 	"github.com/vnykmshr/nivo/services/identity/internal/models"
 	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/vnykmshr/nivo/shared/events"
 	sharedModels "github.com/vnykmshr/nivo/shared/models"
 )
 
@@ -47,12 +48,13 @@ type RBACClientInterface interface {
 
 // AuthService handles authentication and authorization.
 type AuthService struct {
-	userRepo    UserRepositoryInterface
-	kycRepo     KYCRepositoryInterface
-	sessionRepo SessionRepositoryInterface
-	rbacClient  RBACClientInterface
-	jwtSecret   string
-	jwtExpiry   time.Duration
+	userRepo       UserRepositoryInterface
+	kycRepo        KYCRepositoryInterface
+	sessionRepo    SessionRepositoryInterface
+	rbacClient     RBACClientInterface
+	jwtSecret      string
+	jwtExpiry      time.Duration
+	eventPublisher *events.Publisher
 }
 
 // NewAuthService creates a new authentication service.
@@ -63,14 +65,16 @@ func NewAuthService(
 	rbacClient RBACClientInterface,
 	jwtSecret string,
 	jwtExpiry time.Duration,
+	eventPublisher *events.Publisher,
 ) *AuthService {
 	return &AuthService{
-		userRepo:    userRepo,
-		kycRepo:     kycRepo,
-		sessionRepo: sessionRepo,
-		rbacClient:  rbacClient,
-		jwtSecret:   jwtSecret,
-		jwtExpiry:   jwtExpiry,
+		userRepo:       userRepo,
+		kycRepo:        kycRepo,
+		sessionRepo:    sessionRepo,
+		rbacClient:     rbacClient,
+		jwtSecret:      jwtSecret,
+		jwtExpiry:      jwtExpiry,
+		eventPublisher: eventPublisher,
 	}
 }
 
@@ -110,6 +114,16 @@ func (s *AuthService) Register(ctx context.Context, req *models.CreateUserReques
 	if err := s.rbacClient.AssignDefaultRole(ctx, user.ID); err != nil {
 		// Log error but continue (RBAC is supplementary to core auth)
 		fmt.Printf("[identity] Warning: Failed to assign default role to user %s: %v\n", user.ID, err)
+	}
+
+	// Publish user.registered event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishUserEvent("user.registered", user.ID, map[string]interface{}{
+			"email":     user.Email,
+			"phone":     user.Phone,
+			"full_name": user.FullName,
+			"status":    string(user.Status),
+		})
 	}
 
 	// Sanitize before returning
@@ -292,6 +306,15 @@ func (s *AuthService) UpdateKYC(ctx context.Context, userID string, req *models.
 		return nil, err
 	}
 
+	// Publish user.kyc_updated event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishUserEvent("user.kyc_updated", userID, map[string]interface{}{
+			"kyc_status":    string(kyc.Status),
+			"date_of_birth": kyc.DateOfBirth,
+			"address":       kyc.Address,
+		})
+	}
+
 	// NOTE: If user status is pending, keep it pending until KYC is verified
 	// In a real system, this would trigger a KYC verification workflow
 
@@ -305,9 +328,25 @@ func (s *AuthService) VerifyKYC(ctx context.Context, userID string) *errors.Erro
 		return err
 	}
 
+	// Publish user.kyc_updated event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishUserEvent("user.kyc_updated", userID, map[string]interface{}{
+			"kyc_status": string(models.KYCStatusVerified),
+		})
+	}
+
 	// Update user status to active
 	if err := s.userRepo.UpdateStatus(ctx, userID, models.UserStatusActive); err != nil {
 		return err
+	}
+
+	// Publish user.status_changed event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishUserEvent("user.status_changed", userID, map[string]interface{}{
+			"status":     string(models.UserStatusActive),
+			"previous":   string(models.UserStatusPending),
+			"kyc_status": string(models.KYCStatusVerified),
+		})
 	}
 
 	return nil
@@ -315,7 +354,19 @@ func (s *AuthService) VerifyKYC(ctx context.Context, userID string) *errors.Erro
 
 // RejectKYC rejects a user's KYC (admin operation).
 func (s *AuthService) RejectKYC(ctx context.Context, userID string, reason string) *errors.Error {
-	return s.kycRepo.UpdateStatus(ctx, userID, models.KYCStatusRejected, reason)
+	if err := s.kycRepo.UpdateStatus(ctx, userID, models.KYCStatusRejected, reason); err != nil {
+		return err
+	}
+
+	// Publish user.kyc_updated event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishUserEvent("user.kyc_updated", userID, map[string]interface{}{
+			"kyc_status":       string(models.KYCStatusRejected),
+			"rejection_reason": reason,
+		})
+	}
+
+	return nil
 }
 
 // hashPassword hashes a password using bcrypt.

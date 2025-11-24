@@ -213,6 +213,13 @@ func (rw *responseWriter) Write(b []byte) (int, error) {
 	return n, err
 }
 
+// Flush implements http.Flusher to support streaming responses like SSE.
+func (rw *responseWriter) Flush() {
+	if flusher, ok := rw.ResponseWriter.(http.Flusher); ok {
+		flusher.Flush()
+	}
+}
+
 // RecordTransaction records a transaction metric
 func (c *Collector) RecordTransaction(serviceName, txType, status string, amountPaise int64) {
 	c.TransactionsTotal.WithLabelValues(serviceName, txType, status).Inc()

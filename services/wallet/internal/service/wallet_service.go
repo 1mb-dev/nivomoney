@@ -5,6 +5,7 @@ import (
 
 	"github.com/vnykmshr/nivo/services/wallet/internal/models"
 	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/vnykmshr/nivo/shared/events"
 )
 
 // WalletRepositoryInterface defines the interface for wallet repository operations.
@@ -19,13 +20,15 @@ type WalletRepositoryInterface interface {
 
 // WalletService handles business logic for wallet operations.
 type WalletService struct {
-	walletRepo WalletRepositoryInterface
+	walletRepo     WalletRepositoryInterface
+	eventPublisher *events.Publisher
 }
 
 // NewWalletService creates a new wallet service.
-func NewWalletService(walletRepo WalletRepositoryInterface) *WalletService {
+func NewWalletService(walletRepo WalletRepositoryInterface, eventPublisher *events.Publisher) *WalletService {
 	return &WalletService{
-		walletRepo: walletRepo,
+		walletRepo:     walletRepo,
+		eventPublisher: eventPublisher,
 	}
 }
 
@@ -55,6 +58,19 @@ func (s *WalletService) CreateWallet(ctx context.Context, req *models.CreateWall
 
 	if createErr := s.walletRepo.Create(ctx, wallet); createErr != nil {
 		return nil, createErr
+	}
+
+	// Publish wallet.created event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishWalletEvent("wallet.created", wallet.ID, map[string]interface{}{
+			"user_id":           wallet.UserID,
+			"type":              string(wallet.Type),
+			"currency":          string(wallet.Currency),
+			"status":            string(wallet.Status),
+			"balance":           wallet.Balance,
+			"available_balance": wallet.AvailableBalance,
+			"ledger_account_id": wallet.LedgerAccountID,
+		})
 	}
 
 	return wallet, nil
@@ -88,8 +104,26 @@ func (s *WalletService) ActivateWallet(ctx context.Context, walletID string) (*m
 		return nil, updateErr
 	}
 
-	// Return updated wallet
-	return s.walletRepo.GetByID(ctx, walletID)
+	// Get updated wallet
+	updatedWallet, err := s.walletRepo.GetByID(ctx, walletID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Publish wallet.status_changed event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishWalletEvent("wallet.status_changed", updatedWallet.ID, map[string]interface{}{
+			"user_id":           updatedWallet.UserID,
+			"currency":          string(updatedWallet.Currency),
+			"old_status":        string(models.WalletStatusInactive),
+			"new_status":        string(updatedWallet.Status),
+			"balance":           updatedWallet.Balance,
+			"available_balance": updatedWallet.AvailableBalance,
+			"action":            "activated",
+		})
+	}
+
+	return updatedWallet, nil
 }
 
 // FreezeWallet freezes a wallet (for compliance or security reasons).
@@ -110,10 +144,27 @@ func (s *WalletService) FreezeWallet(ctx context.Context, walletID, reason strin
 		return nil, updateErr
 	}
 
-	// TODO: Log freeze action with reason
+	// Get updated wallet
+	updatedWallet, err := s.walletRepo.GetByID(ctx, walletID)
+	if err != nil {
+		return nil, err
+	}
 
-	// Return updated wallet
-	return s.walletRepo.GetByID(ctx, walletID)
+	// Publish wallet.status_changed event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishWalletEvent("wallet.status_changed", updatedWallet.ID, map[string]interface{}{
+			"user_id":           updatedWallet.UserID,
+			"currency":          string(updatedWallet.Currency),
+			"old_status":        string(models.WalletStatusActive),
+			"new_status":        string(updatedWallet.Status),
+			"balance":           updatedWallet.Balance,
+			"available_balance": updatedWallet.AvailableBalance,
+			"action":            "frozen",
+			"reason":            reason,
+		})
+	}
+
+	return updatedWallet, nil
 }
 
 // UnfreezeWallet unfreezes a wallet.
@@ -134,8 +185,26 @@ func (s *WalletService) UnfreezeWallet(ctx context.Context, walletID string) (*m
 		return nil, updateErr
 	}
 
-	// Return updated wallet
-	return s.walletRepo.GetByID(ctx, walletID)
+	// Get updated wallet
+	updatedWallet, err := s.walletRepo.GetByID(ctx, walletID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Publish wallet.status_changed event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishWalletEvent("wallet.status_changed", updatedWallet.ID, map[string]interface{}{
+			"user_id":           updatedWallet.UserID,
+			"currency":          string(updatedWallet.Currency),
+			"old_status":        string(models.WalletStatusFrozen),
+			"new_status":        string(updatedWallet.Status),
+			"balance":           updatedWallet.Balance,
+			"available_balance": updatedWallet.AvailableBalance,
+			"action":            "unfrozen",
+		})
+	}
+
+	return updatedWallet, nil
 }
 
 // CloseWallet closes a wallet permanently.
@@ -156,13 +225,35 @@ func (s *WalletService) CloseWallet(ctx context.Context, walletID, reason string
 		return nil, errors.BadRequest("cannot close wallet with non-zero balance")
 	}
 
+	// Store old status before closing
+	oldStatus := wallet.Status
+
 	// Close wallet
 	if closeErr := s.walletRepo.Close(ctx, walletID, reason); closeErr != nil {
 		return nil, closeErr
 	}
 
-	// Return updated wallet
-	return s.walletRepo.GetByID(ctx, walletID)
+	// Get updated wallet
+	updatedWallet, err := s.walletRepo.GetByID(ctx, walletID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Publish wallet.status_changed event
+	if s.eventPublisher != nil {
+		s.eventPublisher.PublishWalletEvent("wallet.status_changed", updatedWallet.ID, map[string]interface{}{
+			"user_id":           updatedWallet.UserID,
+			"currency":          string(updatedWallet.Currency),
+			"old_status":        string(oldStatus),
+			"new_status":        string(updatedWallet.Status),
+			"balance":           updatedWallet.Balance,
+			"available_balance": updatedWallet.AvailableBalance,
+			"action":            "closed",
+			"reason":            reason,
+		})
+	}
+
+	return updatedWallet, nil
 }
 
 // GetWalletBalance retrieves the balance of a wallet.

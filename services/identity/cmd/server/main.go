@@ -15,6 +15,7 @@ import (
 	"github.com/vnykmshr/nivo/services/identity/internal/service"
 	"github.com/vnykmshr/nivo/shared/config"
 	"github.com/vnykmshr/nivo/shared/database"
+	"github.com/vnykmshr/nivo/shared/events"
 )
 
 const (
@@ -59,13 +60,21 @@ func main() {
 	rbacURL := getEnvOrDefault("RBAC_SERVICE_URL", "http://rbac-service:8082")
 	rbacClient := service.NewRBACClient(rbacURL)
 
+	// Initialize event publisher
+	gatewayURL := getEnvOrDefault("GATEWAY_URL", "http://gateway:8000")
+	eventPublisher := events.NewPublisher(events.PublishConfig{
+		GatewayURL:  gatewayURL,
+		ServiceName: "identity",
+	})
+	log.Printf("[%s] Event publisher initialized (Gateway: %s)", serviceName, gatewayURL)
+
 	// Initialize services
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
 		log.Fatalf("[%s] JWT_SECRET environment variable is required and must not be empty", serviceName)
 	}
 	jwtExpiry := 24 * time.Hour // 24 hours
-	authService := service.NewAuthService(userRepo, kycRepo, sessionRepo, rbacClient, jwtSecret, jwtExpiry)
+	authService := service.NewAuthService(userRepo, kycRepo, sessionRepo, rbacClient, jwtSecret, jwtExpiry, eventPublisher)
 
 	// Initialize router
 	router := handler.NewRouter(authService)

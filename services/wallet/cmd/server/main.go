@@ -16,6 +16,7 @@ import (
 	"github.com/vnykmshr/nivo/services/wallet/internal/service"
 	"github.com/vnykmshr/nivo/shared/config"
 	"github.com/vnykmshr/nivo/shared/database"
+	"github.com/vnykmshr/nivo/shared/events"
 )
 
 const (
@@ -54,8 +55,16 @@ func main() {
 	// Initialize repository layer
 	walletRepo := repository.NewWalletRepository(db.DB)
 
+	// Initialize event publisher
+	gatewayURL := getEnvOrDefault("GATEWAY_URL", "http://gateway:8000")
+	eventPublisher := events.NewPublisher(events.PublishConfig{
+		GatewayURL:  gatewayURL,
+		ServiceName: serviceName,
+	})
+	log.Printf("[%s] Event publisher initialized (Gateway: %s)", serviceName, gatewayURL)
+
 	// Initialize service layer
-	walletService := service.NewWalletService(walletRepo)
+	walletService := service.NewWalletService(walletRepo, eventPublisher)
 
 	// Initialize handler layer
 	walletHandler := handler.NewWalletHandler(walletService)
