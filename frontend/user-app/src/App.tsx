@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
+import { SendMoney } from './pages/SendMoney';
+import { Deposit } from './pages/Deposit';
+import { Withdraw } from './pages/Withdraw';
 import { useAuthStore } from './stores/authStore';
 
 // Protected Route Component
@@ -26,6 +29,30 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/send"
+          element={
+            <ProtectedRoute>
+              <SendMoney />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/deposit"
+          element={
+            <ProtectedRoute>
+              <Deposit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/withdraw"
+          element={
+            <ProtectedRoute>
+              <Withdraw />
             </ProtectedRoute>
           }
         />

@@ -128,13 +128,22 @@ export function Dashboard() {
             <div className="mb-8">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <button className="btn-primary py-4 text-lg">
+                <button
+                  onClick={() => window.location.href = '/send'}
+                  className="btn-primary py-4 text-lg"
+                >
                   💸 Send Money
                 </button>
-                <button className="btn-primary py-4 text-lg">
+                <button
+                  onClick={() => window.location.href = '/deposit'}
+                  className="btn-primary py-4 text-lg"
+                >
                   💰 Deposit
                 </button>
-                <button className="btn-primary py-4 text-lg">
+                <button
+                  onClick={() => window.location.href = '/withdraw'}
+                  className="btn-primary py-4 text-lg"
+                >
                   🏧 Withdraw
                 </button>
               </div>
