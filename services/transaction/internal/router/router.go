@@ -65,6 +65,9 @@ func SetupRoutes(transactionHandler *handler.TransactionHandler, jwtSecret strin
 	metricsCollector := metrics.NewCollector("transaction")
 	handler := metricsCollector.Middleware("transaction")(mux)
 
+	// Apply request ID
+	handler = middleware.RequestID()(handler)
+
 	// Apply CORS
 	corsMiddleware := middleware.CORS(middleware.DefaultCORSConfig())
 	return corsMiddleware(handler)

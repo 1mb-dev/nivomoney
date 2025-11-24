@@ -90,6 +90,9 @@ func (r *Router) applyMiddleware(handler http.Handler) http.Handler {
 	// Apply metrics (outermost layer)
 	handler = r.metrics.Middleware("ledger")(handler)
 
+	// Apply request ID generation/extraction
+	handler = middleware.RequestID()(handler)
+
 	// Apply CORS
 	handler = middleware.CORS(middleware.DefaultCORSConfig())(handler)
 

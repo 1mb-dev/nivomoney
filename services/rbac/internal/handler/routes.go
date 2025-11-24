@@ -80,6 +80,9 @@ func SetupRoutes(rbacHandler *RBACHandler, jwtSecret string) http.Handler {
 	metricsCollector := metrics.NewCollector("rbac")
 	handler := metricsCollector.Middleware("rbac")(mux)
 
+	// Apply request ID
+	handler = middleware.RequestID()(handler)
+
 	// Apply CORS
 	corsMiddleware := middleware.CORS(middleware.DefaultCORSConfig())
 	return corsMiddleware(handler)
