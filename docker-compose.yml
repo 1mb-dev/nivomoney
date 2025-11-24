@@ -270,6 +270,34 @@ services:
       timeout: 5s
       retries: 5
 
+  # Risk Service - Risk evaluation and fraud detection
+  risk-service:
+    build:
+      context: .
+      dockerfile: services/risk/Dockerfile
+    container_name: nivo-risk
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: 8085
+      ENVIRONMENT: development
+      DATABASE_URL: postgres://${POSTGRES_USER:-nivo}:${POSTGRES_PASSWORD:-nivo_dev_password}@postgres:5432/${POSTGRES_DB:-nivo}?sslmode=disable
+      MIGRATIONS_DIR: ./migrations
+      TIMEZONE: Asia/Kolkata
+      DEFAULT_CURRENCY: INR
+      COUNTRY_CODE: IN
+    ports:
+      - "${RISK_PORT:-8085}:8085"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nivo-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8085/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
   # API Gateway - Unified entry point for all services
   gateway:
     build:
@@ -287,6 +315,7 @@ services:
       RBAC_SERVICE_URL: http://rbac-service:8082
       WALLET_SERVICE_URL: http://wallet-service:8083
       TRANSACTION_SERVICE_URL: http://transaction-service:8084
+      RISK_SERVICE_URL: http://risk-service:8085
     ports:
       - "${GATEWAY_PORT:-8000}:8000"
     depends_on:
