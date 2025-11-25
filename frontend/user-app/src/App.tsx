@@ -5,6 +5,7 @@ import { Dashboard } from './pages/Dashboard';
 import { SendMoney } from './pages/SendMoney';
 import { Deposit } from './pages/Deposit';
 import { Withdraw } from './pages/Withdraw';
+import LandingPage from './pages/LandingPage';
 import { useAuthStore } from './stores/authStore';
 
 // Protected Route Component
@@ -56,7 +57,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<LandingPage />} />
       </Routes>
     </BrowserRouter>
   );
