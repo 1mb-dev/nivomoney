@@ -109,7 +109,7 @@ func main() {
 // runMigrations runs database migrations for the RBAC Service.
 func runMigrations(db *database.DB, cfg *config.Config) error {
 	// Get migrations directory path
-	migrationsDir := getEnvOrDefault("MIGRATIONS_DIR", "./services/rbac/migrations")
+	migrationsDir := getEnvOrDefault("MIGRATIONS_DIR", "./migrations")
 
 	// Check if migrations directory exists
 	if _, err := os.Stat(migrationsDir); os.IsNotExist(err) {

@@ -102,7 +102,7 @@ func main() {
 // runMigrations runs database migrations for the Risk Service.
 func runMigrations(db *database.DB, cfg *config.Config) error {
 	// Get migrations directory path
-	migrationsDir := getEnvOrDefault("MIGRATIONS_DIR", "./services/risk/migrations")
+	migrationsDir := getEnvOrDefault("MIGRATIONS_DIR", "./migrations")
 
 	// Check if migrations directory exists
 	if _, err := os.Stat(migrationsDir); os.IsNotExist(err) {

@@ -150,7 +150,7 @@ create_wallet() {
             \"currency\": \"$currency\"
         }")
 
-    local wallet_id=$(echo "$response" | jq -r '.wallet.id // .id // empty')
+    local wallet_id=$(echo "$response" | jq -r '.data.id // empty')
 
     if [ -z "$wallet_id" ] || [ "$wallet_id" = "null" ]; then
         log_error "Failed to create wallet: $response"
@@ -179,7 +179,7 @@ make_deposit() {
             \"description\": \"$description\"
         }")
 
-    local txn_id=$(echo "$response" | jq -r '.transaction.id // .id // empty')
+    local txn_id=$(echo "$response" | jq -r '.data.id // empty')
 
     if [ -z "$txn_id" ] || [ "$txn_id" = "null" ]; then
         log_error "Failed to make deposit: $response"
@@ -211,7 +211,7 @@ make_transfer() {
             \"description\": \"$description\"
         }")
 
-    local txn_id=$(echo "$response" | jq -r '.transaction.id // .id // empty')
+    local txn_id=$(echo "$response" | jq -r '.data.id // empty')
 
     if [ -z "$txn_id" ] || [ "$txn_id" = "null" ]; then
         log_error "Failed to make transfer: $response"
