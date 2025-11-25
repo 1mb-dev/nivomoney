@@ -23,6 +23,7 @@ type UserRepositoryInterface interface {
 	GetByID(ctx context.Context, id string) (*models.User, *errors.Error)
 	Update(ctx context.Context, user *models.User) *errors.Error
 	UpdateStatus(ctx context.Context, userID string, status models.UserStatus) *errors.Error
+	Delete(ctx context.Context, userID string) *errors.Error
 }
 
 // KYCRepositoryInterface defines the interface for KYC repository operations.
@@ -110,10 +111,12 @@ func (s *AuthService) Register(ctx context.Context, req *models.CreateUserReques
 	}
 
 	// Assign default "user" role in RBAC service
-	// Note: This is non-critical, so we log errors but don't fail registration
+	// This is now required - registration fails if role assignment fails
 	if err := s.rbacClient.AssignDefaultRole(ctx, user.ID); err != nil {
-		// Log error but continue (RBAC is supplementary to core auth)
-		fmt.Printf("[identity] Warning: Failed to assign default role to user %s: %v\n", user.ID, err)
+		// Delete the user since role assignment failed (cleanup partial state)
+		_ = s.userRepo.Delete(ctx, user.ID)
+		fmt.Printf("[identity] Error: Failed to assign default role to user %s: %v\n", user.ID, err)
+		return nil, errors.Internal("failed to complete user registration")
 	}
 
 	// Publish user.registered event

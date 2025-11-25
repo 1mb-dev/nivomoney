@@ -342,6 +342,34 @@ func (h *RBACHandler) AssignRoleToUser(w http.ResponseWriter, r *http.Request) {
 	response.Success(w, http.StatusCreated, userRole)
 }
 
+// AssignDefaultRoleInternal handles POST /internal/v1/users/{userId}/assign-default-role
+// This is an internal endpoint for service-to-service communication (no auth required).
+func (h *RBACHandler) AssignDefaultRoleInternal(w http.ResponseWriter, r *http.Request) {
+	userID := r.PathValue("userId")
+	if userID == "" {
+		response.Error(w, errors.BadRequest("user ID is required"))
+		return
+	}
+
+	// Hardcoded default "user" role ID from seed data
+	const defaultUserRoleID = "00000000-0000-0000-0000-000000000001"
+
+	// Create assignment request
+	req := models.AssignRoleToUserRequest{
+		UserID: userID,
+		RoleID: defaultUserRoleID,
+	}
+
+	// Assign role (no assignedBy for internal service calls)
+	userRole, assignErr := h.service.AssignRoleToUser(r.Context(), &req, nil)
+	if assignErr != nil {
+		response.Error(w, assignErr)
+		return
+	}
+
+	response.Success(w, http.StatusCreated, userRole)
+}
+
 // RemoveRoleFromUser handles DELETE /api/v1/users/{userId}/roles/{roleId}
 func (h *RBACHandler) RemoveRoleFromUser(w http.ResponseWriter, r *http.Request) {
 	userID := r.PathValue("userId")

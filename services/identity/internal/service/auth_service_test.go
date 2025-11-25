@@ -76,6 +76,10 @@ func (m *mockUserRepository) UpdateStatus(ctx context.Context, userID string, st
 	return nil
 }
 
+func (m *mockUserRepository) Delete(ctx context.Context, userID string) *errors.Error {
+	return m.UpdateStatus(ctx, userID, models.UserStatusClosed)
+}
+
 type mockKYCRepository struct {
 	kycData         map[string]*models.KYCInfo
 	getByUserIDFunc func(ctx context.Context, userID string) (*models.KYCInfo, *errors.Error)

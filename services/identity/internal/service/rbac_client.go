@@ -122,42 +122,24 @@ func (c *RBACClient) AssignRoleToUser(ctx context.Context, userID, roleID string
 
 // AssignDefaultRole assigns the default "user" role to a newly registered user.
 func (c *RBACClient) AssignDefaultRole(ctx context.Context, userID string) error {
-	// First, get the "user" role ID
-	url := fmt.Sprintf("%s/api/v1/roles", c.baseURL)
+	// Use internal endpoint (no authentication required) for service-to-service communication
+	url := fmt.Sprintf("%s/internal/v1/users/%s/assign-default-role", c.baseURL, userID)
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)
 	}
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("failed to fetch roles: %w", err)
+		return fmt.Errorf("failed to call RBAC service: %w", err)
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	var envelope struct {
-		Success bool       `json:"success"`
-		Data    []RoleInfo `json:"data"`
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		respBody, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("RBAC service returned %d: %s", resp.StatusCode, string(respBody))
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(&envelope); err != nil {
-		return fmt.Errorf("failed to decode roles: %w", err)
-	}
-
-	// Find the "user" role
-	var userRoleID string
-	for _, role := range envelope.Data {
-		if role.Name == "user" {
-			userRoleID = role.ID
-			break
-		}
-	}
-
-	if userRoleID == "" {
-		return fmt.Errorf("default 'user' role not found in RBAC service")
-	}
-
-	// Assign the role
-	return c.AssignRoleToUser(ctx, userID, userRoleID)
+	return nil
 }
