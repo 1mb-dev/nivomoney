@@ -1,6 +1,6 @@
-# Nivo User Frontend
+# Nivo Money User Frontend
 
-Modern, responsive React frontend for the Nivo digital banking platform.
+Modern, responsive React frontend for the Nivo Money digital banking platform.
 
 ## Tech Stack
 

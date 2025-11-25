@@ -98,7 +98,7 @@ export function SendMoney() {
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className="text-xl font-bold text-primary-600">Nivo</h1>
+            <h1 className="text-xl font-bold text-primary-600">Nivo Money</h1>
             <button onClick={() => navigate('/dashboard')} className="btn-secondary">
               Back to Dashboard
             </button>
