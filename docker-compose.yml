@@ -358,6 +358,37 @@ services:
       timeout: 5s
       retries: 5
 
+  # Notification Service - Handles all outbound notifications (simulation engine)
+  notification-service:
+    build:
+      context: .
+      dockerfile: services/notification/Dockerfile
+    container_name: nivo-notification
+    restart: unless-stopped
+    environment:
+      SERVICE_PORT: 8087
+      ENVIRONMENT: development
+      DATABASE_URL: postgres://${POSTGRES_USER:-nivo}:${POSTGRES_PASSWORD:-nivo_dev_password}@postgres:5432/${POSTGRES_DB:-nivo}?sslmode=disable
+      MIGRATIONS_DIR: ./migrations
+      # Simulation configuration
+      SIM_DELIVERY_DELAY_MS: 1000
+      SIM_FINAL_DELAY_MS: 2000
+      SIM_FAILURE_RATE_PERCENT: 10.0
+      SIM_MAX_RETRY_ATTEMPTS: 3
+      SIM_RETRY_DELAY_MS: 2000
+    ports:
+      - "${NOTIFICATION_PORT:-8087}:8087"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nivo-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8087/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
   # API Gateway - Unified entry point for all services
   gateway:
     build:
@@ -376,6 +407,7 @@ services:
       WALLET_SERVICE_URL: http://wallet-service:8083
       TRANSACTION_SERVICE_URL: http://transaction-service:8084
       RISK_SERVICE_URL: http://risk-service:8085
+      NOTIFICATION_SERVICE_URL: http://notification-service:8087
     ports:
       - "${GATEWAY_PORT:-8000}:8000"
     depends_on:
@@ -388,6 +420,8 @@ services:
       wallet-service:
         condition: service_healthy
       transaction-service:
+        condition: service_healthy
+      notification-service:
         condition: service_healthy
     networks:
       - nivo-network
