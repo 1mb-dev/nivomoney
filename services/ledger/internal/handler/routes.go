@@ -80,6 +80,13 @@ func (r *Router) SetupRoutes() http.Handler {
 	mux.Handle("POST /api/v1/journal-entries/{id}/reverse",
 		authMiddleware(middleware.RequirePermission("ledger:entry:reverse")(http.HandlerFunc(r.ledgerHandler.ReverseJournalEntry))))
 
+	// ========================================================================
+	// Internal Endpoints (No Authentication - Service-to-Service Only)
+	// ========================================================================
+
+	// Internal endpoint for wallet service to create ledger accounts during wallet creation
+	mux.HandleFunc("POST /internal/v1/accounts", r.ledgerHandler.CreateAccountInternal)
+
 	// Apply middleware chain
 	handler := r.applyMiddleware(mux)
 	return handler

@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/vnykmshr/gopantic/pkg/model"
 	"github.com/vnykmshr/nivo/shared/errors"
 )
 
@@ -50,8 +49,9 @@ func NewLedgerClient(baseURL string) *LedgerClient {
 }
 
 // CreateAccount creates a new ledger account.
+// Uses internal endpoint for service-to-service communication (no auth required).
 func (c *LedgerClient) CreateAccount(ctx context.Context, req *CreateLedgerAccountRequest) (*LedgerAccount, *errors.Error) {
-	url := fmt.Sprintf("%s/api/v1/accounts", c.baseURL)
+	url := fmt.Sprintf("%s/internal/v1/accounts", c.baseURL)
 
 	// Marshal request to JSON
 	reqBody, err := json.Marshal(req)
@@ -85,13 +85,26 @@ func (c *LedgerClient) CreateAccount(ctx context.Context, req *CreateLedgerAccou
 		return nil, errors.Internal(fmt.Sprintf("ledger service returned status %d: %s", resp.StatusCode, string(respBody)))
 	}
 
-	// Parse response using gopantic (handles both wrapped and unwrapped responses)
-	account, parseErr := model.ParseInto[LedgerAccount](respBody)
-	if parseErr != nil {
-		return nil, errors.Internal(fmt.Sprintf("failed to parse ledger response: %v", parseErr))
+	// Parse response envelope
+	var envelope struct {
+		Success bool           `json:"success"`
+		Data    *LedgerAccount `json:"data"`
+		Error   *string        `json:"error"`
 	}
 
-	return &account, nil
+	if err := json.Unmarshal(respBody, &envelope); err != nil {
+		return nil, errors.Internal(fmt.Sprintf("failed to parse ledger response: %v", err))
+	}
+
+	if !envelope.Success || envelope.Data == nil {
+		errMsg := "unknown error"
+		if envelope.Error != nil {
+			errMsg = *envelope.Error
+		}
+		return nil, errors.Internal(fmt.Sprintf("ledger request failed: %s", errMsg))
+	}
+
+	return envelope.Data, nil
 }
 
 // GetAccount retrieves a ledger account by ID.
@@ -122,10 +135,24 @@ func (c *LedgerClient) GetAccount(ctx context.Context, accountID string) (*Ledge
 		return nil, errors.Internal(fmt.Sprintf("ledger service returned status %d: %s", resp.StatusCode, string(respBody)))
 	}
 
-	account, parseErr := model.ParseInto[LedgerAccount](respBody)
-	if parseErr != nil {
-		return nil, errors.Internal(fmt.Sprintf("failed to parse ledger response: %v", parseErr))
+	// Parse response envelope
+	var envelope struct {
+		Success bool           `json:"success"`
+		Data    *LedgerAccount `json:"data"`
+		Error   *string        `json:"error"`
 	}
 
-	return &account, nil
+	if err := json.Unmarshal(respBody, &envelope); err != nil {
+		return nil, errors.Internal(fmt.Sprintf("failed to parse ledger response: %v", err))
+	}
+
+	if !envelope.Success || envelope.Data == nil {
+		errMsg := "unknown error"
+		if envelope.Error != nil {
+			errMsg = *envelope.Error
+		}
+		return nil, errors.Internal(fmt.Sprintf("ledger request failed: %s", errMsg))
+	}
+
+	return envelope.Data, nil
 }

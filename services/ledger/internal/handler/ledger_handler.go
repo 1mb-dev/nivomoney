@@ -352,3 +352,31 @@ func (h *LedgerHandler) ReverseJournalEntry(w http.ResponseWriter, r *http.Reque
 
 	response.Created(w, reversalEntry)
 }
+
+// CreateAccountInternal creates a new ledger account (internal endpoint).
+// POST /internal/v1/accounts
+// This is an internal endpoint for service-to-service communication (no authentication required).
+func (h *LedgerHandler) CreateAccountInternal(w http.ResponseWriter, r *http.Request) {
+	// Read request body
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		response.Error(w, errors.BadRequest("failed to read request body"))
+		return
+	}
+
+	// Parse and validate request (gopantic v1.2.0+ supports json.RawMessage)
+	req, err := model.ParseInto[models.CreateAccountRequest](body)
+	if err != nil {
+		response.Error(w, errors.Validation(err.Error()))
+		return
+	}
+
+	// Create account
+	account, svcErr := h.ledgerService.CreateAccount(r.Context(), &req)
+	if svcErr != nil {
+		response.Error(w, svcErr)
+		return
+	}
+
+	response.Created(w, account)
+}
