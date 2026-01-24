@@ -19,6 +19,13 @@ func NewWalletClient(baseURL string) *WalletClient {
 	}
 }
 
+// NewWalletClientWithSecret creates a wallet client with internal service authentication.
+func NewWalletClientWithSecret(baseURL, internalSecret string) *WalletClient {
+	return &WalletClient{
+		BaseClient: clients.NewInternalClient(baseURL, clients.DefaultTimeout, internalSecret),
+	}
+}
+
 // CreateWalletRequest represents the request to create a wallet.
 type CreateWalletRequest struct {
 	UserID   string `json:"user_id"`

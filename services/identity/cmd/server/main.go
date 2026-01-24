@@ -28,9 +28,10 @@ func main() {
 			sessionRepo := repository.NewSessionRepository(ctx.DB)
 			verificationRepo := repository.NewVerificationRepository(ctx.DB)
 
-			// Initialize external service clients
-			rbacClient := service.NewRBACClient(server.GetEnv("RBAC_SERVICE_URL", "http://rbac-service:8082"))
-			walletClient := service.NewWalletClient(server.GetEnv("WALLET_SERVICE_URL", "http://wallet-service:8083"))
+			// Initialize external service clients with internal auth for service-to-service calls
+			internalSecret := server.GetEnv("INTERNAL_SERVICE_SECRET", "")
+			rbacClient := service.NewRBACClientWithSecret(server.GetEnv("RBAC_SERVICE_URL", "http://rbac-service:8082"), internalSecret)
+			walletClient := service.NewWalletClientWithSecret(server.GetEnv("WALLET_SERVICE_URL", "http://wallet-service:8083"), internalSecret)
 			notificationClient := clients.NewNotificationClient(server.GetEnv("NOTIFICATION_SERVICE_URL", "http://notification-service:8087"))
 
 			// Initialize event publisher

@@ -19,6 +19,13 @@ func NewRBACClient(baseURL string) *RBACClient {
 	}
 }
 
+// NewRBACClientWithSecret creates an RBAC client with internal service authentication.
+func NewRBACClientWithSecret(baseURL, internalSecret string) *RBACClient {
+	return &RBACClient{
+		BaseClient: clients.NewInternalClient(baseURL, clients.ShortTimeout, internalSecret),
+	}
+}
+
 // UserPermissionsResponse represents the response from RBAC service.
 type UserPermissionsResponse struct {
 	UserID      string       `json:"user_id"`
