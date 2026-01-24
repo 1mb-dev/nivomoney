@@ -74,6 +74,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 type LoginRequest struct {
 	Identifier string `json:"identifier" validate:"required"`
 	Password   string `json:"password" validate:"required"`
+	Portal     string `json:"portal,omitempty"` // Portal context: "user" (default) or "admin"
 }
 
 // Login handles user authentication.
@@ -101,6 +102,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	loginReq := &models.LoginRequest{
 		Identifier: normalizeIndianPhone(req.Identifier),
 		Password:   req.Password,
+		Portal:     models.PortalType(req.Portal),
 	}
 
 	// Authenticate user

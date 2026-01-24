@@ -79,9 +79,12 @@ export interface Transaction {
 // API Request/Response Types
 // ============================================================================
 
+export type PortalType = 'user' | 'admin';
+
 export interface LoginRequest {
   identifier: string; // Email or phone number
   password: string;
+  portal?: PortalType; // Portal context: "user" (default) or "admin"
 }
 
 export interface RegisterRequest {

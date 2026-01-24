@@ -179,6 +179,7 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*models.
 // Used for portal-aware login where same email can exist for different account types.
 func (r *UserRepository) GetByEmailAndAccountType(ctx context.Context, email string, accountType models.AccountType) (*models.User, *errors.Error) {
 	user := &models.User{}
+	var phone sql.NullString // Phone can be NULL for user_admin accounts
 
 	query := `
 		SELECT id, email, phone, full_name, password_hash, status, account_type,
@@ -191,7 +192,7 @@ func (r *UserRepository) GetByEmailAndAccountType(ctx context.Context, email str
 	err := r.db.QueryRowContext(ctx, query, email, accountType).Scan(
 		&user.ID,
 		&user.Email,
-		&user.Phone,
+		&phone,
 		&user.FullName,
 		&user.PasswordHash,
 		&user.Status,
@@ -208,6 +209,11 @@ func (r *UserRepository) GetByEmailAndAccountType(ctx context.Context, email str
 			return nil, errors.NotFound("user")
 		}
 		return nil, errors.DatabaseWrap(err, "failed to get user by email and account type")
+	}
+
+	// Convert NullString to string (empty string if NULL)
+	if phone.Valid {
+		user.Phone = phone.String
 	}
 
 	return user, nil
