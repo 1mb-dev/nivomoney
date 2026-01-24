@@ -9,7 +9,7 @@ import (
 )
 
 // SetupRoutes configures all routes for the wallet service using Go 1.22+ stdlib router.
-func SetupRoutes(walletHandler *handler.WalletHandler, beneficiaryHandler *handler.BeneficiaryHandler, upiHandler *handler.UPIDepositHandler, cardHandler *handler.VirtualCardHandler, jwtSecret string) http.Handler {
+func SetupRoutes(walletHandler *handler.WalletHandler, beneficiaryHandler *handler.BeneficiaryHandler, upiHandler *handler.UPIDepositHandler, cardHandler *handler.VirtualCardHandler, jwtSecret, internalSecret string) http.Handler {
 	mux := http.NewServeMux()
 
 	// Health check endpoint (public)
@@ -70,15 +70,19 @@ func SetupRoutes(walletHandler *handler.WalletHandler, beneficiaryHandler *handl
 	mux.Handle("GET /api/v1/deposits/upi/{id}", authMiddleware(readWalletPerm(http.HandlerFunc(upiHandler.GetDeposit))))
 
 	// ========================================================================
-	// Internal Endpoints (no authentication - service-to-service)
+	// Internal Endpoints (service-to-service with shared secret auth)
 	// ========================================================================
 
 	// Process wallet transfer (called by transaction service)
-	mux.HandleFunc("POST /internal/v1/wallets/transfer", walletHandler.ProcessTransfer)
-	mux.HandleFunc("POST /internal/v1/wallets/deposit", walletHandler.ProcessDeposit)
-	mux.HandleFunc("GET /internal/v1/wallets/{id}/info", walletHandler.GetWalletInfo)
+	mux.HandleFunc("POST /internal/v1/wallets/transfer",
+		middleware.InternalAuthFunc(internalSecret, walletHandler.ProcessTransfer))
+	mux.HandleFunc("POST /internal/v1/wallets/deposit",
+		middleware.InternalAuthFunc(internalSecret, walletHandler.ProcessDeposit))
+	mux.HandleFunc("GET /internal/v1/wallets/{id}/info",
+		middleware.InternalAuthFunc(internalSecret, walletHandler.GetWalletInfo))
 	// Create wallet (called by identity service during user registration)
-	mux.HandleFunc("POST /internal/v1/wallets", walletHandler.CreateWalletInternal)
+	mux.HandleFunc("POST /internal/v1/wallets",
+		middleware.InternalAuthFunc(internalSecret, walletHandler.CreateWalletInternal))
 
 	// ========================================================================
 	// Beneficiary Management Endpoints

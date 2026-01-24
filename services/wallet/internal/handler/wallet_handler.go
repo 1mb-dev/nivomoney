@@ -390,9 +390,10 @@ func (h *WalletHandler) GetWalletInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.OK(w, map[string]interface{}{
-		"id":      wallet.ID,
-		"user_id": wallet.UserID,
-		"status":  wallet.Status,
+		"id":                wallet.ID,
+		"user_id":           wallet.UserID,
+		"status":            wallet.Status,
+		"ledger_account_id": wallet.LedgerAccountID,
 	})
 }
 

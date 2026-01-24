@@ -650,6 +650,7 @@ func (r *WalletRepository) CheckAndReserveLimitWithinTx(ctx context.Context, tx 
 }
 
 // UpdateBalance updates a wallet's balance by adding the specified amount (for deposits).
+// Note: This is not idempotent. Use ProcessDepositWithinTx for idempotent deposits.
 func (r *WalletRepository) UpdateBalance(ctx context.Context, walletID string, amount int64) *errors.Error {
 	query := `
 		UPDATE wallets
@@ -669,5 +670,90 @@ func (r *WalletRepository) UpdateBalance(ctx context.Context, walletID string, a
 		return errors.DatabaseWrap(err, "failed to update wallet balance")
 	}
 
+	return nil
+}
+
+// ProcessDepositWithinTx processes a deposit atomically within a transaction with idempotency.
+// The transactionID is used for idempotency - if this deposit has already been processed,
+// the function returns success without re-executing the deposit.
+func (r *WalletRepository) ProcessDepositWithinTx(ctx context.Context, walletID string, amount int64, transactionID string) *errors.Error {
+	// Start transaction
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return errors.DatabaseWrap(err, "failed to begin transaction")
+	}
+
+	var committed bool
+	defer func() {
+		if !committed {
+			_ = tx.Rollback()
+		}
+	}()
+
+	// 1. Idempotency check - has this deposit already been processed?
+	var existingTxID string
+	err = tx.QueryRowContext(ctx, `
+		SELECT transaction_id
+		FROM processed_deposits
+		WHERE transaction_id = $1
+	`, transactionID).Scan(&existingTxID)
+
+	if err == nil {
+		// Deposit already processed - return success (idempotent)
+		_ = tx.Rollback()
+		return nil
+	} else if err != sql.ErrNoRows {
+		return errors.DatabaseWrap(err, "failed to check idempotency")
+	}
+
+	// 2. Lock wallet and validate it's active
+	var walletStatus string
+	err = tx.QueryRowContext(ctx, `
+		SELECT status
+		FROM wallets
+		WHERE id = $1
+		FOR UPDATE
+	`, walletID).Scan(&walletStatus)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return errors.NotFoundWithID("wallet", walletID)
+		}
+		return errors.DatabaseWrap(err, "failed to lock wallet")
+	}
+
+	if walletStatus != string(models.WalletStatusActive) {
+		return errors.BadRequest("wallet is not active")
+	}
+
+	// 3. Update wallet balance (credit)
+	_, err = tx.ExecContext(ctx, `
+		UPDATE wallets
+		SET balance = balance + $1,
+		    available_balance = available_balance + $1,
+		    updated_at = NOW()
+		WHERE id = $2
+	`, amount, walletID)
+
+	if err != nil {
+		return errors.DatabaseWrap(err, "failed to credit wallet")
+	}
+
+	// 4. Record this deposit as processed for idempotency
+	_, err = tx.ExecContext(ctx, `
+		INSERT INTO processed_deposits (transaction_id, wallet_id, amount)
+		VALUES ($1, $2, $3)
+	`, transactionID, walletID, amount)
+
+	if err != nil {
+		return errors.DatabaseWrap(err, "failed to record processed deposit")
+	}
+
+	// 5. Commit transaction
+	if err = tx.Commit(); err != nil {
+		return errors.DatabaseWrap(err, "failed to commit deposit transaction")
+	}
+
+	committed = true
 	return nil
 }

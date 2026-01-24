@@ -47,8 +47,9 @@ func main() {
 
 			// Setup routes
 			jwtSecret := server.RequireEnv("JWT_SECRET")
+			internalSecret := server.GetEnv("INTERNAL_SERVICE_SECRET", "")
 
-			return router.SetupRoutes(walletHandler, beneficiaryHandler, upiDepositHandler, virtualCardHandler, jwtSecret), nil
+			return router.SetupRoutes(walletHandler, beneficiaryHandler, upiDepositHandler, virtualCardHandler, jwtSecret, internalSecret), nil
 		},
 	})
 }

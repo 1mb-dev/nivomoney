@@ -169,6 +169,15 @@ func (m *mockWalletRepository) ProcessTransferWithinTx(ctx context.Context, sour
 	return nil
 }
 
+func (m *mockWalletRepository) ProcessDepositWithinTx(ctx context.Context, walletID string, amount int64, transactionID string) *errors.Error {
+	if wallet, ok := m.wallets[walletID]; ok {
+		wallet.Balance += amount
+		wallet.AvailableBalance += amount
+		return nil
+	}
+	return errors.NotFound("wallet not found")
+}
+
 func (m *mockWalletRepository) UpdateBalance(ctx context.Context, walletID string, amount int64) *errors.Error {
 	if m.UpdateBalanceFunc != nil {
 		return m.UpdateBalanceFunc(ctx, walletID, amount)

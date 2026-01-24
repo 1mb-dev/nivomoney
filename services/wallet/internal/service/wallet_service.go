@@ -22,6 +22,7 @@ type WalletRepositoryInterface interface {
 	GetLimits(ctx context.Context, walletID string) (*models.WalletLimits, *errors.Error)
 	UpdateLimits(ctx context.Context, walletID string, dailyLimit, monthlyLimit int64) *errors.Error
 	ProcessTransferWithinTx(ctx context.Context, sourceWalletID, destWalletID string, amount int64, transactionID string) *errors.Error
+	ProcessDepositWithinTx(ctx context.Context, walletID string, amount int64, transactionID string) *errors.Error
 	UpdateBalance(ctx context.Context, walletID string, amount int64) *errors.Error
 }
 
@@ -463,26 +464,23 @@ func (s *WalletService) ProcessTransfer(ctx context.Context, sourceWalletID, des
 }
 
 // ProcessDeposit credits a deposit to a wallet (internal method called by transaction service).
+// This method is idempotent - duplicate calls with the same transactionID will succeed without
+// double-crediting the wallet.
 func (s *WalletService) ProcessDeposit(ctx context.Context, walletID string, amount int64, transactionID string) *errors.Error {
-	// Validate wallet exists
+	// Validate amount early (before hitting database)
+	if amount <= 0 {
+		return errors.BadRequest("deposit amount must be positive")
+	}
+
+	// Get wallet for event publishing (validation happens in ProcessDepositWithinTx)
 	wallet, err := s.walletRepo.GetByID(ctx, walletID)
 	if err != nil {
 		return err
 	}
 
-	// Validate wallet is active
-	if wallet.Status != models.WalletStatusActive {
-		return errors.BadRequest("wallet is not active")
-	}
-
-	// Validate amount
-	if amount <= 0 {
-		return errors.BadRequest("deposit amount must be positive")
-	}
-
-	// Use the wallet repository to update the balance
-	// This will be a direct SQL update for deposits
-	updateErr := s.walletRepo.UpdateBalance(ctx, walletID, amount)
+	// Use the idempotent repository method to process the deposit
+	// This handles validation, locking, and idempotency atomically
+	updateErr := s.walletRepo.ProcessDepositWithinTx(ctx, walletID, amount, transactionID)
 	if updateErr != nil {
 		return updateErr
 	}
