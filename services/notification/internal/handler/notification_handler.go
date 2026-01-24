@@ -3,6 +3,7 @@ package handler
 import (
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/vnykmshr/gopantic/pkg/model"
 	"github.com/vnykmshr/nivo/services/notification/internal/models"
@@ -97,17 +98,15 @@ func (h *NotificationHandler) ListNotifications(w http.ResponseWriter, r *http.R
 	}
 
 	// Parse pagination
-	if limit := r.URL.Query().Get("limit"); limit != "" {
-		var l int
-		if _, err := model.ParseInto[int]([]byte(limit)); err == nil {
-			req.Limit = l
+	if limitStr := r.URL.Query().Get("limit"); limitStr != "" {
+		if parsed, err := strconv.Atoi(limitStr); err == nil && parsed > 0 {
+			req.Limit = parsed
 		}
 	}
 
-	if offset := r.URL.Query().Get("offset"); offset != "" {
-		var o int
-		if _, err := model.ParseInto[int]([]byte(offset)); err == nil {
-			req.Offset = o
+	if offsetStr := r.URL.Query().Get("offset"); offsetStr != "" {
+		if parsed, err := strconv.Atoi(offsetStr); err == nil && parsed >= 0 {
+			req.Offset = parsed
 		}
 	}
 
