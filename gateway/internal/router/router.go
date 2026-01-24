@@ -87,25 +87,28 @@ func (r *Router) applyMiddleware(handler http.Handler) http.Handler {
 	corsConfig := r.getCORSConfig()
 	handler = sharedMiddleware.CORS(corsConfig)(handler)
 
-	// Apply CSRF protection
-	csrfConfig := sharedMiddleware.CSRFConfig{
-		SkipPaths: []string{
-			"/api/v1/auth/login",
-			"/api/v1/auth/register",
-			"/api/v1/auth/refresh",
-			"/api/v1/auth/password/forgot",
-			"/api/v1/auth/password/reset",
-			"/api/v1/identity/auth/login",
-			"/api/v1/identity/auth/register",
-			"/api/v1/events",
-			"/health",
-			"/metrics",
-		},
-		CookiePath:     "/",
-		CookieSecure:   os.Getenv("ENVIRONMENT") == "production",
-		CookieSameSite: http.SameSiteLaxMode,
+	// Apply CSRF protection (production only)
+	// In development, frontend doesn't send CSRF tokens
+	if os.Getenv("ENVIRONMENT") == "production" {
+		csrfConfig := sharedMiddleware.CSRFConfig{
+			SkipPaths: []string{
+				"/api/v1/auth/login",
+				"/api/v1/auth/register",
+				"/api/v1/auth/refresh",
+				"/api/v1/auth/password/forgot",
+				"/api/v1/auth/password/reset",
+				"/api/v1/identity/auth/login",
+				"/api/v1/identity/auth/register",
+				"/api/v1/events",
+				"/health",
+				"/metrics",
+			},
+			CookiePath:     "/",
+			CookieSecure:   true,
+			CookieSameSite: http.SameSiteLaxMode,
+		}
+		handler = sharedMiddleware.CSRF(csrfConfig)(handler)
 	}
-	handler = sharedMiddleware.CSRF(csrfConfig)(handler)
 
 	// Apply request ID generation
 	handler = sharedMiddleware.RequestID()(handler)
