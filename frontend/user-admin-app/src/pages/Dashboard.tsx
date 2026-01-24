@@ -16,6 +16,7 @@ import {
   Alert,
   Spinner,
   Skeleton,
+  Logo,
 } from '../../../shared/components';
 
 export function Dashboard() {
@@ -54,13 +55,11 @@ export function Dashboard() {
       <header className="h-16 bg-[var(--surface-card)] border-b border-[var(--border-default)] px-4">
         <div className="max-w-4xl mx-auto h-full flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[var(--color-primary-500)] flex items-center justify-center">
-              <span className="text-white font-bold">N</span>
-            </div>
+            <Logo size="md" />
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="font-semibold text-[var(--text-primary)]">Nivo Money</h1>
-                <Badge variant="info">Verification Portal</Badge>
+                <Badge variant="info" className="text-xs">Verification</Badge>
               </div>
               <p className="text-sm text-[var(--text-muted)]">
                 {user?.full_name}

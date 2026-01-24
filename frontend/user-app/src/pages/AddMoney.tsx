@@ -41,7 +41,7 @@ export function AddMoney() {
 
   useEffect(() => {
     if (wallets.length === 0) {
-      fetchWallets().catch(err => console.error('Failed to fetch wallets:', err));
+      fetchWallets().catch(() => {/* Wallet fetch error handled by store */});
     }
   }, [wallets.length, fetchWallets]);
 

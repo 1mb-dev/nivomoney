@@ -8,6 +8,7 @@ import {
   FormField,
   Alert,
   Badge,
+  LogoWithText,
 } from '../../../shared/components';
 
 export function Login() {
@@ -33,8 +34,8 @@ export function Login() {
       setIsLoading(true);
       await login(identifier, password);
       navigate(from, { replace: true });
-    } catch (err) {
-      console.error('Login failed:', err);
+    } catch {
+      // Error is handled by the auth store
     } finally {
       setIsLoading(false);
     }
@@ -43,16 +44,14 @@ export function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--color-primary-50)] to-[var(--color-neutral-100)] flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        {/* Portal Badge */}
+        {/* Portal Branding */}
         <div className="text-center mb-6">
-          <Badge variant="info" className="mb-4 px-4 py-2 text-sm">
+          <LogoWithText size="lg" className="justify-center mb-4" />
+          <Badge variant="info" className="px-4 py-2 text-sm">
             Verification Portal
           </Badge>
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-            Nivo Money
-          </h1>
-          <p className="text-[var(--text-secondary)]">
-            User-Admin Verification Portal
+          <p className="mt-3 text-[var(--text-secondary)]">
+            View OTP codes for your paired user
           </p>
         </div>
 

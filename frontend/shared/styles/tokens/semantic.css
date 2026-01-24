@@ -52,6 +52,20 @@
   --interactive-danger-hover: var(--color-error-700);
 
   /* ============================================
+     ACCENT COLORS (for badges, highlights)
+     Apps can override these for branding
+     ============================================ */
+  --color-accent-50: var(--color-primary-50);
+  --color-accent-100: var(--color-primary-100);
+  --color-accent-200: var(--color-primary-200);
+  --color-accent-500: var(--color-primary-500);
+  --color-accent-600: var(--color-primary-600);
+  --color-accent-700: var(--color-primary-700);
+  --surface-accent: var(--color-accent-50);
+  --surface-accent-subtle: var(--color-accent-100);
+  --text-accent: var(--color-accent-700);
+
+  /* ============================================
      COMPONENT TOKENS
      ============================================ */
 

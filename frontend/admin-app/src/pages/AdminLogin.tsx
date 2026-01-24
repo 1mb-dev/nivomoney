@@ -8,6 +8,7 @@ import {
   FormField,
   Alert,
   Badge,
+  LogoWithText,
 } from '../../../shared/components';
 
 export function AdminLogin() {
@@ -33,8 +34,8 @@ export function AdminLogin() {
       setIsLoading(true);
       await login(identifier, password);
       navigate(from, { replace: true });
-    } catch (err) {
-      console.error('Login failed:', err);
+    } catch {
+      // Error is handled by the auth store
     } finally {
       setIsLoading(false);
     }
@@ -43,15 +44,13 @@ export function AdminLogin() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--color-primary-50)] to-[var(--color-neutral-100)] flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        {/* Admin Badge */}
+        {/* Admin Branding */}
         <div className="text-center mb-6">
-          <Badge className="admin-badge mb-4 px-4 py-2 text-sm">
-            Admin Access
+          <LogoWithText size="lg" className="justify-center mb-4" />
+          <Badge className="admin-badge px-4 py-2 text-sm">
+            Admin Portal
           </Badge>
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-            Nivo Money Admin
-          </h1>
-          <p className="text-[var(--text-secondary)]">
+          <p className="mt-3 text-[var(--text-secondary)]">
             Secure administrative access
           </p>
         </div>

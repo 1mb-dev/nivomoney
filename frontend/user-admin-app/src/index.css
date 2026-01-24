@@ -3,8 +3,15 @@
 @import "../../shared/styles/tokens/semantic.css";
 @import "../../shared/styles/tokens/derived.css";
 
-/* User-Admin Portal - Uses default Nivo Money teal theme */
-/* The portal is visually distinguished by the "Verification Portal" badge */
+/* ========================================
+   User-Admin Portal Theme
+   Uses default Nivo Money teal theme.
+   Distinguished by "Verification Portal" badge.
+   ======================================== */
+
+:root {
+  --focus-ring: 0 0 0 2px var(--surface-card), 0 0 0 4px var(--border-focus);
+}
 
 html {
   font-family: var(--font-family-sans);
@@ -21,12 +28,17 @@ body {
   min-height: 100vh;
 }
 
+/* ========================================
+   Base Element Resets
+   ======================================== */
+
 /* Remove default button styling */
 button {
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
+  font: inherit;
 }
 
 /* Remove default input styling */
@@ -41,4 +53,41 @@ textarea {
 :focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
+}
+
+/* ========================================
+   Smooth Scroll & Reduced Motion
+   ======================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ========================================
+   Custom Scrollbar
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-neutral-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-300);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-400);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-neutral-300) var(--color-neutral-100);
 }
