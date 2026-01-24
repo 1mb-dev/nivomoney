@@ -49,7 +49,8 @@ func (c *WalletClient) CreateDefaultWallet(ctx context.Context, userID string) (
 	}
 
 	var result WalletResponse
-	if err := c.Post(ctx, "/api/v1/wallets", req, &result); err != nil {
+	// Use internal endpoint for service-to-service calls (no auth required)
+	if err := c.Post(ctx, "/internal/v1/wallets", req, &result); err != nil {
 		return nil, err
 	}
 	return &result, nil

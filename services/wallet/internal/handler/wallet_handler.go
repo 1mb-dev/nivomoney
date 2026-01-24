@@ -395,3 +395,30 @@ func (h *WalletHandler) GetWalletInfo(w http.ResponseWriter, r *http.Request) {
 		"status":  wallet.Status,
 	})
 }
+
+// CreateWalletInternal handles POST /internal/v1/wallets (internal endpoint)
+// This endpoint is called by the identity service to create wallets during user registration.
+func (h *WalletHandler) CreateWalletInternal(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		response.Error(w, errors.BadRequest("failed to read request body"))
+		return
+	}
+	defer func() { _ = r.Body.Close() }()
+
+	// Parse and validate request
+	req, parseErr := model.ParseInto[models.CreateWalletRequest](body)
+	if parseErr != nil {
+		response.Error(w, errors.Validation(parseErr.Error()))
+		return
+	}
+
+	// Create the wallet (accepts user_id from request body for internal calls)
+	wallet, createErr := h.walletService.CreateWallet(r.Context(), &req)
+	if createErr != nil {
+		response.Error(w, createErr)
+		return
+	}
+
+	response.Created(w, wallet)
+}
