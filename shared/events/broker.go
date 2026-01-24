@@ -59,6 +59,7 @@ type Broker struct {
 	register   chan *Client
 	unregister chan *Client
 	broadcast  chan BroadcastEvent
+	stop       chan struct{}
 	mu         sync.RWMutex
 }
 
@@ -75,6 +76,7 @@ func NewBroker() *Broker {
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
 		broadcast:  make(chan BroadcastEvent, 1000), // Buffer broadcasts
+		stop:       make(chan struct{}),
 	}
 }
 
@@ -83,6 +85,16 @@ func (b *Broker) Start() {
 	go func() {
 		for {
 			select {
+			case <-b.stop:
+				// Shutdown: close all client channels
+				b.mu.Lock()
+				for _, client := range b.clients {
+					close(client.Channel)
+				}
+				b.clients = make(map[string]*Client)
+				b.mu.Unlock()
+				return
+
 			case client := <-b.register:
 				b.mu.Lock()
 				b.clients[client.ID] = client
@@ -112,6 +124,11 @@ func (b *Broker) Start() {
 			}
 		}
 	}()
+}
+
+// Stop stops the broker and closes all client connections.
+func (b *Broker) Stop() {
+	close(b.stop)
 }
 
 // Register registers a new client with the broker.

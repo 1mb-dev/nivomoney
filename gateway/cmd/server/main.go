@@ -86,6 +86,10 @@ func main() {
 	<-quit
 	appLogger.Info("Shutting down server...")
 
+	// Stop SSE broker (closes all client connections)
+	broker.Stop()
+	appLogger.Info("SSE broker stopped")
+
 	// Create shutdown context with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
