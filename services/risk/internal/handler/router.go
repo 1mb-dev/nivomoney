@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/vnykmshr/nivo/services/risk/internal/service"
 	"github.com/vnykmshr/nivo/shared/logger"
@@ -33,20 +34,26 @@ func (r *Router) SetupRoutes() http.Handler {
 	// Metrics endpoint
 	mux.Handle("GET /metrics", metrics.Handler())
 
-	// Risk evaluation endpoint (called by transaction service)
+	// Risk evaluation endpoint (called by transaction service - internal only)
 	mux.HandleFunc("POST /api/v1/risk/evaluate", r.riskHandler.EvaluateTransaction)
 
-	// Risk rules management endpoints
-	mux.HandleFunc("GET /api/v1/risk/rules", r.riskHandler.GetAllRules)
-	mux.HandleFunc("GET /api/v1/risk/rules/{id}", r.riskHandler.GetRuleByID)
-	mux.HandleFunc("POST /api/v1/risk/rules", r.riskHandler.CreateRule)
-	mux.HandleFunc("PUT /api/v1/risk/rules/{id}", r.riskHandler.UpdateRule)
-	mux.HandleFunc("DELETE /api/v1/risk/rules/{id}", r.riskHandler.DeleteRule)
+	// Create JWT auth middleware for admin endpoints
+	authConfig := middleware.AuthConfig{
+		JWTSecret: os.Getenv("JWT_SECRET"),
+	}
+	jwtAuth := middleware.Auth(authConfig)
 
-	// Risk events endpoints
-	mux.HandleFunc("GET /api/v1/risk/events/{id}", r.riskHandler.GetEventByID)
-	mux.HandleFunc("GET /api/v1/risk/transactions/{transactionId}/events", r.riskHandler.GetEventsByTransactionID)
-	mux.HandleFunc("GET /api/v1/risk/users/{userId}/events", r.riskHandler.GetEventsByUserID)
+	// Risk rules management endpoints (require authentication)
+	mux.Handle("GET /api/v1/risk/rules", jwtAuth(http.HandlerFunc(r.riskHandler.GetAllRules)))
+	mux.Handle("GET /api/v1/risk/rules/{id}", jwtAuth(http.HandlerFunc(r.riskHandler.GetRuleByID)))
+	mux.Handle("POST /api/v1/risk/rules", jwtAuth(http.HandlerFunc(r.riskHandler.CreateRule)))
+	mux.Handle("PUT /api/v1/risk/rules/{id}", jwtAuth(http.HandlerFunc(r.riskHandler.UpdateRule)))
+	mux.Handle("DELETE /api/v1/risk/rules/{id}", jwtAuth(http.HandlerFunc(r.riskHandler.DeleteRule)))
+
+	// Risk events endpoints (require authentication)
+	mux.Handle("GET /api/v1/risk/events/{id}", jwtAuth(http.HandlerFunc(r.riskHandler.GetEventByID)))
+	mux.Handle("GET /api/v1/risk/transactions/{transactionId}/events", jwtAuth(http.HandlerFunc(r.riskHandler.GetEventsByTransactionID)))
+	mux.Handle("GET /api/v1/risk/users/{userId}/events", jwtAuth(http.HandlerFunc(r.riskHandler.GetEventsByUserID)))
 
 	// Create logger for middleware
 	log := logger.NewDefault("risk")
