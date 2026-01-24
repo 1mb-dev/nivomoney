@@ -101,13 +101,11 @@ export function Dashboard() {
     const initializeDashboard = async () => {
       try {
         await Promise.all([
-          fetchWallets().catch(err => console.error('Failed to fetch wallets:', err)),
+          fetchWallets().catch(() => {}),
           api.getKYC()
             .then(kyc => setKycInfo(kyc))
             .catch(() => {}),
         ]);
-      } catch (err) {
-        console.error('Dashboard initialization error:', err);
       } finally {
         setKycLoading(false);
       }
@@ -128,9 +126,7 @@ export function Dashboard() {
   // Fetch transactions for selected wallet
   useEffect(() => {
     if (selectedWallet) {
-      fetchTransactions(selectedWallet.id).catch(err =>
-        console.error('Failed to fetch transactions:', err)
-      );
+      fetchTransactions(selectedWallet.id).catch(() => {});
     }
   }, [selectedWallet, fetchTransactions]);
 
@@ -159,10 +155,10 @@ export function Dashboard() {
       } else if (event.topic === 'transactions') {
         if (event.event_type === 'transaction.created') {
           addTransactionFromEvent(event.data as unknown as Transaction);
-          fetchWallets().catch(err => console.error('Failed to refetch wallets:', err));
+          fetchWallets().catch(() => {});
         } else if (event.event_type === 'transaction.updated') {
           updateTransactionFromEvent(event.data as unknown as Partial<Transaction> & { id: string });
-          fetchWallets().catch(err => console.error('Failed to refetch wallets:', err));
+          fetchWallets().catch(() => {});
         }
       }
     },
@@ -173,7 +169,6 @@ export function Dashboard() {
   useSSE({
     topics: ['wallets', 'transactions'],
     onEvent: handleSSEEvent,
-    onError: error => console.error('SSE error:', error),
     enabled: !!user,
   });
 

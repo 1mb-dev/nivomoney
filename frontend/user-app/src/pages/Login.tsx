@@ -47,8 +47,8 @@ export function Login() {
       const normalizedIdentifier = normalizeIndianPhone(identifier);
       await login(normalizedIdentifier, password);
       navigate('/dashboard');
-    } catch (err) {
-      console.error('Login failed:', err);
+    } catch {
+      // Error is already handled by authStore
     }
   };
 

@@ -49,7 +49,7 @@ export function SendMoney() {
 
   useEffect(() => {
     if (wallets.length === 0) {
-      fetchWallets().catch(err => console.error('Failed to fetch wallets:', err));
+      fetchWallets().catch(() => {});
     }
   }, [wallets.length, fetchWallets]);
 
@@ -80,8 +80,8 @@ export function SendMoney() {
         setDescription(`Transfer to ${beneficiary.nickname}`);
         lookupRecipientByPhone(beneficiary.phone, beneficiary.wallet_id);
       }
-    } catch (err) {
-      console.error('Failed to load beneficiary:', err);
+    } catch {
+      // Silently fail - beneficiary lookup is not critical
     }
   };
 

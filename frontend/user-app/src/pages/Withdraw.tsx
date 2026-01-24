@@ -55,15 +55,15 @@ export function Withdraw() {
     if (saved) {
       try {
         setSavedAccounts(JSON.parse(saved));
-      } catch (err) {
-        console.error('Failed to parse saved accounts:', err);
+      } catch {
+        // Silently fail - corrupted localStorage data
       }
     }
   }, []);
 
   useEffect(() => {
     if (wallets.length === 0) {
-      fetchWallets().catch(err => console.error('Failed to fetch wallets:', err));
+      fetchWallets().catch(() => {});
     }
   }, [wallets.length, fetchWallets]);
 

@@ -68,8 +68,8 @@ export function Register() {
       const normalizedPhone = normalizeIndianPhone(formData.phone);
       await register(formData.email, formData.password, formData.fullName, normalizedPhone);
       navigate('/dashboard');
-    } catch (err) {
-      console.error('Registration failed:', err);
+    } catch {
+      // Error is already handled by authStore
     }
   };
 
