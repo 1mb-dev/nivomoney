@@ -21,6 +21,9 @@ FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates tzdata wget
 
+# Create non-root user
+RUN addgroup -g 1000 appuser && adduser -u 1000 -G appuser -s /bin/sh -D appuser
+
 WORKDIR /app
 
 # Copy binary from builder
@@ -28,6 +31,10 @@ COPY --from=builder /app/bin/notification-service .
 
 # Copy migrations
 COPY --from=builder /app/services/notification/migrations ./migrations
+
+# Set ownership and switch to non-root user
+RUN chown -R appuser:appuser /app
+USER appuser
 
 # Expose port
 EXPOSE 8087
