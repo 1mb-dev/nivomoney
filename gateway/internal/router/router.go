@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/vnykmshr/nivo/gateway/internal/handler"
 	"github.com/vnykmshr/nivo/gateway/internal/middleware"
@@ -83,7 +84,8 @@ func (r *Router) applyMiddleware(handler http.Handler) http.Handler {
 	handler = r.metrics.Middleware("gateway")(handler)
 
 	// Apply CORS
-	handler = sharedMiddleware.CORS(sharedMiddleware.DefaultCORSConfig())(handler)
+	corsConfig := r.getCORSConfig()
+	handler = sharedMiddleware.CORS(corsConfig)(handler)
 
 	// Apply CSRF protection
 	csrfConfig := sharedMiddleware.CSRFConfig{
@@ -118,6 +120,43 @@ func (r *Router) applyMiddleware(handler http.Handler) http.Handler {
 	handler = sharedMiddleware.RateLimit(sharedMiddleware.DefaultRateLimitConfig())(handler)
 
 	return handler
+}
+
+// getCORSConfig returns CORS configuration based on environment.
+// In development, allows localhost origins. In production, uses CORS_ORIGINS env var.
+func (r *Router) getCORSConfig() sharedMiddleware.CORSConfig {
+	config := sharedMiddleware.DefaultCORSConfig()
+
+	// Check for explicit CORS_ORIGINS environment variable
+	if origins := os.Getenv("CORS_ORIGINS"); origins != "" {
+		config.AllowedOrigins = splitAndTrim(origins, ",")
+	} else if os.Getenv("ENVIRONMENT") != "production" {
+		// Development defaults: allow localhost origins
+		config.AllowedOrigins = []string{
+			"http://localhost:3000",
+			"http://localhost:3001",
+			"http://localhost:3002",
+			"http://127.0.0.1:3000",
+			"http://127.0.0.1:3001",
+			"http://127.0.0.1:3002",
+		}
+	}
+
+	// Enable credentials for authenticated requests
+	config.AllowCredentials = true
+
+	return config
+}
+
+// splitAndTrim splits a string by separator and trims whitespace from each part.
+func splitAndTrim(s, sep string) []string {
+	parts := make([]string, 0)
+	for _, part := range strings.Split(s, sep) {
+		if trimmed := strings.TrimSpace(part); trimmed != "" {
+			parts = append(parts, trimmed)
+		}
+	}
+	return parts
 }
 
 // healthCheck is the gateway health check endpoint.
