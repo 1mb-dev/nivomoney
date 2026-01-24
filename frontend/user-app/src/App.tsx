@@ -12,6 +12,8 @@ import { KYC } from './pages/KYC';
 import { Profile } from './pages/Profile';
 import { ChangePassword } from './pages/ChangePassword';
 import { Beneficiaries } from './pages/Beneficiaries';
+import { Terms } from './pages/Terms';
+import { Privacy } from './pages/Privacy';
 import LandingPage from './pages/LandingPage';
 import { useAuthStore } from './stores/authStore';
 
@@ -72,6 +74,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route
           path="/dashboard"
           element={
