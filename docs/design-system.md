@@ -8,8 +8,8 @@ permalink: /design-system
 
 # UI/UX Design System - Nivo Money
 
-> **Version:** 1.0.0
-> **Last Updated:** 2025-11-28
+> **Version:** 1.1.0
+> **Last Updated:** January 2026
 > **Status:** Active
 
 ## Overview

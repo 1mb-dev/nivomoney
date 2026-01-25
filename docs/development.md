@@ -419,8 +419,8 @@ docker-compose restart redis
 |---------------|-------------------|-------------------------|
 | PostgreSQL    | localhost:5432    | nivo / nivo_dev_password |
 | Redis         | localhost:6379    | nivo_redis_password     |
-| NSQ Admin     | localhost:4171    | -                       |
 | Prometheus    | localhost:9090    | -                       |
+| Grafana       | localhost:3003    | admin / admin           |
 
 ### Database Access
 
@@ -439,12 +439,18 @@ psql -h localhost -U nivo -d nivo
 
 ## Database Migrations
 
-> **Status**: Migration system will be configured in Phase 3
+Migrations are managed per-service using golang-migrate:
 
-Planned approach:
-- Tool: golang-migrate or goose
-- Migrations in: `services/{service}/migrations/`
-- Commands: `make migrate-up`, `make migrate-down`
+```bash
+# Migrations are in each service's migrations directory
+services/{service}/migrations/
+
+# Migrations run automatically on service startup
+# Manual migration commands available via make
+make db-shell  # Access PostgreSQL directly
+```
+
+Each service has its own migration files that run automatically when the service starts.
 
 ---
 
@@ -648,4 +654,4 @@ git commit --no-verify
 
 ---
 
-**Last Updated**: Phase 1 (Development Tooling Complete)
+**Last Updated**: January 2026

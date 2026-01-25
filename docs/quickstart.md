@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Quick Start
-nav_order: 2
+nav_order: 3
 description: "Get Nivo up and running in 5 minutes"
 permalink: /quickstart
 ---
@@ -10,7 +10,7 @@ permalink: /quickstart
 
 ## Prerequisites
 
-- Go 1.23 or later
+- Go 1.24 or later
 - Docker and Docker Compose
 - Make
 
@@ -26,10 +26,10 @@ make docker-up
 This will start:
 - **PostgreSQL** (port 5432) - Database
 - **Redis** (port 6379) - Caching
-- **NSQ** (ports 4150-4171) - Message queue
-- **Prometheus** (port 9090) - Metrics
-- **Identity Service** (port 8080) - Authentication & KYC
-- **Ledger Service** (port 8081) - Double-entry bookkeeping
+- **All 9 microservices** (ports 8080-8087) - Backend services
+- **API Gateway** (port 8000) - Request routing
+- **Prometheus** (port 9090) - Metrics (internal)
+- **Grafana** (port 3003) - Monitoring dashboard
 
 ### 2. Check Service Health
 
@@ -63,8 +63,8 @@ make docker-down
 ### 1. Start Infrastructure Only
 
 ```bash
-# Start only PostgreSQL, Redis, NSQ
-docker compose up -d postgres redis nsqlookupd nsqd
+# Start only PostgreSQL and Redis
+docker compose up -d postgres redis
 ```
 
 ### 2. Build Services
@@ -213,40 +213,68 @@ SELECT * FROM journal_entries;
 
 ## Next Steps
 
-- Implement Wallet Service for managing user balances
-- Add Transaction Service for payment processing
-- Implement Risk & Compliance Service
-- Add API Gateway for unified access
-- Set up CI/CD pipeline
-- Add comprehensive test coverage
+Once you have the platform running:
+
+- [Try the Demo Walkthrough](/demo) - Explore features with pre-seeded accounts
+- [Read the Architecture Guide](/architecture) - Understand service boundaries
+- [Explore End-to-End Flows](/flows) - See how services interact
+- [View the Design System](/design-system) - Frontend component patterns
 
 ## Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    Nivo Platform                     │
-├─────────────────────────────────────────────────────┤
-│                                                       │
-│  ┌─────────────┐         ┌──────────────┐          │
-│  │  Identity   │         │   Ledger     │          │
-│  │  Service    │         │   Service    │          │
-│  │  :8080      │         │   :8081      │          │
-│  └──────┬──────┘         └──────┬───────┘          │
-│         │                       │                   │
-│         │       ┌───────────────┘                   │
-│         │       │                                   │
-│         ▼       ▼                                   │
-│  ┌─────────────────────┐                           │
-│  │    PostgreSQL       │                           │
-│  │      :5432          │                           │
-│  └─────────────────────┘                           │
-│                                                       │
-│  ┌─────────────────────┐  ┌─────────────────────┐  │
-│  │       Redis         │  │        NSQ          │  │
-│  │      :6379          │  │   :4150-4171        │  │
-│  └─────────────────────┘  └─────────────────────┘  │
-│                                                       │
-└─────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph Frontend
+        UA[User App :3000]
+        AA[Admin App :3001]
+    end
+
+    subgraph Gateway
+        GW[API Gateway :8000]
+    end
+
+    subgraph Services
+        ID[Identity :8080]
+        L[Ledger :8081]
+        RBAC[RBAC :8082]
+        W[Wallet :8083]
+        TX[Transaction :8084]
+        R[Risk :8085]
+        SIM[Simulation :8086]
+        N[Notification :8087]
+    end
+
+    subgraph Infrastructure
+        PG[(PostgreSQL :5432)]
+        RD[(Redis :6379)]
+    end
+
+    subgraph Observability
+        PROM[Prometheus :9090]
+        GRAF[Grafana :3003]
+    end
+
+    UA --> GW
+    AA --> GW
+    GW --> ID
+    GW --> L
+    GW --> RBAC
+    GW --> W
+    GW --> TX
+    GW --> R
+    GW --> SIM
+    GW --> N
+
+    ID --> PG
+    L --> PG
+    W --> PG
+    TX --> PG
+
+    ID --> RD
+
+    ID -.-> PROM
+    GW -.-> PROM
+    PROM --> GRAF
 ```
 
 ## India-Centric Features

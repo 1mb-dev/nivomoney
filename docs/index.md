@@ -36,6 +36,7 @@ Nivo is a **showcase neobank platform** built to demonstrate engineering excelle
 
 | Guide | Description |
 |:------|:------------|
+| [Why Nivo?](why-nivo) | The story and architecture philosophy |
 | [Demo Walkthrough](demo) | Try Nivo with pre-configured demo accounts |
 | [Quick Start](quickstart) | Get the platform running locally |
 | [Development Guide](development) | Full development setup and workflow |
@@ -49,6 +50,7 @@ Nivo is a **showcase neobank platform** built to demonstrate engineering excelle
 | [System Architecture](architecture) | High-level system design and service overview |
 | [Design System](design-system) | Frontend design patterns and components |
 | [SSE Integration](sse) | Real-time updates with Server-Sent Events |
+| [Observability](observability) | Prometheus metrics and Grafana dashboards |
 
 ### API Reference
 {: .text-delta }
@@ -83,7 +85,7 @@ Nivo is a **showcase neobank platform** built to demonstrate engineering excelle
 
 | Technology | Purpose |
 |:-----------|:--------|
-| **React 18** | UI framework |
+| **React 19** | UI framework |
 | **TypeScript** | Type safety |
 | **Vite** | Build tool |
 | **TailwindCSS v4** | Styling |
@@ -164,4 +166,4 @@ This project demonstrates:
 Nivo is a portfolio project showcasing fintech engineering capabilities including microservices architecture, double-entry ledger systems, and modern frontend development.
 
 {: .fs-2 }
-Nivo &copy; 2025 | [Live Demo](https://nivomoney.com)
+Nivo &copy; 2026 | [Live Demo](https://nivomoney.com) | [Why Nivo?](/why-nivo)

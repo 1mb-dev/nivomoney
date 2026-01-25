@@ -26,51 +26,117 @@ High-level architecture overview of the Nivo neobank platform.
 
 Nivo is built as a microservices architecture with clear domain boundaries. Each service is responsible for a specific business capability and communicates through well-defined APIs.
 
+```mermaid
+graph TB
+    subgraph Clients
+        UA[User App<br/>React]
+        AA[Admin App<br/>React]
+        VAP[Verify Portal<br/>React]
+    end
+
+    subgraph Gateway Layer
+        GW[API Gateway<br/>:8000]
+        SSE[SSE Broker<br/>Real-time Events]
+    end
+
+    subgraph User Domain
+        ID[Identity<br/>:8080<br/>Auth, KYC]
+        RBAC[RBAC<br/>:8082<br/>Permissions]
+    end
+
+    subgraph Financial Domain
+        W[Wallet<br/>:8083<br/>Balances]
+        TX[Transaction<br/>:8084<br/>Transfers]
+        L[Ledger<br/>:8081<br/>Bookkeeping]
+    end
+
+    subgraph Support Domain
+        R[Risk<br/>:8085<br/>Fraud Detection]
+        N[Notification<br/>:8087<br/>Alerts]
+        SIM[Simulation<br/>:8086<br/>Demo Data]
+    end
+
+    subgraph Data Layer
+        PG[(PostgreSQL)]
+        RD[(Redis)]
+    end
+
+    subgraph Observability
+        PROM[Prometheus]
+        GRAF[Grafana]
+    end
+
+    UA --> GW
+    AA --> GW
+    VAP --> GW
+    GW --> SSE
+
+    GW --> ID
+    GW --> RBAC
+    GW --> W
+    GW --> TX
+    GW --> L
+    GW --> R
+    GW --> N
+    GW --> SIM
+
+    TX --> W
+    TX --> L
+    TX --> R
+    ID --> RBAC
+    ID --> W
+
+    ID --> PG
+    RBAC --> PG
+    W --> PG
+    TX --> PG
+    L --> PG
+    R --> PG
+    N --> PG
+    SIM --> PG
+
+    W --> RD
+    ID --> RD
+
+    ID -.-> PROM
+    W -.-> PROM
+    TX -.-> PROM
+    L -.-> PROM
+    PROM --> GRAF
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                              Nivo Platform                                  │
-├────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│    ┌─────────────┐          ┌─────────────┐          ┌─────────────┐       │
-│    │  User App   │          │  Admin App  │          │   Mobile    │       │
-│    │  (React)    │          │  (React)    │          │   (Future)  │       │
-│    └──────┬──────┘          └──────┬──────┘          └──────┬──────┘       │
-│           │                        │                        │               │
-│           └────────────────────────┼────────────────────────┘               │
-│                                    ▼                                        │
-│                         ┌───────────────────┐                               │
-│                         │   API Gateway     │  :8000                        │
-│                         │   (Routing, SSE)  │                               │
-│                         └─────────┬─────────┘                               │
-│                                   │                                         │
-│    ┌──────────────────────────────┼──────────────────────────────┐         │
-│    │              │               │               │              │         │
-│    ▼              ▼               ▼               ▼              ▼         │
-│ ┌────────┐  ┌──────────┐  ┌────────────┐  ┌──────────┐  ┌──────────┐      │
-│ │Identity│  │  Wallet  │  │Transaction │  │   RBAC   │  │   Risk   │      │
-│ │ :8080  │  │  :8083   │  │   :8084    │  │  :8082   │  │  :8085   │      │
-│ └───┬────┘  └────┬─────┘  └─────┬──────┘  └────┬─────┘  └────┬─────┘      │
-│     │            │              │               │             │            │
-│     │            └──────────────┼───────────────┘             │            │
-│     │                           ▼                             │            │
-│     │                    ┌────────────┐                       │            │
-│     │                    │   Ledger   │  :8081                │            │
-│     │                    │(Accounting)│                       │            │
-│     │                    └────────────┘                       │            │
-│     │                                                         │            │
-│     │    ┌──────────────┐  ┌──────────────┐  ┌────────────┐  │            │
-│     │    │ Notification │  │  Simulation  │  │    Seed    │  │            │
-│     │    │    :8087     │  │    :8086     │  │  (one-off) │  │            │
-│     │    └──────────────┘  └──────────────┘  └────────────┘  │            │
-│     │                                                         │            │
-│     └─────────────────────────────┬───────────────────────────┘            │
-│                                   ▼                                        │
-│                         ┌───────────────────┐                              │
-│                         │    PostgreSQL     │                              │
-│                         │    (Database)     │                              │
-│                         └───────────────────┘                              │
-│                                                                             │
-└────────────────────────────────────────────────────────────────────────────┘
+
+### Service Communication Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant G as Gateway
+    participant I as Identity
+    participant T as Transaction
+    participant W as Wallet
+    participant L as Ledger
+    participant R as Risk
+
+    C->>G: POST /api/v1/transaction/transfer
+    G->>I: Validate JWT
+    I-->>G: User Context
+
+    G->>T: Forward Request
+    T->>R: Evaluate Risk
+    R-->>T: Allowed/Blocked
+
+    T->>W: Check Balance
+    W-->>T: Sufficient Funds
+
+    T->>L: Create Journal Entry
+    L-->>T: Entry Created
+
+    T->>W: Update Balances
+    W-->>T: Balances Updated
+
+    T-->>G: Transaction Complete
+    G-->>C: 201 Created
+    G->>C: SSE: transaction.created
 ```
 
 ---
@@ -323,14 +389,15 @@ Gateway → Transaction Service
 ## Observability
 
 ### Logging
-- Structured JSON logging
+- Structured JSON logging (zerolog)
 - Correlation IDs across services
 - Request/response logging
 
-### Metrics (Planned)
-- Prometheus metrics exposition
-- Grafana dashboards
-- Service health endpoints
+### Metrics
+- Prometheus metrics on all services (`/metrics` endpoint)
+- Grafana Mission Control dashboard
+- RED metrics (Request rate, Error rate, Duration)
+- Service health endpoints (`/health`)
 
 ### Tracing (Future)
 - Distributed tracing with Jaeger/Zipkin
@@ -342,14 +409,14 @@ Gateway → Transaction Service
 
 ### Planned Enhancements
 
-1. **Redis Caching**
-   - Session storage
-   - Rate limiting
-   - Frequently accessed data
+1. **Distributed Tracing**
+   - Jaeger integration
+   - Request flow visualization
+   - Performance bottleneck identification
 
-2. **Message Queue (NSQ)**
+2. **Message Queue**
    - Async notification delivery
-   - Event sourcing
+   - Event sourcing for audit logs
    - Service decoupling
 
 3. **API Gateway Enhancements**
