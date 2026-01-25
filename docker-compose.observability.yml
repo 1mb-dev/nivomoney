@@ -8,15 +8,11 @@
 #   With base:  docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
 #   Or via:     make obs-up
 #
-# Access:
-#   Prometheus: http://localhost:9090 (internal metrics)
-#   Grafana:    http://localhost:3003 (dev) or https://grafana.nivomoney.com (prod)
+# Access (production):
+#   Prometheus: Internal only (docker network)
+#   Grafana:    https://grafana.nivomoney.com (via nginx reverse proxy)
 #
-# Port allocation:
-#   3000 - User App (frontend)
-#   3001 - Admin App (frontend)
-#   3002 - User-Admin App (frontend)
-#   3003 - Grafana (observability)
+# Note: No external ports exposed. Access via internal network or nginx proxy.
 #
 # =============================================================================
 
@@ -36,8 +32,7 @@ services:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
       - prometheus_data:/prometheus
-    ports:
-      - "9090:9090"
+    # No external ports - accessed via internal network only
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O - http://localhost:9090/-/healthy || exit 1"]
       interval: 30s
@@ -78,11 +73,10 @@ services:
       # Anonymous access disabled
       GF_AUTH_ANONYMOUS_ENABLED: "false"
       # Server config
-      GF_SERVER_ROOT_URL: ${GF_SERVER_ROOT_URL:-http://localhost:3003}
-      GF_SERVER_DOMAIN: ${GF_SERVER_DOMAIN:-localhost}
+      GF_SERVER_ROOT_URL: ${GF_SERVER_ROOT_URL:-https://grafana.nivomoney.com}
+      GF_SERVER_DOMAIN: ${GF_SERVER_DOMAIN:-grafana.nivomoney.com}
       GF_SERVER_HTTP_PORT: "3000"
-    ports:
-      - "3003:3000"
+    # No external ports - accessed via nginx reverse proxy
     volumes:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
