@@ -365,6 +365,7 @@ func (s *SimulationEngine) runTransactionCycle(ctx context.Context) {
 		}
 
 		// Generate transaction for simulated user
+		log.Printf("[simulation] 🎯 Generating transaction for %s (%s)", user.Email, user.Persona)
 		if err := s.generateSimulatedUserTransaction(ctx, user, persona); err != nil {
 			log.Printf("[simulation] Failed to generate transaction for simulated user %s: %v", user.Email, err)
 		}
