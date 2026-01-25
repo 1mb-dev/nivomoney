@@ -379,6 +379,11 @@ func (s *SimulationEngine) shouldTransact(freq time.Duration) bool {
 	// Probability that transaction occurs in this minute
 	probability := transactionsPerHour / 60.0
 
+	// In demo mode, use a minimum probability floor for faster testing
+	if s.config.IsDemo() && probability < 0.25 {
+		probability = 0.25 // 25% minimum in demo mode
+	}
+
 	return s.randFloat64() < probability
 }
 
