@@ -104,7 +104,6 @@ func (r *Router) applyMiddleware(handler http.Handler) http.Handler {
 				"/metrics",
 				// Internal service endpoints (auth-protected, no browser CSRF risk)
 				"/api/v1/identity/kyc/submit",
-				"/api/v1/kyc/submit",
 			},
 			CookiePath:     "/",
 			CookieSecure:   true,

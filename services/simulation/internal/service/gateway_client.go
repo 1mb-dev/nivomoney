@@ -203,7 +203,8 @@ func (c *GatewayClient) Logout(ctx context.Context, token string) error {
 
 // SubmitKYC submits KYC information for a user
 func (c *GatewayClient) SubmitKYC(ctx context.Context, token string, kycReq KYCSubmitRequest) error {
-	if err := c.PostWithHeaders(ctx, "/api/v1/kyc/submit", kycReq, nil, bearerToken(token)); err != nil {
+	// Route: /api/v1/identity/kyc/submit -> identity service's /api/v1/kyc/submit
+	if err := c.PostWithHeaders(ctx, "/api/v1/identity/kyc/submit", kycReq, nil, bearerToken(token)); err != nil {
 		return err
 	}
 	log.Printf("[simulation] ✓ KYC submitted")
