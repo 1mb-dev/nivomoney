@@ -7,7 +7,7 @@ baseurl: ""
 url: "https://docs.nivomoney.com"
 
 # Theme - Just the Docs v0.8.2 (requires Jekyll 4+)
-remote_theme: just-the-docs/just-the-docs@v0.8.2
+theme: just-the-docs
 
 # Color scheme matching user-app (blue primary)
 color_scheme: nivo
