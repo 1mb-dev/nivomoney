@@ -127,14 +127,15 @@ func (c *GatewayClient) CreateDeposit(ctx context.Context, token, walletID strin
 		Description: description,
 	}
 
-	var err error
+	// Use typed error to avoid nil interface gotcha
 	if token != "" {
-		err = c.PostWithHeaders(ctx, "/api/v1/transaction/transactions/deposit", req, nil, bearerToken(token))
+		if err := c.PostWithHeaders(ctx, "/api/v1/transaction/transactions/deposit", req, nil, bearerToken(token)); err != nil {
+			return err
+		}
 	} else {
-		err = c.Post(ctx, "/api/v1/transaction/transactions/deposit", req, nil)
-	}
-	if err != nil {
-		return err
+		if err := c.Post(ctx, "/api/v1/transaction/transactions/deposit", req, nil); err != nil {
+			return err
+		}
 	}
 	log.Printf("[simulation] Transaction created successfully: POST /api/v1/transaction/transactions/deposit")
 	return nil
@@ -151,14 +152,15 @@ func (c *GatewayClient) CreateTransfer(ctx context.Context, token, sourceWalletI
 		Description:         description,
 	}
 
-	var err error
+	// Use typed error to avoid nil interface gotcha
 	if token != "" {
-		err = c.PostWithHeaders(ctx, "/api/v1/transaction/transactions/transfer", req, nil, bearerToken(token))
+		if err := c.PostWithHeaders(ctx, "/api/v1/transaction/transactions/transfer", req, nil, bearerToken(token)); err != nil {
+			return err
+		}
 	} else {
-		err = c.Post(ctx, "/api/v1/transaction/transactions/transfer", req, nil)
-	}
-	if err != nil {
-		return err
+		if err := c.Post(ctx, "/api/v1/transaction/transactions/transfer", req, nil); err != nil {
+			return err
+		}
 	}
 	log.Printf("[simulation] Transaction created successfully: POST /api/v1/transaction/transactions/transfer")
 	return nil
@@ -174,14 +176,15 @@ func (c *GatewayClient) CreateWithdrawal(ctx context.Context, token, walletID st
 		Description: description,
 	}
 
-	var err error
+	// Use typed error to avoid nil interface gotcha
 	if token != "" {
-		err = c.PostWithHeaders(ctx, "/api/v1/transaction/transactions/withdrawal", req, nil, bearerToken(token))
+		if err := c.PostWithHeaders(ctx, "/api/v1/transaction/transactions/withdrawal", req, nil, bearerToken(token)); err != nil {
+			return err
+		}
 	} else {
-		err = c.Post(ctx, "/api/v1/transaction/transactions/withdrawal", req, nil)
-	}
-	if err != nil {
-		return err
+		if err := c.Post(ctx, "/api/v1/transaction/transactions/withdrawal", req, nil); err != nil {
+			return err
+		}
 	}
 	log.Printf("[simulation] Transaction created successfully: POST /api/v1/transaction/transactions/withdrawal")
 	return nil
