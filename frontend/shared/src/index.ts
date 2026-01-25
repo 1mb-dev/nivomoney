@@ -24,3 +24,6 @@ export * from './utils/phone';
 
 // Export security utilities
 export * from './lib/security';
+
+// Export badge variant helpers
+export * from '../lib/badgeVariants';

@@ -5,6 +5,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "jsx": "react-jsx",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -25,6 +26,6 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": ["src"],
+  "include": ["src", "components", "lib"],
   "exclude": ["node_modules", "dist"]
 }

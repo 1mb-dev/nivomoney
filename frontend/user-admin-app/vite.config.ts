@@ -31,6 +31,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@nivo/shared/components': path.resolve(__dirname, '../shared/dist/components.mjs'),
+      '@nivo/shared/lib/utils': path.resolve(__dirname, '../shared/dist/utils.mjs'),
+      '@nivo/shared': path.resolve(__dirname, '../shared/dist/index.mjs'),
     },
   },
   build: {

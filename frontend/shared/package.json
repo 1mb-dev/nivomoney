@@ -12,29 +12,22 @@
       "require": "./dist/index.js"
     },
     "./components": {
-      "types": "./components/index.ts",
-      "import": "./components/index.ts",
-      "require": "./components/index.ts"
+      "types": "./dist/components.d.ts",
+      "import": "./dist/components.mjs",
+      "require": "./dist/components.js"
     },
-    "./components/*": {
-      "types": "./components/*",
-      "import": "./components/*",
-      "require": "./components/*"
-    },
-    "./lib/*": {
-      "types": "./lib/*",
-      "import": "./lib/*",
-      "require": "./lib/*"
+    "./lib/utils": {
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.mjs",
+      "require": "./dist/utils.js"
     }
   },
   "files": [
-    "dist",
-    "components",
-    "lib"
+    "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -47,14 +40,24 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "axios": "^1.6.2"
+    "axios": "^1.6.2",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.0.0",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-router-dom": "^6.0.0 || ^7.0.0"
   }
 }

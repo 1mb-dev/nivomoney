@@ -16,6 +16,14 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Path aliases for @nivo/shared subpath exports */
+    "baseUrl": ".",
+    "paths": {
+      "@nivo/shared": ["../shared/dist/index.d.ts"],
+      "@nivo/shared/components": ["../shared/dist/components.d.ts"],
+      "@nivo/shared/lib/utils": ["../shared/dist/utils.d.ts"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

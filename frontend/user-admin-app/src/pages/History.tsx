@@ -238,8 +238,8 @@ export function History() {
                     </div>
                     {v.metadata && (
                       <p className="text-sm text-[var(--text-secondary)] truncate">
-                        {v.metadata.amount && `Amount: ${v.metadata.amount}`}
-                        {v.metadata.beneficiary && ` • To: ${v.metadata.beneficiary}`}
+                        {v.metadata.amount ? `Amount: ${String(v.metadata.amount)}` : null}
+                        {v.metadata.beneficiary ? ` • To: ${String(v.metadata.beneficiary)}` : null}
                       </p>
                     )}
                   </div>
