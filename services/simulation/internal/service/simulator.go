@@ -336,10 +336,13 @@ func (s *SimulationEngine) runTransactionCycle(ctx context.Context) {
 	}
 
 	// Process transactions for simulated users (only ACTIVE stage)
+	activeCount := 0
+	eligibleCount := 0
 	for _, user := range s.simulatedUsers {
 		if user.Stage != StageActive {
 			continue
 		}
+		activeCount++
 
 		persona := personas.GetPersona(user.Persona)
 		if persona == nil {
@@ -350,6 +353,7 @@ func (s *SimulationEngine) runTransactionCycle(ctx context.Context) {
 		if !persona.IsActiveHour(currentHour) {
 			continue
 		}
+		eligibleCount++
 
 		// Random chance based on frequency
 		if !s.shouldTransact(persona.TransactionFreq) {
@@ -357,9 +361,15 @@ func (s *SimulationEngine) runTransactionCycle(ctx context.Context) {
 		}
 
 		// Generate transaction for simulated user
+		log.Printf("[simulation] 🎲 Generating transaction for %s (%s)", user.Email, user.Persona)
 		if err := s.generateSimulatedUserTransaction(ctx, user, persona); err != nil {
 			log.Printf("[simulation] Failed to generate transaction for simulated user %s: %v", user.Email, err)
 		}
+	}
+
+	if len(s.simulatedUsers) > 0 {
+		log.Printf("[simulation] 📊 Transaction cycle: %d simulated users, %d active, %d eligible at hour %d",
+			len(s.simulatedUsers), activeCount, eligibleCount, currentHour)
 	}
 }
 
