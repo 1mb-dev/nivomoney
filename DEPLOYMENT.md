@@ -172,6 +172,48 @@ docker exec nivo-frontend tail -f /var/log/nginx/access.log
 docker exec nivo-frontend tail -f /var/log/nginx/error.log
 ```
 
+## Docker Network Security
+
+### External Exposure
+Only the frontend container exposes ports externally:
+- **Port 80** → HTTP (redirects to HTTPS)
+- **Port 443** → HTTPS
+
+All backend services communicate via internal Docker network only:
+- postgres (5432) - Internal only
+- redis (6379) - Internal only
+- identity-service (8080) - Internal only
+- ledger-service (8081) - Internal only
+- rbac-service (8082) - Internal only
+- wallet-service (8083) - Internal only
+- transaction-service (8084) - Internal only
+- risk-service (8085) - Internal only
+- simulation-service (8086) - Internal only
+- notification-service (8087) - Internal only
+- gateway (8000) - Internal only (nginx proxies to it)
+
+### Verification
+```bash
+# Verify only frontend exposes ports
+docker ps --format "{{.Names}}: {{.Ports}}" | grep -v "0.0.0.0"
+
+# Confirm no backend services are accessible externally
+curl http://157.245.96.200:8080/health  # Should fail (connection refused)
+curl http://157.245.96.200:5432         # Should fail (connection refused)
+
+# Only these should work
+curl http://157.245.96.200              # Redirect to HTTPS
+curl -I https://nivomoney.com           # 200 OK
+```
+
+### Container Security Hardening
+All containers implement:
+- `cap_drop: ALL` - Remove all Linux capabilities
+- `no-new-privileges: true` - Prevent privilege escalation
+- Resource limits (memory, pids) - Prevent resource exhaustion
+
+---
+
 ## Security Configuration Details
 
 ### SSH Hardening (/etc/ssh/sshd_config)
