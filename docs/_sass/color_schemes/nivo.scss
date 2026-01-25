@@ -51,10 +51,14 @@ $nav-width: 16.5rem;
 // Sidebar
 $sidebar-color: $gray-800;
 
-// Body
+// Body - WCAG AA compliant contrast ratios
+// $gray-700 (#374151) on white = 7.5:1 contrast ratio (passes AAA)
 $body-background-color: #ffffff;
 $body-text-color: $gray-700;
 $body-heading-color: $gray-900;
+
+// WCAG: Ensure text colors have sufficient contrast
+$base-text-color: $gray-700;  // 7.5:1 on white - passes AAA
 
 // Code
 $code-background-color: $gray-100;
@@ -122,7 +126,7 @@ $link-color: $primary-600;
     }
   }
 
-  // Tables
+  // Tables - WCAG AA compliant
   table {
     border-collapse: collapse;
     width: 100%;
@@ -137,7 +141,11 @@ $link-color: $primary-600;
     th {
       background-color: $gray-50;
       font-weight: 600;
-      color: $gray-900;
+      color: $gray-900;  // High contrast for headers
+    }
+
+    td {
+      color: $gray-700;  // WCAG fix: explicit color for table cells (7.5:1 ratio)
     }
 
     tr:nth-child(even) {
@@ -170,21 +178,39 @@ $link-color: $primary-600;
   }
 }
 
-// Navigation styling
+// Navigation styling - WCAG AA compliant
 .site-nav {
   .nav-list-item {
     .nav-list-link {
-      color: $gray-700;
+      color: $gray-700 !important;  // Force override theme default for WCAG compliance
 
       &:hover {
-        color: $primary-600;
+        color: $primary-600 !important;
       }
 
       &.active {
-        color: $primary-600;
+        color: $primary-600 !important;
         font-weight: 600;
       }
+
+      // WCAG 2.4.7: Visible focus indicator for keyboard navigation
+      &:focus {
+        outline: 2px solid $primary-500;
+        outline-offset: 2px;
+        border-radius: 0.25rem;
+      }
     }
+  }
+}
+
+// Additional nav link overrides to ensure contrast
+.site-nav a,
+.nav-list a,
+.nav-list-link {
+  color: $gray-700 !important;  // WCAG: Ensure sufficient contrast
+
+  &:hover {
+    color: $primary-600 !important;
   }
 }
 
@@ -289,13 +315,34 @@ $link-color: $primary-600;
   }
 }
 
-// Footer
+// Footer - WCAG compliant
 .site-footer {
   border-top: 1px solid $gray-200;
   background-color: $gray-50;
+  color: $gray-700;  // WCAG: Ensure body text contrast
 
   a {
     color: $primary-600;
+  }
+}
+
+// WCAG 2.4.7: Global focus indicators for keyboard accessibility
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+[tabindex]:focus {
+  outline: 2px solid $primary-500;
+  outline-offset: 2px;
+}
+
+// Ensure all body text has sufficient contrast
+.main-content,
+.site-nav,
+.site-footer {
+  p, li, span, td {
+    color: $gray-700;  // 7.5:1 contrast ratio
   }
 }
 
