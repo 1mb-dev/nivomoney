@@ -310,7 +310,15 @@ func (s *SimulationEngine) runLifecycleCycle(ctx context.Context) {
 // runTransactionCycle runs one cycle of transaction simulation
 func (s *SimulationEngine) runTransactionCycle(ctx context.Context) {
 	currentHour := time.Now().Hour()
-	log.Printf("[simulation] 💸 Running transaction cycle (hour: %d)", currentHour)
+
+	// Count active users for debugging
+	activeSimulated := 0
+	for _, u := range s.simulatedUsers {
+		if u.Stage == StageActive {
+			activeSimulated++
+		}
+	}
+	log.Printf("[simulation] 💸 Transaction cycle (hour: %d, active: %d/%d)", currentHour, activeSimulated, len(s.simulatedUsers))
 
 	// Process transactions for existing users from DB
 	for _, user := range s.users {
