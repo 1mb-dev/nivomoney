@@ -1,299 +1,223 @@
-# Nivo Production Deployment Guide
+# Nivo Deployment Guide
 
-## Security Model
+## Server Information
 
-**Standard Operating Procedure (SOP):** Use `deploy` user for all operations.
-**Emergency/Maintenance:** Root access preserved (key-only).
+- **IP**: 157.245.96.200
+- **OS**: Debian 13 (Trixie)
+- **Deploy User**: nivo
+- **Deploy Directory**: /opt/nivo
 
-| Operation | User | Notes |
-|-----------|------|-------|
-| Server provisioning | `root` | Initial setup |
-| SSH login (SOP) | `deploy` | Standard operations |
-| SSH login (emergency) | `root` | Key-only, preserved for emergencies |
-| Application deployment | `deploy` | Docker via group membership |
-| Docker commands | `deploy` | No sudo required |
-| SSL certificates | `deploy` | Certbot in container |
-| Database backups | `deploy` | Via docker compose |
-| Viewing logs | `deploy` | Via docker compose |
+## Domains
 
-## Prerequisites
+| Domain | Purpose | Status |
+|--------|---------|--------|
+| nivomoney.com | User app | Active |
+| www.nivomoney.com | Redirect to apex | Active |
+| admin.nivomoney.com | Admin dashboard | Active |
+| api.nivomoney.com | API Gateway | Pending backend |
+| verify.nivomoney.com | Verification portal | Pending DNS |
+| grafana.nivomoney.com | Monitoring | Pending DNS |
 
-### Server Requirements
+## Quick Deploy Commands
 
-| Spec | Minimum | Notes |
-|------|---------|-------|
-| **RAM** | 2GB | With 2GB swap enabled |
-| **vCPU** | 1 | 2 recommended |
-| **Storage** | 25GB SSD | For Docker images + data |
-| **OS** | Ubuntu 22.04+ / Debian 12+ | |
-
-**Recommended: DigitalOcean Basic Droplet $12/mo** (2GB RAM, 1 vCPU, 50GB SSD)
-
-### Memory Allocation (~1.1GB total)
-
-| Service | Limit |
-|---------|-------|
-| PostgreSQL | 256M |
-| Redis | 64M |
-| Go services (8×) | 64-96M each |
-| Gateway | 96M |
-| Frontend (nginx) | 48M |
-
-### Other Requirements
-
-1. Fresh Ubuntu 22.04+ or Debian 12+ server
-2. SSH key configured for root access (temporarily)
-3. Domain DNS configured (see below)
-
-## DNS Configuration
-
-Configure these DNS records BEFORE deployment:
-
-| Record | Type | Value |
-|--------|------|-------|
-| nivomoney.com | A | `<server-ip>` |
-| www.nivomoney.com | CNAME | nivomoney.com |
-| admin.nivomoney.com | A | `<server-ip>` |
-| api.nivomoney.com | A | `<server-ip>` |
-| grafana.nivomoney.com | A | `<server-ip>` |
-| docs.nivomoney.com | CNAME | vnykmshr.github.io |
-
-## Step 1: Server Setup (Root - ONE TIME ONLY)
-
-SSH as root (last time you'll use root):
-
+### Frontend Only
 ```bash
-ssh root@your-server-ip
+# SSH to server
+ssh nivo@157.245.96.200
+
+# Pull latest code
+cd /opt/nivo && git pull origin main
+
+# Build frontend Docker image
+cd frontend && docker build --target production -t nivo-frontend:latest .
+
+# Deploy frontend (without backend)
+docker stop nivo-frontend 2>/dev/null; docker rm nivo-frontend 2>/dev/null
+docker run -d \
+  --name nivo-frontend \
+  -p 80:80 -p 443:443 \
+  -v /opt/nivo/frontend/nginx-frontend-only.conf:/etc/nginx/nginx.conf:ro \
+  -v /etc/letsencrypt:/etc/letsencrypt:ro \
+  -v /var/www/certbot:/var/www/certbot:ro \
+  --restart unless-stopped \
+  nivo-frontend:latest
+
+# Verify
+docker ps --filter name=nivo-frontend
+curl -I https://admin.nivomoney.com
 ```
 
-Run the setup script:
-
+### Full Stack (with backend)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/vnykmshr/nivo/main/scripts/setup-server.sh | bash
-```
-
-**What this does:**
-- Configures 2GB swap (required for 2GB VPS)
-- Creates `deploy` user with passwordless sudo
-- Copies your SSH keys to deploy user
-- Preserves root SSH access (key-only, for emergencies)
-- Installs Docker, SOPS, age
-- Configures UFW firewall (22, 80, 443 only)
-- Configures fail2ban (24h ban after 3 failures)
-- Enables automatic security updates
-
-After setup, verify deploy user access:
-
-```bash
-ssh deploy@your-server-ip
-```
-
-Use `deploy` user for all standard operations (SOP).
-
-## Step 2: Clone Repository (Deploy User)
-
-```bash
-ssh deploy@your-server-ip
-
-git clone https://github.com/vnykmshr/nivo.git /opt/nivo
+# Use docker-compose for full stack
 cd /opt/nivo
+docker-compose -f docker-compose.prod.yml up -d
+
+# Or use nginx-prod.conf which includes gateway upstream
+docker run -d \
+  --name nivo-frontend \
+  --network nivo-network \
+  -p 80:80 -p 443:443 \
+  -v /opt/nivo/frontend/nginx-prod.conf:/etc/nginx/nginx.conf:ro \
+  -v /etc/letsencrypt:/etc/letsencrypt:ro \
+  -v /var/www/certbot:/var/www/certbot:ro \
+  --restart unless-stopped \
+  nivo-frontend:latest
 ```
 
-## Step 3: Generate Age Key (Deploy User)
+## SSL Certificates
 
+Certificates managed by Let's Encrypt (certbot).
+
+### Renewal (automatic via cron)
 ```bash
-# Generate new key pair
-age-keygen -o ~/.config/sops/age/keys.txt
+# Manual renewal test
+sudo certbot renew --dry-run
 
-# View public key (needed for .sops.yaml)
-cat ~/.config/sops/age/keys.txt
-# Output: # public key: age1abc123...
-#         AGE-SECRET-KEY-1...
+# Force renewal
+sudo certbot renew --force-renewal
 ```
 
-**Save both keys securely!**
-- Public key: Update `.sops.yaml` in the repo
-- Private key: Keep in `~/.config/sops/age/keys.txt` on server
-
-## Step 4: Create Encrypted Secrets (Local Machine)
-
-On your local development machine:
-
+### Add new domains to certificate
 ```bash
-# Update .sops.yaml with your public key
-vim .sops.yaml  # Replace the age public key
+# Stop nginx first
+docker stop nivo-frontend
 
-# Create production env file
-cp .env.template .env.prod
+# Add domain (requires DNS to be configured first)
+sudo certbot certonly --standalone -d newdomain.nivomoney.com
 
-# Edit with real production values
-vim .env.prod
+# Or expand existing certificate
+sudo certbot certonly --standalone --expand \
+  -d nivomoney.com -d www.nivomoney.com \
+  -d admin.nivomoney.com -d api.nivomoney.com \
+  -d newdomain.nivomoney.com
 
-# Encrypt
-sops --encrypt --input-type dotenv --output-type dotenv --output .env.enc .env.prod
-
-# Delete unencrypted file!
-rm .env.prod
-
-# Commit the encrypted file
-git add .env.enc .sops.yaml
-git commit -m "Add encrypted production secrets"
-git push
+# Restart nginx
+docker start nivo-frontend
 ```
 
-## Step 5: Initial Deployment (Deploy User)
+## Nginx Configurations
 
-On your local machine:
+| File | Purpose |
+|------|---------|
+| nginx-frontend-only.conf | Frontend apps only (no backend) |
+| nginx-prod.conf | Full production with API gateway |
+| nginx.conf | Original full config with all domains |
+| nginx-local.conf | Local development |
 
-```bash
-# Create local deployment config
-cat > .env.local << EOF
-DEPLOY_HOST=your-server-ip
-DEPLOY_USER=deploy
-DEPLOY_DIR=/opt/nivo
-EOF
+## Docker Images
 
-# Deploy
-make deploy
-```
-
-## Step 6: SSL Certificates (Deploy User)
-
-After first deployment, obtain SSL certificates:
-
-```bash
-ssh deploy@your-server-ip
-cd /opt/nivo
-
-# Create certbot directories
-mkdir -p certbot/conf certbot/www
-
-# Get certificates (first time)
-docker compose run --rm certbot certonly --webroot \
-    --webroot-path=/var/www/certbot \
-    -d nivomoney.com \
-    -d www.nivomoney.com \
-    -d admin.nivomoney.com \
-    -d api.nivomoney.com \
-    -d grafana.nivomoney.com \
-    --email admin@nivomoney.com \
-    --agree-tos \
-    --no-eff-email
-
-# Restart to pick up certificates
-docker compose restart frontend
-```
-
-## Ongoing Operations
-
-All operations run as `deploy` user:
-
-### Deploy Updates
-```bash
-make deploy
-```
-
-### View Logs
-```bash
-ssh deploy@your-server-ip
-cd /opt/nivo
-docker compose logs -f
-docker compose logs -f gateway  # Specific service
-```
-
-### Database Backup
-```bash
-ssh deploy@your-server-ip
-cd /opt/nivo
-make db-backup
-```
-
-### Restart Services
-```bash
-ssh deploy@your-server-ip
-cd /opt/nivo
-docker compose restart
-```
-
-### SSL Certificate Renewal
-```bash
-ssh deploy@your-server-ip
-cd /opt/nivo
-docker compose run --rm certbot renew
-docker compose restart frontend
-```
-
-### Update Secrets
-```bash
-# On local machine
-sops .env.enc  # Edit encrypted file directly
-git add .env.enc
-git commit -m "Update secrets"
-make deploy
-```
-
-## Security Hardening Summary
-
-### Network
-- UFW firewall: Only ports 22, 80, 443
-- All backend services on internal Docker network
-- Only nginx exposed to internet
-
-### SSH
-- Root login: Key-only (preserved for emergencies)
-- Deploy user: Key-only (for SOP)
-- Strong ciphers only
-- fail2ban: 24h ban after 3 failed attempts
-
-### Docker
-- All containers: `cap_drop: ALL`
-- All containers: `no-new-privileges: true`
-- Resource limits on all containers
-- Non-root users in containers where possible
-- Read-only filesystems where possible
-
-### Secrets
-- SOPS + age encryption
-- Encrypted secrets committed to git
-- Decrypted only at deploy time
-- No plaintext secrets in repo
-
-### Updates
-- Automatic security updates enabled
-- Log rotation configured
-- Docker image cleanup on deploy
+| Image | Purpose |
+|-------|---------|
+| nivo-frontend:latest | Nginx serving all frontend apps |
+| nivo-gateway:latest | API Gateway (Go) |
+| nivo-identity:latest | Identity service |
+| ... | Other microservices |
 
 ## Troubleshooting
 
-### Can't SSH as deploy user
+### Frontend container not starting
 ```bash
-# If you still have root access somehow
-sudo cat /var/log/auth.log | tail -50
-```
+# Check logs
+docker logs nivo-frontend
 
-### Services not starting
-```bash
-ssh deploy@your-server-ip
-cd /opt/nivo
-docker compose logs --tail=100
-docker compose ps
+# Common issue: gateway upstream not available
+# Solution: Use nginx-frontend-only.conf instead of nginx-prod.conf
 ```
 
 ### SSL certificate issues
 ```bash
-# Check certificate status
-docker compose run --rm certbot certificates
+# Check certificate
+sudo certbot certificates
 
-# Force renewal
-docker compose run --rm certbot renew --force-renewal
-docker compose restart frontend
+# Check expiration
+openssl s_client -connect nivomoney.com:443 -servername nivomoney.com </dev/null 2>/dev/null | openssl x509 -noout -dates
 ```
 
-### Database issues
+### DNS not resolving
 ```bash
-# Connect to database
-docker compose exec postgres psql -U nivo nivo
+# Check from server
+dig +short admin.nivomoney.com
 
-# Check database logs
-docker compose logs postgres
+# Check A record points to 157.245.96.200
 ```
+
+## Security Hardening Applied
+
+- SSH key-only authentication
+- UFW firewall (ports 22, 80, 443 only)
+- Fail2ban for brute-force protection
+- Docker containers run as non-root
+- Security headers (HSTS, CSP, X-Frame-Options, etc.)
+- Rate limiting on API endpoints
+- TLS 1.2/1.3 only
+
+## Monitoring
+
+### Health checks
+```bash
+# Nginx health
+curl http://localhost/nginx-health
+
+# Container health
+docker inspect --format='{{.State.Health.Status}}' nivo-frontend
+```
+
+### Logs
+```bash
+# Nginx access logs
+docker exec nivo-frontend tail -f /var/log/nginx/access.log
+
+# Nginx error logs
+docker exec nivo-frontend tail -f /var/log/nginx/error.log
+```
+
+## Security Configuration Details
+
+### SSH Hardening (/etc/ssh/sshd_config)
+- PermitRootLogin: prohibit-password (key-only)
+- PasswordAuthentication: no
+- MaxAuthTries: 3
+- ClientAliveInterval: 300
+- ClientAliveCountMax: 2
+
+### Firewall (UFW)
+```
+Port 22/tcp  - SSH
+Port 80/tcp  - HTTP (redirects to HTTPS)
+Port 443/tcp - HTTPS
+```
+
+### Fail2ban
+- SSH jail active
+- Auto-bans after failed attempts
+
+### Kernel Security (/etc/sysctl.d/99-security.conf)
+- IP spoofing protection
+- ICMP redirect disabled
+- Source routing disabled
+- SYN flood protection
+- Martian packet logging
+
+### Automatic Updates
+- unattended-upgrades enabled for security patches
+
+### Docker Container Security
+- Non-root nginx user
+- Read-only config mounts
+- Restart policy: unless-stopped
+- Health checks enabled
+
+### Web Security Headers
+All HTTPS responses include:
+- Strict-Transport-Security (HSTS)
+- X-Frame-Options
+- X-Content-Type-Options
+- X-XSS-Protection
+- Referrer-Policy
+- Content-Security-Policy (user app)
+
+### Rate Limiting
+- Auth endpoints: 5 requests/minute
+- API endpoints: 10 requests/second
+- General: 30 requests/second
