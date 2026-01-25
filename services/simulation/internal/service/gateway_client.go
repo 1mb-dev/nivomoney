@@ -30,7 +30,8 @@ func NewGatewayClient(baseURL, authToken string) *GatewayClient {
 // DepositRequest represents a deposit transaction request
 type DepositRequest struct {
 	WalletID    string `json:"wallet_id"`
-	AmountPaise int64  `json:"amount_paise"`
+	Amount      int64  `json:"amount"` // Amount in smallest unit (paise)
+	Currency    string `json:"currency"`
 	Description string `json:"description"`
 }
 
@@ -38,14 +39,16 @@ type DepositRequest struct {
 type TransferRequest struct {
 	SourceWalletID      string `json:"source_wallet_id"`
 	DestinationWalletID string `json:"destination_wallet_id"`
-	AmountPaise         int64  `json:"amount_paise"`
+	Amount              int64  `json:"amount"` // Amount in smallest unit (paise)
+	Currency            string `json:"currency"`
 	Description         string `json:"description"`
 }
 
 // WithdrawalRequest represents a withdrawal transaction request
 type WithdrawalRequest struct {
 	WalletID    string `json:"wallet_id"`
-	AmountPaise int64  `json:"amount_paise"`
+	Amount      int64  `json:"amount"` // Amount in smallest unit (paise)
+	Currency    string `json:"currency"`
 	Description string `json:"description"`
 }
 
@@ -119,7 +122,8 @@ func bearerToken(token string) map[string]string {
 func (c *GatewayClient) CreateDeposit(ctx context.Context, token, walletID string, amountPaise int64, description string) error {
 	req := DepositRequest{
 		WalletID:    walletID,
-		AmountPaise: amountPaise,
+		Amount:      amountPaise,
+		Currency:    "INR",
 		Description: description,
 	}
 
@@ -142,7 +146,8 @@ func (c *GatewayClient) CreateTransfer(ctx context.Context, token, sourceWalletI
 	req := TransferRequest{
 		SourceWalletID:      sourceWalletID,
 		DestinationWalletID: destWalletID,
-		AmountPaise:         amountPaise,
+		Amount:              amountPaise,
+		Currency:            "INR",
 		Description:         description,
 	}
 
@@ -164,7 +169,8 @@ func (c *GatewayClient) CreateTransfer(ctx context.Context, token, sourceWalletI
 func (c *GatewayClient) CreateWithdrawal(ctx context.Context, token, walletID string, amountPaise int64, description string) error {
 	req := WithdrawalRequest{
 		WalletID:    walletID,
-		AmountPaise: amountPaise,
+		Amount:      amountPaise,
+		Currency:    "INR",
 		Description: description,
 	}
 
