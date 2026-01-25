@@ -201,11 +201,11 @@ func (m *UserLifecycleManager) verifyKYCDirectly(ctx context.Context, userID str
 		    verified_at = NOW(),
 		    updated_at = NOW()
 		WHERE user_id = $1
-		RETURNING id
+		RETURNING user_id
 	`
 
-	var kycID string
-	err = tx.QueryRowContext(ctx, kycQuery, userID).Scan(&kycID)
+	var kycUserID string
+	err = tx.QueryRowContext(ctx, kycQuery, userID).Scan(&kycUserID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return fmt.Errorf("no KYC record found for user %s", userID)
@@ -231,7 +231,7 @@ func (m *UserLifecycleManager) verifyKYCDirectly(ctx context.Context, userID str
 		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
-	log.Printf("[simulation] 🔧 Direct DB update: KYC verified for user %s (kyc_id: %s)", userID, kycID)
+	log.Printf("[simulation] 🔧 Direct DB update: KYC verified for user %s", kycUserID)
 	return nil
 }
 
