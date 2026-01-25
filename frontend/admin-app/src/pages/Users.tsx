@@ -17,7 +17,7 @@ import {
   Badge,
   Skeleton,
   FormField,
-} from '@nivo/shared';
+} from '@nivo/shared/components';
 import { getStatusVariant, getKYCStatusVariant } from '@nivo/shared';
 
 export function Users() {

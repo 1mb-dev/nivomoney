@@ -13,7 +13,7 @@ import {
   type TransactionFilterValues,
   type QuickAction,
 } from '../components';
-import { Alert, Card, CardTitle, Button, Skeleton } from '@nivo/shared';
+import { Alert, Card, CardTitle, Button, Skeleton } from '@nivo/shared/components';
 import { api } from '../lib/api';
 import type { Transaction, Wallet, KYCInfo } from '@nivo/shared';
 

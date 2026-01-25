@@ -11,7 +11,7 @@ import {
   Alert,
   PageHero,
   TrustBadge,
-} from '@nivo/shared';
+} from '@nivo/shared/components';
 
 export function Register() {
   const [formData, setFormData] = useState({

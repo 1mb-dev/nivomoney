@@ -17,9 +17,9 @@ import {
   Badge,
   FormField,
   Skeleton,
-} from '@nivo/shared';
+} from '@nivo/shared/components';
+import { cn } from '@nivo/shared/lib/utils';
 import {
-  cn,
   getTransactionStatusVariant,
   getTransactionTypeVariant,
 } from '@nivo/shared';

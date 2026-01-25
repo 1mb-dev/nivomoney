@@ -12,7 +12,7 @@ import {
   Button,
   Badge,
   Skeleton,
-} from '@nivo/shared';
+} from '@nivo/shared/components';
 import {
   getTransactionStatusVariant,
   getTransactionTypeVariant,

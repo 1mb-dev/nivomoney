@@ -6,8 +6,8 @@ import {
   Button,
   BottomNav,
   BottomNavItem,
-} from '@nivo/shared';
-import { cn } from '@nivo/shared';
+} from '@nivo/shared/components';
+import { cn } from '@nivo/shared/lib/utils';
 
 export interface AppLayoutProps {
   children: ReactNode;

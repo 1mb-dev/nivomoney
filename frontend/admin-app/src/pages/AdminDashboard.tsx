@@ -10,8 +10,9 @@ import {
   Alert,
   Badge,
   Skeleton,
-} from '@nivo/shared';
-import { cn, getStatusVariant } from '@nivo/shared';
+} from '@nivo/shared/components';
+import { cn } from '@nivo/shared/lib/utils';
+import { getStatusVariant } from '@nivo/shared';
 import type { User, AdminStats } from '@nivo/shared';
 
 interface NotificationItem {

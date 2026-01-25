@@ -2,8 +2,8 @@ import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAdminAuthStore } from '../stores/adminAuthStore';
-import { cn } from '@nivo/shared';
-import { Button, Badge, Breadcrumbs, type BreadcrumbItem } from '@nivo/shared';
+import { cn } from '@nivo/shared/lib/utils';
+import { Button, Badge, Breadcrumbs, type BreadcrumbItem } from '@nivo/shared/components';
 
 export interface AdminLayoutProps {
   children: ReactNode;

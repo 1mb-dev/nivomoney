@@ -1,6 +1,6 @@
 import type { Wallet } from '@nivo/shared';
 import { formatCurrency } from '../lib/utils';
-import { Badge } from '@nivo/shared';
+import { Badge } from '@nivo/shared/components';
 
 type BadgeVariant = 'success' | 'warning' | 'error' | 'info' | 'neutral';
 

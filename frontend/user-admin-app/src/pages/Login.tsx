@@ -9,7 +9,7 @@ import {
   Alert,
   Badge,
   LogoWithText,
-} from '@nivo/shared';
+} from '@nivo/shared/components';
 
 export function Login() {
   const navigate = useNavigate();

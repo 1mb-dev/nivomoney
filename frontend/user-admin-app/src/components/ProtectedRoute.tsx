@@ -6,7 +6,7 @@
 import { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
-import { Spinner } from '@nivo/shared';
+import { Spinner } from '@nivo/shared/components';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

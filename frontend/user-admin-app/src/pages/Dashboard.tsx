@@ -17,7 +17,7 @@ import {
   Spinner,
   Skeleton,
   Logo,
-} from '@nivo/shared';
+} from '@nivo/shared/components';
 
 export function Dashboard() {
   const { user, pairedUser, logout } = useAuthStore();

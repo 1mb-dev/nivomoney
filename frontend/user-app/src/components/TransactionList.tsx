@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Transaction } from '@nivo/shared';
 import { formatCurrency, formatDate } from '../lib/utils';
 import { TransactionDetailsModal } from './TransactionDetailsModal';
-import { Badge } from '@nivo/shared';
+import { Badge } from '@nivo/shared/components';
 
 type BadgeVariant = 'success' | 'warning' | 'error' | 'info' | 'neutral';
 

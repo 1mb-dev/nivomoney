@@ -14,7 +14,7 @@ import {
   StepIndicator,
   SuccessState,
   TrustBadge,
-} from '@nivo/shared';
+} from '@nivo/shared/components';
 
 interface SavedBankAccount {
   id: string;

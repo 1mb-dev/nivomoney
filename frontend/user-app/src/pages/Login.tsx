@@ -11,7 +11,7 @@ import {
   Alert,
   PageHero,
   TrustBadge,
-} from '@nivo/shared';
+} from '@nivo/shared/components';
 
 export function Login() {
   const [identifier, setIdentifier] = useState('');

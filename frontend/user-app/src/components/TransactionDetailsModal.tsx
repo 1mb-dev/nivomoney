@@ -1,6 +1,6 @@
 import type { Transaction } from '@nivo/shared';
 import { formatCurrency, formatDate } from '../lib/utils';
-import { Modal, Badge, Button } from '@nivo/shared';
+import { Modal, Badge, Button } from '@nivo/shared/components';
 
 type BadgeVariant = 'success' | 'warning' | 'error' | 'info' | 'neutral';
 
