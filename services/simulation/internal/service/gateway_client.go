@@ -137,7 +137,6 @@ func (c *GatewayClient) CreateDeposit(ctx context.Context, token, walletID strin
 			return err
 		}
 	}
-	log.Printf("[simulation] Transaction created successfully: POST /api/v1/transaction/transactions/deposit")
 	return nil
 }
 
@@ -162,7 +161,6 @@ func (c *GatewayClient) CreateTransfer(ctx context.Context, token, sourceWalletI
 			return err
 		}
 	}
-	log.Printf("[simulation] Transaction created successfully: POST /api/v1/transaction/transactions/transfer")
 	return nil
 }
 
@@ -186,7 +184,6 @@ func (c *GatewayClient) CreateWithdrawal(ctx context.Context, token, walletID st
 			return err
 		}
 	}
-	log.Printf("[simulation] Transaction created successfully: POST /api/v1/transaction/transactions/withdrawal")
 	return nil
 }
 

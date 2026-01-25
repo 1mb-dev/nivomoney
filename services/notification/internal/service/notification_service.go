@@ -60,7 +60,18 @@ func (s *NotificationService) SendNotification(ctx context.Context, req *models.
 
 	// If template is specified, render it
 	if req.TemplateID != nil && *req.TemplateID != "" {
-		template, err := s.templateRepo.GetByID(ctx, *req.TemplateID)
+		// Try to look up template by ID (if valid UUID) or by name
+		var template *models.NotificationTemplate
+		var err *errors.Error
+
+		if _, uuidErr := uuid.Parse(*req.TemplateID); uuidErr == nil {
+			// Valid UUID - look up by ID
+			template, err = s.templateRepo.GetByID(ctx, *req.TemplateID)
+		} else {
+			// Not a UUID - look up by name
+			template, err = s.templateRepo.GetByName(ctx, *req.TemplateID)
+		}
+
 		if err != nil {
 			return nil, err
 		}
@@ -217,9 +228,13 @@ func (s *NotificationService) CreateTemplate(ctx context.Context, req *models.Cr
 	return template, nil
 }
 
-// GetTemplate retrieves a template by ID.
+// GetTemplate retrieves a template by ID or name.
 func (s *NotificationService) GetTemplate(ctx context.Context, id string) (*models.NotificationTemplate, *errors.Error) {
-	return s.templateRepo.GetByID(ctx, id)
+	// Try by ID first if valid UUID, otherwise by name
+	if _, uuidErr := uuid.Parse(id); uuidErr == nil {
+		return s.templateRepo.GetByID(ctx, id)
+	}
+	return s.templateRepo.GetByName(ctx, id)
 }
 
 // ListTemplates retrieves all templates, optionally filtered by channel.
@@ -234,7 +249,16 @@ func (s *NotificationService) UpdateTemplate(ctx context.Context, id string, req
 
 // PreviewTemplate renders a template with provided variables (for testing).
 func (s *NotificationService) PreviewTemplate(ctx context.Context, templateID string, variables map[string]interface{}) (*models.PreviewTemplateResponse, *errors.Error) {
-	template, err := s.templateRepo.GetByID(ctx, templateID)
+	// Look up by ID if valid UUID, otherwise by name
+	var template *models.NotificationTemplate
+	var err *errors.Error
+
+	if _, uuidErr := uuid.Parse(templateID); uuidErr == nil {
+		template, err = s.templateRepo.GetByID(ctx, templateID)
+	} else {
+		template, err = s.templateRepo.GetByName(ctx, templateID)
+	}
+
 	if err != nil {
 		return nil, err
 	}

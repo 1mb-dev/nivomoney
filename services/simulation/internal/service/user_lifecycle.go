@@ -140,7 +140,7 @@ func (m *UserLifecycleManager) LoginUser(ctx context.Context, user *SimulatedUse
 	return nil
 }
 
-// SubmitKYC submits KYC information for a user
+// SubmitKYC submits KYC information for a user with retry on failure
 func (m *UserLifecycleManager) SubmitKYC(ctx context.Context, user *SimulatedUser) error {
 	if user.Stage != StageRegistered {
 		return fmt.Errorf("user must be in REGISTERED stage to submit KYC (current: %s)", user.Stage)
@@ -153,16 +153,28 @@ func (m *UserLifecycleManager) SubmitKYC(ctx context.Context, user *SimulatedUse
 		}
 	}
 
-	kycReq := generateKYCData(user.FullName)
-	if err := m.gatewayClient.SubmitKYC(ctx, user.SessionToken, kycReq); err != nil {
-		return fmt.Errorf("failed to submit KYC: %w", err)
+	// Retry with regenerated data if submission fails (handles PAN/Aadhaar collisions)
+	const maxRetries = 3
+	var lastErr error
+
+	for attempt := 1; attempt <= maxRetries; attempt++ {
+		kycReq := generateKYCData(user.FullName)
+		if err := m.gatewayClient.SubmitKYC(ctx, user.SessionToken, kycReq); err != nil {
+			lastErr = err
+			if attempt < maxRetries {
+				log.Printf("[simulation] KYC attempt %d failed for %s, retrying with new data", attempt, user.Email)
+				continue
+			}
+		} else {
+			// Success
+			user.Stage = StageKYCSubmitted
+			user.LastActive = time.Now()
+			log.Printf("[simulation] 📋 KYC submitted: %s", user.Email)
+			return nil
+		}
 	}
 
-	user.Stage = StageKYCSubmitted
-	user.LastActive = time.Now()
-
-	log.Printf("[simulation] 📋 KYC submitted: %s", user.Email)
-	return nil
+	return fmt.Errorf("failed to submit KYC after %d attempts: %w", maxRetries, lastErr)
 }
 
 // VerifyKYC uses local database bypass to verify a user's KYC (simulated users only)
@@ -226,12 +238,27 @@ func (m *UserLifecycleManager) verifyKYCDirectly(ctx context.Context, userID str
 		return fmt.Errorf("failed to update user status: %w", err)
 	}
 
+	// Activate all inactive wallets for this user
+	walletQuery := `
+		UPDATE wallets
+		SET status = 'active',
+		    updated_at = NOW()
+		WHERE user_id = $1 AND status = 'inactive'
+	`
+
+	result, err := tx.ExecContext(ctx, walletQuery, userID)
+	if err != nil {
+		return fmt.Errorf("failed to activate wallets: %w", err)
+	}
+
+	walletsActivated, _ := result.RowsAffected()
+
 	// Commit transaction
 	if err = tx.Commit(); err != nil {
 		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
-	log.Printf("[simulation] 🔧 Direct DB update: KYC verified for user %s", kycUserID)
+	log.Printf("[simulation] 🔧 Direct DB update: KYC verified for user %s, activated %d wallet(s)", kycUserID, walletsActivated)
 	return nil
 }
 
