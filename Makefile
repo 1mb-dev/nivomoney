@@ -52,7 +52,7 @@ help:
 	@echo "  make ssl-renew        Renew SSL certificates"
 	@echo ""
 	@echo "Deployment:"
-	@echo "  make deploy           Deploy to production"
+	@echo "  make deploy           Deploy to production (1GB VPS optimized)"
 	@echo "  make setup-server     Run server setup script (requires sudo)"
 	@echo ""
 	@echo "Code Quality:"

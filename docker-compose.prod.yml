@@ -1,0 +1,187 @@
+# =============================================================================
+# Nivo - Production Configuration (1GB VPS Optimized)
+# =============================================================================
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Requirements:
+#   - 1GB RAM minimum (1 vCPU)
+#   - 2GB swap enabled (see scripts/setup-server.sh)
+#   - 25GB disk
+#
+# Memory Budget (~750MB for containers):
+#   - PostgreSQL: 128MB (tuned for low memory)
+#   - Redis: 32MB (24MB maxmemory)
+#   - Go services: 48MB each × 8 = 384MB
+#   - Gateway: 64MB
+#   - Frontend: 48MB
+#   - Buffer: ~100MB for spikes
+#
+# Note: Observability stack disabled (use external monitoring if needed)
+#
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # INFRASTRUCTURE - Memory Optimized
+  # ===========================================================================
+
+  postgres:
+    command: >
+      postgres
+      -c shared_buffers=32MB
+      -c effective_cache_size=64MB
+      -c maintenance_work_mem=16MB
+      -c work_mem=2MB
+      -c max_connections=50
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=2MB
+      -c random_page_cost=1.1
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+
+  redis:
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD}
+      --maxmemory 24mb
+      --maxmemory-policy allkeys-lru
+      --tcp-keepalive 60
+      --timeout 300
+    deploy:
+      resources:
+        limits:
+          memory: 32M
+          pids: 16
+        reservations:
+          memory: 16M
+
+  # ===========================================================================
+  # BACKEND SERVICES - Lean Memory Limits
+  # ===========================================================================
+
+  identity-service:
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+          pids: 32
+        reservations:
+          memory: 24M
+
+  ledger-service:
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+          pids: 32
+        reservations:
+          memory: 24M
+
+  rbac-service:
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+          pids: 24
+        reservations:
+          memory: 24M
+
+  wallet-service:
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+          pids: 32
+        reservations:
+          memory: 24M
+
+  transaction-service:
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+          pids: 32
+        reservations:
+          memory: 24M
+
+  risk-service:
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+          pids: 24
+        reservations:
+          memory: 24M
+
+  notification-service:
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+          pids: 24
+        reservations:
+          memory: 24M
+
+  simulation-service:
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+          pids: 24
+        reservations:
+          memory: 24M
+
+  # ===========================================================================
+  # API GATEWAY
+  # ===========================================================================
+
+  gateway:
+    depends_on:
+      identity-service:
+        condition: service_healthy
+      ledger-service:
+        condition: service_healthy
+      rbac-service:
+        condition: service_healthy
+      wallet-service:
+        condition: service_healthy
+      transaction-service:
+        condition: service_healthy
+      notification-service:
+        condition: service_healthy
+      # Remove risk-service dependency - gateway doesn't call it directly
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          pids: 32
+        reservations:
+          memory: 32M
+
+  # ===========================================================================
+  # FRONTEND
+  # ===========================================================================
+
+  frontend:
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+          pids: 16
+        reservations:
+          memory: 24M
+
+  # Certbot runs briefly for renewals
+  certbot:
+    deploy:
+      resources:
+        limits:
+          memory: 32M
+          pids: 8

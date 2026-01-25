@@ -129,16 +129,16 @@ docker compose ps -q 2>/dev/null | xargs -r docker inspect --format='{{.Image}}'
 done
 
 echo "[DEPLOY] Building images..."
-docker compose build --pull
+docker compose -f docker-compose.yml -f docker-compose.prod.yml build --pull
 
 echo "[DEPLOY] Stopping old containers..."
-docker compose down --remove-orphans
+docker compose -f docker-compose.yml -f docker-compose.prod.yml down --remove-orphans
 
 echo "[DEPLOY] Running database migrations..."
 # Migrations run as part of service startup
 
 echo "[DEPLOY] Starting services..."
-docker compose up -d
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 echo "[DEPLOY] Cleaning up old images..."
 docker image prune -f
@@ -154,8 +154,8 @@ until curl -sf http://localhost:8000/health > /dev/null 2>&1; do
     if [ \$ATTEMPT -ge \$MAX_ATTEMPTS ]; then
         echo "[ERROR] Health check failed after \$MAX_ATTEMPTS attempts"
         echo "[ERROR] Rolling back..."
-        docker compose logs --tail=50
-        docker compose down
+        docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50
+        docker compose -f docker-compose.yml -f docker-compose.prod.yml down
         exit 1
     fi
     echo "[DEPLOY] Waiting for gateway... (attempt \$ATTEMPT/\$MAX_ATTEMPTS)"
@@ -167,7 +167,7 @@ echo "[DEPLOY] =========================================="
 echo "[DEPLOY]   Deployment successful!"
 echo "[DEPLOY] =========================================="
 echo ""
-docker compose ps
+docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
 ENDSSH
 
 echo ""

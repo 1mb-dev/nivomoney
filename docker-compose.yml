@@ -1,13 +1,15 @@
 # =============================================================================
-# Nivo - Docker Compose (Production Base Configuration)
+# Nivo - Docker Compose (Base Configuration)
 # =============================================================================
 #
 # Usage:
-#   Production: docker compose up -d (uses only this file)
-#   Local dev:  docker compose up -d (auto-loads docker-compose.override.yml)
-#   With monitoring: docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
+#   Development: docker compose up -d (auto-loads docker-compose.override.yml)
+#   Production:  docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#   Monitoring:  docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
 #
-# Memory: Optimized for 2GB VPS (~1.1GB total container limits)
+# Memory:
+#   - Development: ~1.1GB (this file alone)
+#   - Production:  ~750MB (with docker-compose.prod.yml for 1GB VPS)
 #   - Requires 2GB swap enabled on host
 #   - See scripts/setup-server.sh for swap configuration
 #
