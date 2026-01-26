@@ -166,30 +166,48 @@ $link-color: $primary-600;
     }
   }
 
-  // Tables - WCAG AA compliant
+  // Tables - WCAG AA compliant with explicit backgrounds
   table {
     border-collapse: collapse;
     width: 100%;
     margin: 1rem 0;
+    background-color: #ffffff;
+
+    thead {
+      background-color: $gray-50;
+    }
+
+    tbody {
+      background-color: #ffffff;
+    }
+
+    tr {
+      background-color: #ffffff;
+    }
+
+    tr:nth-child(even) {
+      background-color: $gray-50;
+    }
+
+    tr:hover {
+      background-color: $primary-50;
+    }
 
     th, td {
       border: 1px solid $gray-200;
       padding: 0.75rem;
       text-align: left;
+      background-color: inherit;
     }
 
     th {
       background-color: $gray-50;
       font-weight: 600;
-      color: $gray-900;  // High contrast for headers
+      color: $gray-900;
     }
 
     td {
-      color: $gray-700;  // WCAG fix: explicit color for table cells (7.5:1 ratio)
-    }
-
-    tr:nth-child(even) {
-      background-color: $gray-50;
+      color: $gray-700;
     }
   }
 

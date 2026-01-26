@@ -12,13 +12,38 @@
 </script>
 
 <style>
-  /* Theme toggle container alignment */
+  /* ========================================
+     STICKY HEADER
+     ======================================== */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #ffffff;
+  }
+
+  [data-theme="nivo-dark"] .site-header {
+    background-color: #0f172a;
+  }
+
+  /* Sidebar sticky on desktop */
+  @media (min-width: 800px) {
+    .side-bar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+  }
+
+  /* ========================================
+     THEME TOGGLE BUTTON
+     ======================================== */
   .aux-nav-item {
     display: flex;
     align-items: center;
   }
 
-  /* Theme toggle button in header */
   .theme-toggle-header {
     display: inline-flex;
     align-items: center;
@@ -42,7 +67,6 @@
     height: 1.25rem;
   }
 
-  /* Dark mode button appearance */
   [data-theme="nivo-dark"] .theme-toggle-header {
     color: #60a5fa;
     border-color: #60a5fa;
@@ -52,16 +76,17 @@
     background-color: rgba(96, 165, 250, 0.1);
   }
 
-  /* Icon visibility based on theme */
   .theme-toggle-header .sun-icon { display: none; }
   .theme-toggle-header .moon-icon { display: block; }
 
   [data-theme="nivo-dark"] .theme-toggle-header .sun-icon { display: block; }
   [data-theme="nivo-dark"] .theme-toggle-header .moon-icon { display: none; }
 
-  /* Mermaid diagram container */
+  /* ========================================
+     MERMAID DIAGRAMS
+     ======================================== */
   .mermaid {
-    background: #f8fafc;
+    background: #f8fafc !important;
     border: 1px solid #e2e8f0;
     border-radius: 0.75rem;
     padding: 1.5rem;
@@ -70,17 +95,84 @@
   }
 
   [data-theme="nivo-dark"] .mermaid {
-    background: #1e293b;
+    background: #1e293b !important;
     border-color: #475569;
   }
 
-  /* Enhanced table styling */
+  /* Mermaid text colors */
+  .mermaid text,
+  .mermaid .nodeLabel,
+  .mermaid .edgeLabel,
+  .mermaid .label {
+    fill: #0f172a !important;
+    color: #0f172a !important;
+  }
+
+  [data-theme="nivo-dark"] .mermaid text,
+  [data-theme="nivo-dark"] .mermaid .nodeLabel,
+  [data-theme="nivo-dark"] .mermaid .edgeLabel,
+  [data-theme="nivo-dark"] .mermaid .label {
+    fill: #f1f5f9 !important;
+    color: #f1f5f9 !important;
+  }
+
+  /* Mermaid node backgrounds */
+  .mermaid .node rect,
+  .mermaid .node circle,
+  .mermaid .node polygon {
+    fill: #dbeafe !important;
+    stroke: #3b82f6 !important;
+  }
+
+  [data-theme="nivo-dark"] .mermaid .node rect,
+  [data-theme="nivo-dark"] .mermaid .node circle,
+  [data-theme="nivo-dark"] .mermaid .node polygon {
+    fill: #1e3a8a !important;
+    stroke: #60a5fa !important;
+  }
+
+  /* Mermaid clusters/subgraphs */
+  .mermaid .cluster rect {
+    fill: #f1f5f9 !important;
+    stroke: #cbd5e1 !important;
+  }
+
+  [data-theme="nivo-dark"] .mermaid .cluster rect {
+    fill: #0f172a !important;
+    stroke: #475569 !important;
+  }
+
+  .mermaid .cluster .nodeLabel {
+    fill: #334155 !important;
+  }
+
+  [data-theme="nivo-dark"] .mermaid .cluster .nodeLabel {
+    fill: #94a3b8 !important;
+  }
+
+  /* Mermaid edge lines */
+  .mermaid .edgePath .path {
+    stroke: #64748b !important;
+  }
+
+  [data-theme="nivo-dark"] .mermaid .edgePath .path {
+    stroke: #94a3b8 !important;
+  }
+
+  /* ========================================
+     TABLE STYLING - EXPLICIT BACKGROUNDS
+     ======================================== */
   .main-content table {
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
     margin: 1.5rem 0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+  }
+
+  .main-content table thead {
+    background-color: #f8fafc;
   }
 
   .main-content table th {
@@ -91,24 +183,42 @@
     border-bottom: 2px solid #e2e8f0;
   }
 
+  .main-content table tbody {
+    background-color: #ffffff;
+  }
+
+  .main-content table tr {
+    background-color: #ffffff;
+  }
+
+  .main-content table tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+
   .main-content table td {
     padding: 0.75rem 1rem;
     color: #334155;
     border-bottom: 1px solid #f1f5f9;
+    background-color: inherit;
   }
 
   .main-content table tr:last-child td {
     border-bottom: none;
   }
 
-  .main-content table tr:hover td {
-    background-color: #f8fafc;
+  .main-content table tr:hover {
+    background-color: #eff6ff;
   }
 
-  /* Dark mode table styling */
+  /* Dark mode table styling - EXPLICIT backgrounds to override any inherited white */
   [data-theme="nivo-dark"] .main-content table {
     border-color: #334155;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    background-color: #111827;
+  }
+
+  [data-theme="nivo-dark"] .main-content table thead {
+    background-color: #1e293b;
   }
 
   [data-theme="nivo-dark"] .main-content table th {
@@ -117,13 +227,26 @@
     border-bottom-color: #334155;
   }
 
+  [data-theme="nivo-dark"] .main-content table tbody {
+    background-color: #111827;
+  }
+
+  [data-theme="nivo-dark"] .main-content table tr {
+    background-color: #111827;
+  }
+
+  [data-theme="nivo-dark"] .main-content table tr:nth-child(even) {
+    background-color: #1e293b;
+  }
+
   [data-theme="nivo-dark"] .main-content table td {
     color: #cbd5e1;
     border-bottom-color: #1e293b;
+    background-color: inherit;
   }
 
-  [data-theme="nivo-dark"] .main-content table tr:hover td {
-    background-color: #1e293b;
+  [data-theme="nivo-dark"] .main-content table tr:hover {
+    background-color: #1e3a8a;
   }
 
   .main-content table strong {
@@ -133,6 +256,15 @@
 
   [data-theme="nivo-dark"] .main-content table strong {
     color: #f1f5f9;
+  }
+
+  /* Table links */
+  .main-content table a {
+    color: #2563eb;
+  }
+
+  [data-theme="nivo-dark"] .main-content table a {
+    color: #60a5fa;
   }
 </style>
 
@@ -184,54 +316,87 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// Mermaid re-initialization for theme changes
-function reinitMermaid(isDark) {
-  if (typeof mermaid === 'undefined') return;
-
-  mermaid.initialize({
+// Mermaid theme configuration
+function getMermaidConfig(isDark) {
+  return {
     startOnLoad: false,
-    theme: isDark ? 'dark' : 'default',
+    theme: 'base',
     themeVariables: isDark ? {
-      primaryColor: '#3b82f6',
+      // Dark theme colors
+      primaryColor: '#1e3a8a',
       primaryTextColor: '#f1f5f9',
       primaryBorderColor: '#60a5fa',
       lineColor: '#94a3b8',
-      secondaryColor: '#1e293b',
-      tertiaryColor: '#334155',
+      secondaryColor: '#334155',
+      tertiaryColor: '#1e293b',
       background: '#1e293b',
-      mainBkg: '#334155',
-      nodeBorder: '#475569',
-      clusterBkg: '#1e293b',
+      mainBkg: '#1e3a8a',
+      nodeBorder: '#60a5fa',
+      clusterBkg: '#0f172a',
       clusterBorder: '#475569',
       titleColor: '#f1f5f9',
       edgeLabelBackground: '#1e293b',
       textColor: '#f1f5f9',
-      nodeTextColor: '#f1f5f9'
+      nodeTextColor: '#f1f5f9',
+      labelTextColor: '#f1f5f9',
+      actorTextColor: '#f1f5f9',
+      actorBkg: '#1e3a8a',
+      actorBorder: '#60a5fa',
+      signalColor: '#94a3b8',
+      signalTextColor: '#f1f5f9',
+      labelBoxBkgColor: '#1e293b',
+      labelBoxBorderColor: '#475569',
+      noteBkgColor: '#334155',
+      noteBorderColor: '#475569',
+      noteTextColor: '#f1f5f9',
+      activationBkgColor: '#1e3a8a',
+      activationBorderColor: '#60a5fa'
     } : {
-      primaryColor: '#3b82f6',
-      primaryTextColor: '#ffffff',
-      primaryBorderColor: '#2563eb',
+      // Light theme colors
+      primaryColor: '#dbeafe',
+      primaryTextColor: '#0f172a',
+      primaryBorderColor: '#3b82f6',
       lineColor: '#64748b',
       secondaryColor: '#f1f5f9',
       tertiaryColor: '#e2e8f0',
-      background: '#ffffff',
-      mainBkg: '#f8fafc',
-      nodeBorder: '#cbd5e1',
+      background: '#f8fafc',
+      mainBkg: '#dbeafe',
+      nodeBorder: '#3b82f6',
       clusterBkg: '#f1f5f9',
       clusterBorder: '#cbd5e1',
       titleColor: '#0f172a',
       edgeLabelBackground: '#ffffff',
       textColor: '#0f172a',
-      nodeTextColor: '#0f172a'
+      nodeTextColor: '#0f172a',
+      labelTextColor: '#0f172a',
+      actorTextColor: '#0f172a',
+      actorBkg: '#dbeafe',
+      actorBorder: '#3b82f6',
+      signalColor: '#64748b',
+      signalTextColor: '#0f172a',
+      labelBoxBkgColor: '#ffffff',
+      labelBoxBorderColor: '#cbd5e1',
+      noteBkgColor: '#eff6ff',
+      noteBorderColor: '#3b82f6',
+      noteTextColor: '#0f172a',
+      activationBkgColor: '#dbeafe',
+      activationBorderColor: '#3b82f6'
     }
-  });
+  };
+}
+
+// Mermaid re-initialization for theme changes
+function reinitMermaid(isDark) {
+  if (typeof mermaid === 'undefined') return;
+
+  mermaid.initialize(getMermaidConfig(isDark));
 
   // Re-render all mermaid diagrams
   document.querySelectorAll('.mermaid').forEach(function(el) {
     var code = el.getAttribute('data-original-code');
     if (code) {
       el.removeAttribute('data-processed');
-      el.textContent = code;
+      el.innerHTML = code;
     }
   });
 
@@ -242,7 +407,7 @@ function reinitMermaid(isDark) {
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.mermaid').forEach(function(el) {
     if (!el.getAttribute('data-original-code')) {
-      el.setAttribute('data-original-code', el.textContent);
+      el.setAttribute('data-original-code', el.textContent.trim());
     }
   });
 
