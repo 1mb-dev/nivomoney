@@ -39,6 +39,8 @@ export default defineConfig({
       { find: '@nivo/shared/lib/utils', replacement: path.resolve(__dirname, '../shared/lib/utils.ts') },
       { find: '@nivo/shared', replacement: path.resolve(__dirname, '../shared/src') },
     ],
+    // Force single React instance - prevents hook context mismatch
+    dedupe: ['react', 'react-dom', 'react-router-dom'],
   },
   build: {
     outDir: 'dist',

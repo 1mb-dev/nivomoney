@@ -16,9 +16,10 @@ WORKDIR /app/frontend
 # Copy shared package source
 COPY shared/ ./shared/
 
-# Install shared dependencies only (needed for Vite to bundle correctly)
+# Install production deps only (omit devDeps to avoid duplicate React)
+# React is in devDependencies - apps provide it via resolve.dedupe
 WORKDIR /app/frontend/shared
-RUN npm install --silent --ignore-scripts
+RUN npm install --silent --ignore-scripts --omit=dev
 
 # =============================================================================
 # Stage 2: Build user-app
