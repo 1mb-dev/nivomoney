@@ -1,18 +1,14 @@
 # =============================================================================
-# Nivo - Docker Compose Observability Stack
+# Nivo - Docker Compose Observability Stack (DEPRECATED)
 # =============================================================================
 #
-# Adds Prometheus and Grafana for monitoring.
+# NOTE: This file is deprecated. Observability services (prometheus, grafana)
+# have been merged into docker-compose.yml as of 2026-01-26.
 #
-# Usage:
-#   With base:  docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
-#   Or via:     make obs-up
+# The base compose file now includes prometheus and grafana by default,
+# so there's no need to specify this file separately.
 #
-# Access (production):
-#   Prometheus: Internal only (docker network)
-#   Grafana:    https://grafana.nivomoney.com (via nginx reverse proxy)
-#
-# Note: No external ports exposed. Access via internal network or nginx proxy.
+# This file is kept for reference only and will be removed in a future cleanup.
 #
 # =============================================================================
 
