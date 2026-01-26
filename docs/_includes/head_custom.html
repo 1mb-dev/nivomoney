@@ -2,47 +2,48 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%233b82f6'/><text x='50' y='68' font-size='50' font-weight='bold' fill='white' text-anchor='middle' font-family='system-ui'>N</text></svg>">
 
 <style>
-  /* Dark mode toggle button styling */
-  .theme-toggle {
-    background: transparent;
-    border: 1px solid var(--nivo-primary, #3b82f6);
-    border-radius: 0.5rem;
-    padding: 0.375rem 0.75rem;
-    cursor: pointer;
-    font-size: 0.875rem;
+  /* Theme toggle button in header */
+  .theme-toggle-header {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-    transition: background-color 0.2s, color 0.2s;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #3b82f6;
+    border-radius: 0.5rem;
+    background: transparent;
     color: #3b82f6;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 1rem;
+    vertical-align: middle;
   }
 
-  .theme-toggle:hover {
+  .theme-toggle-header:hover {
     background-color: #eff6ff;
   }
 
-  /* Dark mode button appearance */
-  [data-theme="nivo-dark"] .theme-toggle {
-    color: #60a5fa;
-    border-color: #60a5fa;
-  }
-
-  [data-theme="nivo-dark"] .theme-toggle:hover {
-    background-color: rgba(96, 165, 250, 0.1);
-  }
-
-  /* Icon styling */
-  .theme-toggle svg {
+  .theme-toggle-header svg {
     width: 1rem;
     height: 1rem;
   }
 
-  /* Hide/show appropriate icon based on theme */
-  .theme-toggle .sun-icon { display: none; }
-  .theme-toggle .moon-icon { display: block; }
+  /* Dark mode button appearance */
+  [data-theme="nivo-dark"] .theme-toggle-header {
+    color: #60a5fa;
+    border-color: #60a5fa;
+  }
 
-  [data-theme="nivo-dark"] .theme-toggle .sun-icon { display: block; }
-  [data-theme="nivo-dark"] .theme-toggle .moon-icon { display: none; }
+  [data-theme="nivo-dark"] .theme-toggle-header:hover {
+    background-color: rgba(96, 165, 250, 0.1);
+  }
+
+  /* Icon visibility based on theme */
+  .theme-toggle-header .sun-icon { display: none; }
+  .theme-toggle-header .moon-icon { display: inline-block; }
+
+  [data-theme="nivo-dark"] .theme-toggle-header .sun-icon { display: inline-block; }
+  [data-theme="nivo-dark"] .theme-toggle-header .moon-icon { display: none; }
 
   /* Enhanced Mermaid diagram styling */
   .mermaid {
@@ -139,14 +140,58 @@
   }
 </style>
 
-<!-- Theme initialization - must wait for jtd to be available -->
 <script>
-  // Wait for DOMContentLoaded to ensure jtd.js is loaded
+  // Create SVG icon element helper
+  function createSvgIcon(pathD, className) {
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', className);
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('stroke', 'currentColor');
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('d', pathD);
+    svg.appendChild(path);
+    return svg;
+  }
+
+  // Inject theme toggle into header aux-nav after page loads
   document.addEventListener('DOMContentLoaded', function() {
-    // Small delay to ensure jtd is fully initialized
+    // Find the aux-nav list
+    var auxNav = document.querySelector('.aux-nav ul');
+    if (!auxNav) {
+      auxNav = document.querySelector('.aux-nav');
+    }
+
+    if (auxNav) {
+      // Create toggle button using DOM methods
+      var toggleItem = document.createElement('li');
+      toggleItem.className = 'aux-nav-item';
+
+      var button = document.createElement('button');
+      button.className = 'theme-toggle-header';
+      button.setAttribute('aria-label', 'Toggle dark mode');
+      button.setAttribute('title', 'Toggle theme');
+      button.onclick = toggleNivoTheme;
+
+      // Sun icon (shown in dark mode)
+      var sunIcon = createSvgIcon('M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', 'sun-icon');
+      button.appendChild(sunIcon);
+
+      // Moon icon (shown in light mode)
+      var moonIcon = createSvgIcon('M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z', 'moon-icon');
+      button.appendChild(moonIcon);
+
+      toggleItem.appendChild(button);
+      auxNav.appendChild(toggleItem);
+    }
+
+    // Initialize theme after jtd is ready
     setTimeout(function() {
       if (typeof jtd !== 'undefined') {
-        const savedTheme = localStorage.getItem('nivo-theme');
+        var savedTheme = localStorage.getItem('nivo-theme');
         if (savedTheme && savedTheme !== jtd.getTheme()) {
           jtd.setTheme(savedTheme);
         } else if (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -154,14 +199,96 @@
           localStorage.setItem('nivo-theme', 'nivo-dark');
         }
       }
-    }, 100);
+    }, 150);
+
+    // Store original mermaid code for re-rendering
+    document.querySelectorAll('.mermaid').forEach(function(el) {
+      if (!el.getAttribute('data-original-code')) {
+        el.setAttribute('data-original-code', el.textContent);
+      }
+    });
   });
 
-  // Listen for system theme changes
+  // Global theme toggle function
+  function toggleNivoTheme() {
+    if (typeof jtd === 'undefined') {
+      console.error('Theme system not available');
+      return;
+    }
+
+    var currentTheme = jtd.getTheme();
+    var newTheme = (currentTheme === 'nivo-dark') ? 'nivo' : 'nivo-dark';
+
+    jtd.setTheme(newTheme);
+    localStorage.setItem('nivo-theme', newTheme);
+
+    // Re-render mermaid diagrams
+    setTimeout(function() {
+      if (typeof mermaid !== 'undefined') {
+        reinitNivoMermaid();
+      }
+    }, 250);
+  }
+
+  function reinitNivoMermaid() {
+    if (typeof jtd === 'undefined' || typeof mermaid === 'undefined') return;
+
+    var isDark = jtd.getTheme() === 'nivo-dark';
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: isDark ? 'dark' : 'default',
+      themeVariables: isDark ? {
+        primaryColor: '#3b82f6',
+        primaryTextColor: '#f1f5f9',
+        primaryBorderColor: '#60a5fa',
+        lineColor: '#94a3b8',
+        secondaryColor: '#1e293b',
+        tertiaryColor: '#334155',
+        background: '#0f172a',
+        mainBkg: '#1e293b',
+        nodeBorder: '#475569',
+        clusterBkg: '#1e293b',
+        clusterBorder: '#475569',
+        titleColor: '#f1f5f9',
+        edgeLabelBackground: '#1e293b',
+        textColor: '#f1f5f9',
+        nodeTextColor: '#f1f5f9'
+      } : {
+        primaryColor: '#3b82f6',
+        primaryTextColor: '#ffffff',
+        primaryBorderColor: '#2563eb',
+        lineColor: '#64748b',
+        secondaryColor: '#f1f5f9',
+        tertiaryColor: '#e2e8f0',
+        background: '#ffffff',
+        mainBkg: '#f8fafc',
+        nodeBorder: '#cbd5e1',
+        clusterBkg: '#f1f5f9',
+        clusterBorder: '#cbd5e1',
+        titleColor: '#0f172a',
+        edgeLabelBackground: '#ffffff',
+        textColor: '#0f172a',
+        nodeTextColor: '#0f172a'
+      }
+    });
+
+    document.querySelectorAll('.mermaid').forEach(function(el) {
+      var code = el.getAttribute('data-original-code');
+      if (code) {
+        el.removeAttribute('data-processed');
+        el.textContent = code;
+      }
+    });
+
+    mermaid.run();
+  }
+
+  // System theme change listener
   if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
       if (typeof jtd !== 'undefined' && !localStorage.getItem('nivo-theme')) {
-        const newTheme = e.matches ? 'nivo-dark' : 'nivo';
+        var newTheme = e.matches ? 'nivo-dark' : 'nivo';
         jtd.setTheme(newTheme);
       }
     });
