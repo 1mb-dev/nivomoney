@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	simconfig "github.com/vnykmshr/nivo/services/simulation/internal/config"
 	"github.com/vnykmshr/nivo/services/simulation/internal/handler"
 	simmetrics "github.com/vnykmshr/nivo/services/simulation/internal/metrics"
@@ -46,7 +47,17 @@ func main() {
 	gatewayURL := getEnvOrDefault("GATEWAY_URL", "http://gateway:8000")
 	adminToken := os.Getenv("ADMIN_TOKEN")
 	if adminToken == "" {
-		log.Printf("[%s] WARNING: ADMIN_TOKEN not set - simulation may fail", serviceName)
+		// Generate a service token using JWT_SECRET
+		jwtSecret := os.Getenv("JWT_SECRET")
+		if jwtSecret == "" {
+			log.Fatalf("[%s] Neither ADMIN_TOKEN nor JWT_SECRET set - cannot authenticate", serviceName)
+		}
+		var err error
+		adminToken, err = generateServiceToken(jwtSecret)
+		if err != nil {
+			log.Fatalf("[%s] Failed to generate service token: %v", serviceName, err)
+		}
+		log.Printf("[%s] Generated service token (expires in 1 year)", serviceName)
 	}
 
 	log.Printf("[%s] Gateway URL: %s", serviceName, gatewayURL)
@@ -175,4 +186,54 @@ func getEnvOrDefault(key, defaultValue string) string {
 		return value
 	}
 	return defaultValue
+}
+
+// ServiceClaims represents JWT claims for a service token.
+type ServiceClaims struct {
+	UserID      string   `json:"user_id"`
+	Email       string   `json:"email"`
+	Status      string   `json:"status"`
+	AccountType string   `json:"account_type"`
+	Roles       []string `json:"roles"`
+	Permissions []string `json:"permissions"`
+	jwt.RegisteredClaims
+}
+
+// generateServiceToken creates a long-lived admin token for the simulation service.
+// This token has full admin permissions and expires in 1 year.
+func generateServiceToken(jwtSecret string) (string, error) {
+	// Full set of admin permissions for simulation operations
+	permissions := []string{
+		// Identity permissions
+		"identity:read", "identity:write", "identity:delete", "identity:admin",
+		// Ledger permissions
+		"ledger:read", "ledger:write", "ledger:admin",
+		// RBAC permissions
+		"rbac:read", "rbac:write", "rbac:admin",
+		// Transaction permissions
+		"transaction:read", "transaction:write", "transaction:admin",
+		// Wallet permissions
+		"wallet:read", "wallet:write", "wallet:admin",
+		// Risk permissions
+		"risk:read", "risk:write", "risk:admin",
+		// Notification permissions
+		"notification:read", "notification:write", "notification:admin",
+	}
+
+	claims := &ServiceClaims{
+		UserID:      "00000000-0000-0000-0000-000000000000", // System user ID
+		Email:       "simulation@system.nivo",
+		Status:      "active",
+		AccountType: "super_admin",
+		Roles:       []string{"super_admin", "admin"},
+		Permissions: permissions,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(365 * 24 * time.Hour)), // 1 year expiry
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			Issuer:    "nivo-simulation",
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(jwtSecret))
 }
