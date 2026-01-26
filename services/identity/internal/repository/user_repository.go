@@ -738,8 +738,8 @@ func (r *KYCRepository) GetByPAN(ctx context.Context, pan string) (*models.KYCIn
 
 // KYCWithUser represents KYC information with user details.
 type KYCWithUser struct {
-	KYC  models.KYCInfo
-	User models.User
+	KYC  models.KYCInfo `json:"kyc"`
+	User models.User    `json:"user"`
 }
 
 // ListPending retrieves all KYC submissions with pending status.
