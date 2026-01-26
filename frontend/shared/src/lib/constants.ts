@@ -15,7 +15,6 @@ export const DEFAULT_API_BASE_URL = 'http://localhost:8000';
  * This should be used in all apps instead of reading import.meta.env directly.
  */
 export function getApiBaseUrl(): string {
-  // @ts-expect-error - import.meta.env is available in Vite projects
   return import.meta.env?.VITE_API_URL || DEFAULT_API_BASE_URL;
 }
 

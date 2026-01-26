@@ -3,7 +3,8 @@
  * Shared HTTP client configuration for both user-app and admin-app
  */
 
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { ApiError } from '../types';
 import { CSRFProtection, type Environment } from './security';
 
