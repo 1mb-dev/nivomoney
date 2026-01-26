@@ -202,22 +202,62 @@ type ServiceClaims struct {
 // generateServiceToken creates a long-lived admin token for the simulation service.
 // This token has full admin permissions and expires in 1 year.
 func generateServiceToken(jwtSecret string) (string, error) {
-	// Full set of admin permissions for simulation operations
+	// Full set of admin permissions matching seed service's admin role
+	// These are the specific permissions required by each service endpoint
 	permissions := []string{
-		// Identity permissions
-		"identity:read", "identity:write", "identity:delete", "identity:admin",
-		// Ledger permissions
-		"ledger:read", "ledger:write", "ledger:admin",
-		// RBAC permissions
-		"rbac:read", "rbac:write", "rbac:admin",
-		// Transaction permissions
-		"transaction:read", "transaction:write", "transaction:admin",
-		// Wallet permissions
-		"wallet:read", "wallet:write", "wallet:admin",
-		// Risk permissions
-		"risk:read", "risk:write", "risk:admin",
-		// Notification permissions
-		"notification:read", "notification:write", "notification:admin",
+		// Identity service permissions
+		"identity:auth:login",
+		"identity:auth:logout",
+		"identity:auth:refresh",
+		"identity:profile:read",
+		"identity:profile:update",
+		"identity:profile:delete",
+		"identity:users:read",
+		"identity:users:create",
+		"identity:users:update",
+		"identity:users:delete",
+		"identity:kyc:submit",
+		"identity:kyc:read",
+		"identity:kyc:verify",
+		"identity:kyc:reject",
+		"identity:kyc:list",
+		"identity:user:suspend",
+		"identity:user:unsuspend",
+		// Wallet service permissions
+		"wallet:wallet:create",
+		"wallet:wallet:read",
+		"wallet:wallet:update",
+		"wallet:wallet:delete",
+		"wallet:wallet:list",
+		"wallet:wallet:freeze",
+		"wallet:wallet:unfreeze",
+		"wallet:beneficiary:manage",
+		// Transaction service permissions
+		"transaction:deposit:create",
+		"transaction:transfer:create",
+		"transaction:withdrawal:create",
+		"transaction:transaction:create",
+		"transaction:transaction:list",
+		"transaction:transaction:read",
+		"transaction:transaction:reverse",
+		// Ledger service permissions
+		"ledger:journal:read",
+		"ledger:journal:list",
+		"ledger:account:read",
+		"ledger:account:list",
+		// RBAC service permissions
+		"rbac:role:read",
+		"rbac:role:list",
+		"rbac:permission:read",
+		"rbac:permission:list",
+		// Risk service permissions
+		"risk:rule:read",
+		"risk:rule:list",
+		"risk:evaluation:read",
+		// Notification service permissions
+		"notification:notification:read",
+		"notification:notification:list",
+		"notification:notification:send",
 	}
 
 	claims := &ServiceClaims{
