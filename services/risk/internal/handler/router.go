@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/vnykmshr/nivo/services/risk/internal/service"
-	"github.com/vnykmshr/nivo/shared/logger"
-	"github.com/vnykmshr/nivo/shared/metrics"
-	"github.com/vnykmshr/nivo/shared/middleware"
+	"github.com/1mb-dev/nivomoney/services/risk/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/logger"
+	"github.com/1mb-dev/nivomoney/shared/metrics"
+	"github.com/1mb-dev/nivomoney/shared/middleware"
 )
 
 // Router handles HTTP routing for the Risk Service

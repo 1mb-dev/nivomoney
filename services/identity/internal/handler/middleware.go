@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/1mb-dev/nivomoney/services/identity/internal/models"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/response"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/vnykmshr/nivo/services/identity/internal/models"
-	"github.com/vnykmshr/nivo/services/identity/internal/service"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/response"
 )
 
 // ContextKey is a type for context keys to avoid collisions.

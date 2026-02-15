@@ -3,7 +3,7 @@ package models
 import (
 	"encoding/json"
 
-	"github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/nivomoney/shared/models"
 )
 
 // EntryStatus represents the status of a journal entry.

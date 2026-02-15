@@ -3,10 +3,10 @@ package main
 import (
 	"net/http"
 
-	"github.com/vnykmshr/nivo/services/ledger/internal/handler"
-	"github.com/vnykmshr/nivo/services/ledger/internal/repository"
-	"github.com/vnykmshr/nivo/services/ledger/internal/service"
-	"github.com/vnykmshr/nivo/shared/server"
+	"github.com/1mb-dev/nivomoney/services/ledger/internal/handler"
+	"github.com/1mb-dev/nivomoney/services/ledger/internal/repository"
+	"github.com/1mb-dev/nivomoney/services/ledger/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/server"
 )
 
 func main() {

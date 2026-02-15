@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/vnykmshr/nivo/services/simulation/internal/config"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/config"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // BehaviorInjector adds realistic delays and failures to operations.

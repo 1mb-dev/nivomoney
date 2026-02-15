@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/nivomoney/shared/models"
 )
 
 // UserStatus represents the current state of a user account.

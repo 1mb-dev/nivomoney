@@ -3,7 +3,7 @@ package jwt
 import (
 	"strings"
 
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // ExtractBearerToken extracts the bearer token from the Authorization header.

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"time"
 
+	sharedModels "github.com/1mb-dev/nivomoney/shared/models"
 	"github.com/golang-jwt/jwt/v5"
-	sharedModels "github.com/vnykmshr/nivo/shared/models"
 )
 
 // VerificationStatus represents the status of a verification request.

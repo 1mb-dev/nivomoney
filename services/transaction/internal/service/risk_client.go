@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/vnykmshr/nivo/shared/clients"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/clients"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // RiskClient handles communication with the Risk service.

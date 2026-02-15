@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vnykmshr/nivo/services/wallet/internal/models"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/events"
+	"github.com/1mb-dev/nivomoney/services/wallet/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/events"
 )
 
 // BeneficiaryRepositoryInterface defines the interface for beneficiary repository operations.

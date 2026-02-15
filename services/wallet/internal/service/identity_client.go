@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/vnykmshr/nivo/shared/clients"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/middleware"
+	"github.com/1mb-dev/nivomoney/shared/clients"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/middleware"
 )
 
 // IdentityClient is a client for interacting with the Identity Service.

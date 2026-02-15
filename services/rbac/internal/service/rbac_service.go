@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/vnykmshr/nivo/services/rbac/internal/models"
-	"github.com/vnykmshr/nivo/shared/errors"
-	sharedModels "github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/nivomoney/services/rbac/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	sharedModels "github.com/1mb-dev/nivomoney/shared/models"
 )
 
 // RBACRepositoryInterface defines the interface for RBAC repository operations.

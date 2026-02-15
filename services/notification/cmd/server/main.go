@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/vnykmshr/nivo/services/notification/internal/handler"
-	"github.com/vnykmshr/nivo/services/notification/internal/repository"
-	"github.com/vnykmshr/nivo/services/notification/internal/service"
-	"github.com/vnykmshr/nivo/shared/server"
+	"github.com/1mb-dev/nivomoney/services/notification/internal/handler"
+	"github.com/1mb-dev/nivomoney/services/notification/internal/repository"
+	"github.com/1mb-dev/nivomoney/services/notification/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/server"
 )
 
 func main() {

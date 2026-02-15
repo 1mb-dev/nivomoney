@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // Response represents a standardized API response envelope.

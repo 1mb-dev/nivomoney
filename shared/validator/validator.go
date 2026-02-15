@@ -8,9 +8,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/vnykmshr/gopantic/pkg/model"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/gopantic/pkg/model"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/models"
 )
 
 func init() {

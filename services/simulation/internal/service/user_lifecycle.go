@@ -9,7 +9,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/vnykmshr/nivo/services/simulation/internal/personas"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/personas"
 )
 
 // UserStage represents the lifecycle stage of a simulated user

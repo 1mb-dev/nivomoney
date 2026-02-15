@@ -15,7 +15,7 @@ HTTP middleware components for Nivo services, providing common functionality lik
 ## Installation
 
 ```bash
-go get github.com/vnykmshr/nivo/shared/middleware
+go get github.com/1mb-dev/nivomoney/shared/middleware
 ```
 
 ## Usage
@@ -29,8 +29,8 @@ import (
     "net/http"
     "time"
 
-    "github.com/vnykmshr/nivo/shared/logger"
-    "github.com/vnykmshr/nivo/shared/middleware"
+    "github.com/1mb-dev/nivomoney/shared/logger"
+    "github.com/1mb-dev/nivomoney/shared/middleware"
 )
 
 func main() {
@@ -325,8 +325,8 @@ import (
     "net/http"
     "time"
 
-    "github.com/vnykmshr/nivo/shared/logger"
-    "github.com/vnykmshr/nivo/shared/middleware"
+    "github.com/1mb-dev/nivomoney/shared/logger"
+    "github.com/1mb-dev/nivomoney/shared/middleware"
 )
 
 func main() {

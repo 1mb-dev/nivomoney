@@ -61,7 +61,7 @@ frontend/
 ### Setup
 
 ```bash
-git clone https://github.com/vnykmshr/nivomoney.git
+git clone https://github.com/1mb-dev/nivomoney.git
 cd nivomoney
 cp .env.example .env
 

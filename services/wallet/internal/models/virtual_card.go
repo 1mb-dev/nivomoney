@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/nivomoney/shared/models"
 )
 
 // CardStatus represents the status of a virtual card.

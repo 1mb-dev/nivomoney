@@ -10,8 +10,8 @@ import (
 	"slices"
 	"time"
 
-	"github.com/vnykmshr/nivo/shared/config"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/config"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // Default timeouts for service clients

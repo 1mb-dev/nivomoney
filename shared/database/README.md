@@ -20,7 +20,7 @@ The `database` package provides a robust PostgreSQL database connection wrapper 
 ### Basic Connection
 
 ```go
-import "github.com/vnykmshr/nivo/shared/database"
+import "github.com/1mb-dev/nivomoney/shared/database"
 
 // Using default configuration
 db, err := database.Connect(database.DefaultConfig())
@@ -69,8 +69,8 @@ defer db.Close()
 
 ```go
 import (
-    "github.com/vnykmshr/nivo/shared/config"
-    "github.com/vnykmshr/nivo/shared/database"
+    "github.com/1mb-dev/nivomoney/shared/config"
+    "github.com/1mb-dev/nivomoney/shared/database"
 )
 
 // Load application config
@@ -344,7 +344,7 @@ DB_HOST=testdb.example.com go test ./shared/database/...
 ## Error Handling
 
 ```go
-import "github.com/vnykmshr/nivo/shared/errors"
+import "github.com/1mb-dev/nivomoney/shared/errors"
 
 user, err := getUserFromDB(ctx, db, userID)
 if err != nil {

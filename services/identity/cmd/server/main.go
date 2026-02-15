@@ -5,13 +5,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/vnykmshr/nivo/services/identity/internal/handler"
-	"github.com/vnykmshr/nivo/services/identity/internal/repository"
-	"github.com/vnykmshr/nivo/services/identity/internal/service"
-	"github.com/vnykmshr/nivo/shared/cache"
-	"github.com/vnykmshr/nivo/shared/clients"
-	"github.com/vnykmshr/nivo/shared/events"
-	"github.com/vnykmshr/nivo/shared/server"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/handler"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/repository"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/cache"
+	"github.com/1mb-dev/nivomoney/shared/clients"
+	"github.com/1mb-dev/nivomoney/shared/events"
+	"github.com/1mb-dev/nivomoney/shared/server"
 )
 
 func main() {

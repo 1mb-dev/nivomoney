@@ -311,7 +311,7 @@ Internal operations: KYC review and approval, user management, system health mon
 ### Run Locally
 
 ```bash
-git clone https://github.com/vnykmshr/nivomoney.git
+git clone https://github.com/1mb-dev/nivomoney.git
 cd nivomoney
 make dev
 ```

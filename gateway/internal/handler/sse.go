@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/vnykmshr/nivo/shared/events"
-	"github.com/vnykmshr/nivo/shared/logger"
+	"github.com/1mb-dev/nivomoney/shared/events"
+	"github.com/1mb-dev/nivomoney/shared/logger"
 )
 
 // SSEHandler handles Server-Sent Events connections.

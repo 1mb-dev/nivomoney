@@ -10,10 +10,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/vnykmshr/nivo/services/simulation/internal/behavior"
-	"github.com/vnykmshr/nivo/services/simulation/internal/config"
-	"github.com/vnykmshr/nivo/services/simulation/internal/metrics"
-	"github.com/vnykmshr/nivo/services/simulation/internal/personas"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/behavior"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/config"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/metrics"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/personas"
 )
 
 // UserWallet represents a user with their wallet

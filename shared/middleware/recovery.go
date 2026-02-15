@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"runtime/debug"
 
-	"github.com/vnykmshr/nivo/shared/logger"
+	"github.com/1mb-dev/nivomoney/shared/logger"
 )
 
 // Recovery returns a middleware that recovers from panics and logs them.

@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"github.com/vnykmshr/nivo/services/ledger/internal/service"
-	"github.com/vnykmshr/nivo/shared/metrics"
-	"github.com/vnykmshr/nivo/shared/middleware"
+	"github.com/1mb-dev/nivomoney/services/ledger/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/metrics"
+	"github.com/1mb-dev/nivomoney/shared/middleware"
 )
 
 // Router sets up HTTP routes for the Ledger Service.

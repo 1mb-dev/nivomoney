@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/vnykmshr/nivo/shared/logger"
+	"github.com/1mb-dev/nivomoney/shared/logger"
 )
 
 func TestRequestID(t *testing.T) {

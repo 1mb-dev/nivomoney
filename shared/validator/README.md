@@ -1,6 +1,6 @@
 # Validator Package
 
-The validator package provides input validation for Nivo services using [gopantic](https://github.com/vnykmshr/gopantic), combining JSON/YAML parsing with comprehensive validation in a single step.
+The validator package provides input validation for Nivo services using [gopantic](https://github.com/1mb-dev/gopantic), combining JSON/YAML parsing with comprehensive validation in a single step.
 
 ## Features
 
@@ -16,7 +16,7 @@ The validator package provides input validation for Nivo services using [gopanti
 ### Basic Validation
 
 ```go
-import "github.com/vnykmshr/nivo/shared/validator"
+import "github.com/1mb-dev/nivomoney/shared/validator"
 
 type CreateUserRequest struct {
     Name  string `json:"name" validate:"required,min=3,max=50"`
@@ -575,8 +575,8 @@ Works seamlessly with `shared/response` for consistent error handling:
 
 ```go
 import (
-    "github.com/vnykmshr/nivo/shared/response"
-    "github.com/vnykmshr/nivo/shared/validator"
+    "github.com/1mb-dev/nivomoney/shared/response"
+    "github.com/1mb-dev/nivomoney/shared/validator"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -597,7 +597,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 - [`shared/errors`](../errors/README.md) - Error types and codes
 - [`shared/response`](../response/README.md) - API response formats
 - [`shared/models`](../models/README.md) - Currency and Money types
-- [`gopantic`](https://github.com/vnykmshr/gopantic) - Underlying validation library
+- [`gopantic`](https://github.com/1mb-dev/gopantic) - Underlying validation library
 
 ## License
 

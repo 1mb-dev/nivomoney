@@ -13,11 +13,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/vnykmshr/nivo/services/identity/internal/models"
-	"github.com/vnykmshr/nivo/services/identity/internal/repository"
-	"github.com/vnykmshr/nivo/services/identity/internal/service"
-	"github.com/vnykmshr/nivo/shared/errors"
-	sharedModels "github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/models"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/repository"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	sharedModels "github.com/1mb-dev/nivomoney/shared/models"
 )
 
 // ============================================================

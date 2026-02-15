@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/vnykmshr/nivo/services/wallet/internal/models"
-	"github.com/vnykmshr/nivo/services/wallet/internal/repository"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/events"
-	"github.com/vnykmshr/nivo/shared/logger"
+	"github.com/1mb-dev/nivomoney/services/wallet/internal/models"
+	"github.com/1mb-dev/nivomoney/services/wallet/internal/repository"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/events"
+	"github.com/1mb-dev/nivomoney/shared/logger"
 )
 
 // UPIDepositService handles business logic for UPI deposits.

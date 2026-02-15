@@ -5,13 +5,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/vnykmshr/nivo/services/transaction/internal/models"
-	"github.com/vnykmshr/nivo/services/transaction/internal/service"
-	"github.com/vnykmshr/nivo/shared/config"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/handler"
-	"github.com/vnykmshr/nivo/shared/middleware"
-	"github.com/vnykmshr/nivo/shared/response"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/models"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/config"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/handler"
+	"github.com/1mb-dev/nivomoney/shared/middleware"
+	"github.com/1mb-dev/nivomoney/shared/response"
 )
 
 // TransactionHandler handles HTTP requests for transaction operations.

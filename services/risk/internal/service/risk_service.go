@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/vnykmshr/nivo/services/risk/internal/models"
-	"github.com/vnykmshr/nivo/services/risk/internal/repository"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/services/risk/internal/models"
+	"github.com/1mb-dev/nivomoney/services/risk/internal/repository"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // RiskService handles risk evaluation logic

@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/vnykmshr/gopantic/pkg/model"
-	"github.com/vnykmshr/nivo/services/notification/internal/models"
-	"github.com/vnykmshr/nivo/services/notification/internal/service"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/response"
+	"github.com/1mb-dev/gopantic/pkg/model"
+	"github.com/1mb-dev/nivomoney/services/notification/internal/models"
+	"github.com/1mb-dev/nivomoney/services/notification/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/response"
 )
 
 // NotificationHandler handles notification HTTP requests.

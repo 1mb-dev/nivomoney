@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"net/http"
 
-	"github.com/vnykmshr/nivo/shared/logger"
+	"github.com/1mb-dev/nivomoney/shared/logger"
 )
 
 // RequestID returns a middleware that generates or extracts request IDs.

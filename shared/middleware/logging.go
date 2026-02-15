@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/vnykmshr/nivo/shared/logger"
+	"github.com/1mb-dev/nivomoney/shared/logger"
 )
 
 // Logging returns a middleware that logs HTTP requests and responses.

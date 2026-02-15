@@ -4,11 +4,11 @@ import (
 	"context"
 	"log"
 
+	"github.com/1mb-dev/nivomoney/services/notification/internal/models"
+	"github.com/1mb-dev/nivomoney/services/notification/internal/repository"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	sharedModels "github.com/1mb-dev/nivomoney/shared/models"
 	"github.com/google/uuid"
-	"github.com/vnykmshr/nivo/services/notification/internal/models"
-	"github.com/vnykmshr/nivo/services/notification/internal/repository"
-	"github.com/vnykmshr/nivo/shared/errors"
-	sharedModels "github.com/vnykmshr/nivo/shared/models"
 )
 
 // NotificationService handles notification business logic.

@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"github.com/vnykmshr/nivo/services/identity/internal/models"
-	"github.com/vnykmshr/nivo/shared/database"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/database"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // UserRepository handles database operations for users.

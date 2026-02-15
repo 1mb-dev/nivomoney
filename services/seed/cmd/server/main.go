@@ -17,8 +17,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/yaml.v3"
 
-	"github.com/vnykmshr/nivo/shared/config"
-	"github.com/vnykmshr/nivo/shared/database"
+	"github.com/1mb-dev/nivomoney/shared/config"
+	"github.com/1mb-dev/nivomoney/shared/database"
 )
 
 //go:embed data/users.yaml

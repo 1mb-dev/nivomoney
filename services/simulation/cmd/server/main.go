@@ -10,14 +10,14 @@ import (
 	"syscall"
 	"time"
 
+	simconfig "github.com/1mb-dev/nivomoney/services/simulation/internal/config"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/handler"
+	simmetrics "github.com/1mb-dev/nivomoney/services/simulation/internal/metrics"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/config"
+	"github.com/1mb-dev/nivomoney/shared/database"
+	"github.com/1mb-dev/nivomoney/shared/metrics"
 	"github.com/golang-jwt/jwt/v5"
-	simconfig "github.com/vnykmshr/nivo/services/simulation/internal/config"
-	"github.com/vnykmshr/nivo/services/simulation/internal/handler"
-	simmetrics "github.com/vnykmshr/nivo/services/simulation/internal/metrics"
-	"github.com/vnykmshr/nivo/services/simulation/internal/service"
-	"github.com/vnykmshr/nivo/shared/config"
-	"github.com/vnykmshr/nivo/shared/database"
-	"github.com/vnykmshr/nivo/shared/metrics"
 )
 
 const serviceName = "simulation"

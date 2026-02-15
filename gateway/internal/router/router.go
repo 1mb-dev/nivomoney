@@ -6,12 +6,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/vnykmshr/nivo/gateway/internal/handler"
-	"github.com/vnykmshr/nivo/gateway/internal/middleware"
-	"github.com/vnykmshr/nivo/gateway/internal/proxy"
-	"github.com/vnykmshr/nivo/shared/logger"
-	"github.com/vnykmshr/nivo/shared/metrics"
-	sharedMiddleware "github.com/vnykmshr/nivo/shared/middleware"
+	"github.com/1mb-dev/nivomoney/gateway/internal/handler"
+	"github.com/1mb-dev/nivomoney/gateway/internal/middleware"
+	"github.com/1mb-dev/nivomoney/gateway/internal/proxy"
+	"github.com/1mb-dev/nivomoney/shared/logger"
+	"github.com/1mb-dev/nivomoney/shared/metrics"
+	sharedMiddleware "github.com/1mb-dev/nivomoney/shared/middleware"
 )
 
 // Router configures HTTP routes for the API Gateway.

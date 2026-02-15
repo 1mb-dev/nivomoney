@@ -4,11 +4,11 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/vnykmshr/gopantic/pkg/model"
-	"github.com/vnykmshr/nivo/services/ledger/internal/models"
-	"github.com/vnykmshr/nivo/services/ledger/internal/service"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/response"
+	"github.com/1mb-dev/gopantic/pkg/model"
+	"github.com/1mb-dev/nivomoney/services/ledger/internal/models"
+	"github.com/1mb-dev/nivomoney/services/ledger/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/response"
 )
 
 // LedgerHandler handles HTTP requests for ledger operations.

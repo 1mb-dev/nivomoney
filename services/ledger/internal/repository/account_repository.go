@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"github.com/vnykmshr/nivo/services/ledger/internal/models"
-	"github.com/vnykmshr/nivo/shared/database"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/services/ledger/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/database"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // AccountRepository handles database operations for accounts.

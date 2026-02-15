@@ -3,7 +3,7 @@ package models
 import (
 	"encoding/json"
 
-	"github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/nivomoney/shared/models"
 )
 
 // NotificationTemplate represents a notification template with variable substitution.

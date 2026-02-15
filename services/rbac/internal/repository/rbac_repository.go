@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/vnykmshr/nivo/services/rbac/internal/models"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/services/rbac/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // RBACRepository handles all RBAC database operations.

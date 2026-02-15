@@ -3,12 +3,12 @@ package main
 import (
 	"net/http"
 
-	"github.com/vnykmshr/nivo/services/transaction/internal/handler"
-	"github.com/vnykmshr/nivo/services/transaction/internal/repository"
-	"github.com/vnykmshr/nivo/services/transaction/internal/router"
-	"github.com/vnykmshr/nivo/services/transaction/internal/service"
-	"github.com/vnykmshr/nivo/shared/events"
-	"github.com/vnykmshr/nivo/shared/server"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/handler"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/repository"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/router"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/events"
+	"github.com/1mb-dev/nivomoney/shared/server"
 )
 
 func main() {

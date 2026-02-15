@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vnykmshr/nivo/shared/clients"
+	"github.com/1mb-dev/nivomoney/shared/clients"
 )
 
 // RBACClient handles communication with the RBAC service.

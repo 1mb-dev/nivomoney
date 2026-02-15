@@ -9,7 +9,7 @@ Nivo is a **portfolio demonstration project** — not a production bank. It hand
 If you find a security issue, please report it responsibly:
 
 1. **Do not** open a public GitHub issue
-2. Email: **security@nivomoney.com** (or open a [private security advisory](https://github.com/vnykmshr/nivomoney/security/advisories/new))
+2. Email: **security@nivomoney.com** (or open a [private security advisory](https://github.com/1mb-dev/nivomoney/security/advisories/new))
 3. Include: description, steps to reproduce, and potential impact
 
 You should receive a response within 72 hours.

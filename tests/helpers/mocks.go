@@ -4,8 +4,8 @@ package helpers
 import (
 	"time"
 
-	"github.com/vnykmshr/nivo/shared/errors"
-	sharedModels "github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	sharedModels "github.com/1mb-dev/nivomoney/shared/models"
 )
 
 // ============================================================

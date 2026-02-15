@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/response"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/response"
 )
 
 // ContextKey is a custom type for context keys to avoid collisions.

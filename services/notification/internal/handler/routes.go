@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/vnykmshr/nivo/shared/metrics"
-	"github.com/vnykmshr/nivo/shared/middleware"
+	"github.com/1mb-dev/nivomoney/shared/metrics"
+	"github.com/1mb-dev/nivomoney/shared/middleware"
 )
 
 // Router handles HTTP routing for the notification service.

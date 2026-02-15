@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vnykmshr/nivo/services/transaction/internal/models"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // TransactionRepository handles database operations for transactions.

@@ -326,8 +326,8 @@ services/identity/
 - `github.com/golang-jwt/jwt/v5`: JWT token generation and validation
 - `golang.org/x/crypto/bcrypt`: Password hashing
 - `github.com/lib/pq`: PostgreSQL driver
-- `github.com/vnykmshr/gopantic`: Request validation
-- `github.com/vnykmshr/nivo/shared`: Shared utilities
+- `github.com/1mb-dev/gopantic`: Request validation
+- `github.com/1mb-dev/nivomoney/shared`: Shared utilities
 
 ## Future Enhancements
 

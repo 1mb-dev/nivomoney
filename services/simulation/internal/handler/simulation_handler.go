@@ -6,11 +6,11 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/vnykmshr/nivo/services/simulation/internal/config"
-	"github.com/vnykmshr/nivo/services/simulation/internal/metrics"
-	"github.com/vnykmshr/nivo/services/simulation/internal/service"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/response"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/config"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/metrics"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/response"
 )
 
 // SimulationHandler handles HTTP requests for simulation control

@@ -5,8 +5,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/vnykmshr/gopantic/pkg/model"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/gopantic/pkg/model"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // BindRequest reads the request body, parses it into the target type using gopantic,

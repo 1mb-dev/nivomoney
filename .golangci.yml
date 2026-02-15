@@ -27,7 +27,7 @@ linters-settings:
       - (*database/sql.Rows).Close
       - (*net/http.ResponseWriter).Write
       - (*encoding/json.Encoder).Encode
-      - (github.com/vnykmshr/nivo/shared/response).Error
+      - (github.com/1mb-dev/nivomoney/shared/response).Error
 
   govet:
     enable-all: true

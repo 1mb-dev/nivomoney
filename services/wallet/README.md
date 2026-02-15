@@ -344,8 +344,8 @@ services/wallet/
 
 ## Dependencies
 
-- `github.com/vnykmshr/nivo/shared`: Shared utilities and middleware
-- `github.com/vnykmshr/gopantic`: Request validation
+- `github.com/1mb-dev/nivomoney/shared`: Shared utilities and middleware
+- `github.com/1mb-dev/gopantic`: Request validation
 - `github.com/lib/pq`: PostgreSQL driver
 
 ## Security Features

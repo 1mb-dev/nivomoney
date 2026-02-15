@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/vnykmshr/nivo/shared/database"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/database"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // UserAdminRepository handles database operations for user-admin pairings.

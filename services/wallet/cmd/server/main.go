@@ -3,13 +3,13 @@ package main
 import (
 	"net/http"
 
-	"github.com/vnykmshr/nivo/services/wallet/internal/handler"
-	"github.com/vnykmshr/nivo/services/wallet/internal/repository"
-	"github.com/vnykmshr/nivo/services/wallet/internal/router"
-	"github.com/vnykmshr/nivo/services/wallet/internal/service"
-	"github.com/vnykmshr/nivo/shared/clients"
-	"github.com/vnykmshr/nivo/shared/events"
-	"github.com/vnykmshr/nivo/shared/server"
+	"github.com/1mb-dev/nivomoney/services/wallet/internal/handler"
+	"github.com/1mb-dev/nivomoney/services/wallet/internal/repository"
+	"github.com/1mb-dev/nivomoney/services/wallet/internal/router"
+	"github.com/1mb-dev/nivomoney/services/wallet/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/clients"
+	"github.com/1mb-dev/nivomoney/shared/events"
+	"github.com/1mb-dev/nivomoney/shared/server"
 )
 
 func main() {

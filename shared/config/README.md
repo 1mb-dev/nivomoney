@@ -15,7 +15,7 @@ package main
 
 import (
     "log"
-    "github.com/vnykmshr/nivo/shared/config"
+    "github.com/1mb-dev/nivomoney/shared/config"
 )
 
 func main() {

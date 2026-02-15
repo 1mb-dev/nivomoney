@@ -10,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/vnykmshr/nivo/shared/config"
-	"github.com/vnykmshr/nivo/shared/database"
-	"github.com/vnykmshr/nivo/shared/logger"
+	"github.com/1mb-dev/nivomoney/shared/config"
+	"github.com/1mb-dev/nivomoney/shared/database"
+	"github.com/1mb-dev/nivomoney/shared/logger"
 )
 
 // HTTP server timeouts

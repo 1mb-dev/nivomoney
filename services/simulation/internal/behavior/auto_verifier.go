@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/config"
+	"github.com/1mb-dev/nivomoney/services/simulation/internal/metrics"
 	"github.com/lib/pq"
-	"github.com/vnykmshr/nivo/services/simulation/internal/config"
-	"github.com/vnykmshr/nivo/services/simulation/internal/metrics"
 )
 
 // PendingVerification represents a pending verification from the database.

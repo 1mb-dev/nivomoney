@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"github.com/vnykmshr/nivo/services/wallet/internal/models"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/services/wallet/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // BeneficiaryRepository handles database operations for beneficiaries.

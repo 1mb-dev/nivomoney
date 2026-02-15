@@ -23,7 +23,7 @@ The `logger` package provides a structured, performant logging solution built on
 package main
 
 import (
-    "github.com/vnykmshr/nivo/shared/logger"
+    "github.com/1mb-dev/nivomoney/shared/logger"
 )
 
 func main() {
@@ -155,8 +155,8 @@ logger.Error("something went wrong")
 package main
 
 import (
-    "github.com/vnykmshr/nivo/shared/config"
-    "github.com/vnykmshr/nivo/shared/logger"
+    "github.com/1mb-dev/nivomoney/shared/config"
+    "github.com/1mb-dev/nivomoney/shared/logger"
 )
 
 func main() {

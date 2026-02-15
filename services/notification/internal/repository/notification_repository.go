@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vnykmshr/nivo/services/notification/internal/models"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/services/notification/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // NotificationRepository handles database operations for notifications.

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/vnykmshr/nivo/shared/clients"
+	"github.com/1mb-dev/nivomoney/shared/clients"
 )
 
 // GatewayClient makes API calls to the Nivo Gateway

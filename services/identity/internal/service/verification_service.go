@@ -6,14 +6,14 @@ import (
 	"os"
 	"time"
 
+	"github.com/1mb-dev/nivomoney/services/identity/internal/models"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/repository"
+	"github.com/1mb-dev/nivomoney/shared/crypto"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/logger"
+	sharedModels "github.com/1mb-dev/nivomoney/shared/models"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/vnykmshr/nivo/services/identity/internal/models"
-	"github.com/vnykmshr/nivo/services/identity/internal/repository"
-	"github.com/vnykmshr/nivo/shared/crypto"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/logger"
-	sharedModels "github.com/vnykmshr/nivo/shared/models"
 )
 
 // VerificationService handles verification request business logic.

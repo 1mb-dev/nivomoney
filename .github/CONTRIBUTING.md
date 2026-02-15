@@ -52,7 +52,7 @@ cd frontend/user-app && npm install && npm run dev
 
 ## Reporting Issues
 
-Open a [GitHub issue](https://github.com/vnykmshr/nivomoney/issues) with:
+Open a [GitHub issue](https://github.com/1mb-dev/nivomoney/issues) with:
 - What you expected
 - What happened
 - Steps to reproduce

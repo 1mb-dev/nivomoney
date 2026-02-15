@@ -6,10 +6,10 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/vnykmshr/nivo/services/risk/internal/models"
-	"github.com/vnykmshr/nivo/services/risk/internal/service"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/response"
+	"github.com/1mb-dev/nivomoney/services/risk/internal/models"
+	"github.com/1mb-dev/nivomoney/services/risk/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/response"
 )
 
 // RiskHandler handles HTTP requests for risk evaluation

@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"github.com/vnykmshr/nivo/services/risk/internal/models"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/services/risk/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // RiskEventRepository handles database operations for risk events

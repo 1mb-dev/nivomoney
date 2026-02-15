@@ -15,7 +15,7 @@ Standardized HTTP response formats for Nivo APIs, providing consistent success a
 ## Installation
 
 ```bash
-go get github.com/vnykmshr/nivo/shared/response
+go get github.com/1mb-dev/nivomoney/shared/response
 ```
 
 ## Response Structure
@@ -40,7 +40,7 @@ All responses follow a standardized envelope format:
 ### Success Responses
 
 ```go
-import "github.com/vnykmshr/nivo/shared/response"
+import "github.com/1mb-dev/nivomoney/shared/response"
 
 // 200 OK
 func getUser(w http.ResponseWriter, r *http.Request) {
@@ -128,8 +128,8 @@ Use with `shared/errors` for full error control:
 
 ```go
 import (
-    "github.com/vnykmshr/nivo/shared/errors"
-    "github.com/vnykmshr/nivo/shared/response"
+    "github.com/1mb-dev/nivomoney/shared/errors"
+    "github.com/1mb-dev/nivomoney/shared/response"
 )
 
 func transfer(w http.ResponseWriter, r *http.Request) {
@@ -323,8 +323,8 @@ import (
     "encoding/json"
     "net/http"
 
-    "github.com/vnykmshr/nivo/shared/errors"
-    "github.com/vnykmshr/nivo/shared/response"
+    "github.com/1mb-dev/nivomoney/shared/errors"
+    "github.com/1mb-dev/nivomoney/shared/response"
 )
 
 type User struct {
@@ -489,9 +489,9 @@ Works seamlessly with `shared/middleware`:
 
 ```go
 import (
-    "github.com/vnykmshr/nivo/shared/logger"
-    "github.com/vnykmshr/nivo/shared/middleware"
-    "github.com/vnykmshr/nivo/shared/response"
+    "github.com/1mb-dev/nivomoney/shared/logger"
+    "github.com/1mb-dev/nivomoney/shared/middleware"
+    "github.com/1mb-dev/nivomoney/shared/response"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {

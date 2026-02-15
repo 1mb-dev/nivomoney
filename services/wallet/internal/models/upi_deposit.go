@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/nivomoney/shared/models"
 )
 
 // UPIDepositStatus represents the status of a UPI deposit.

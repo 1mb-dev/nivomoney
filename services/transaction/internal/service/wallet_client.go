@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vnykmshr/nivo/shared/clients"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/clients"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // WalletClient handles communication with the Wallet service.

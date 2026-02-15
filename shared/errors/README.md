@@ -45,7 +45,7 @@ The `errors` package provides structured error handling with error codes, HTTP s
 ### Creating Errors
 
 ```go
-import "github.com/vnykmshr/nivo/shared/errors"
+import "github.com/1mb-dev/nivomoney/shared/errors"
 
 // Using predefined constructors
 err := errors.NotFound("user")
@@ -208,7 +208,7 @@ package main
 
 import (
     "database/sql"
-    "github.com/vnykmshr/nivo/shared/errors"
+    "github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 func GetUser(id string) (*User, error) {

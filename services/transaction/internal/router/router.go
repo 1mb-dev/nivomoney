@@ -3,9 +3,9 @@ package router
 import (
 	"net/http"
 
-	"github.com/vnykmshr/nivo/services/transaction/internal/handler"
-	"github.com/vnykmshr/nivo/shared/metrics"
-	"github.com/vnykmshr/nivo/shared/middleware"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/handler"
+	"github.com/1mb-dev/nivomoney/shared/metrics"
+	"github.com/1mb-dev/nivomoney/shared/middleware"
 )
 
 // SetupRoutes configures all routes for the transaction service using Go 1.22+ stdlib router.

@@ -12,13 +12,13 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/vnykmshr/nivo/services/identity/internal/models"
-	"github.com/vnykmshr/nivo/services/identity/internal/repository"
-	"github.com/vnykmshr/nivo/shared/cache"
-	"github.com/vnykmshr/nivo/shared/clients"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/events"
-	sharedModels "github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/models"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/repository"
+	"github.com/1mb-dev/nivomoney/shared/cache"
+	"github.com/1mb-dev/nivomoney/shared/clients"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/events"
+	sharedModels "github.com/1mb-dev/nivomoney/shared/models"
 )
 
 // UserRepositoryInterface defines the interface for user repository operations.

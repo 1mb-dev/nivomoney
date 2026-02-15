@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/1mb-dev/nivomoney/services/ledger/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 	"github.com/google/uuid"
-	"github.com/vnykmshr/nivo/services/ledger/internal/models"
-	"github.com/vnykmshr/nivo/shared/errors"
 )
 
 // =====================================================================

@@ -6,12 +6,12 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/vnykmshr/gopantic/pkg/model"
-	"github.com/vnykmshr/nivo/services/identity/internal/models"
-	"github.com/vnykmshr/nivo/services/identity/internal/service"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/middleware"
-	"github.com/vnykmshr/nivo/shared/response"
+	"github.com/1mb-dev/gopantic/pkg/model"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/models"
+	"github.com/1mb-dev/nivomoney/services/identity/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/middleware"
+	"github.com/1mb-dev/nivomoney/shared/response"
 )
 
 // PasswordHandler handles password-related HTTP requests.

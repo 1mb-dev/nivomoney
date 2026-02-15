@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vnykmshr/nivo/services/transaction/internal/models"
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/events"
-	"github.com/vnykmshr/nivo/shared/logger"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/events"
+	"github.com/1mb-dev/nivomoney/shared/logger"
 )
 
 // TransactionRepositoryInterface defines the interface for transaction repository operations.

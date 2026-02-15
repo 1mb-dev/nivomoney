@@ -12,10 +12,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/vnykmshr/nivo/services/transaction/internal/models"
-	"github.com/vnykmshr/nivo/services/transaction/internal/service"
-	"github.com/vnykmshr/nivo/shared/errors"
-	sharedModels "github.com/vnykmshr/nivo/shared/models"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/models"
+	"github.com/1mb-dev/nivomoney/services/transaction/internal/service"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	sharedModels "github.com/1mb-dev/nivomoney/shared/models"
 )
 
 // ============================================================

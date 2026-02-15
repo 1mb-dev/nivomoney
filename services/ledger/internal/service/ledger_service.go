@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vnykmshr/nivo/services/ledger/internal/models"
-	"github.com/vnykmshr/nivo/shared/errors"
+	"github.com/1mb-dev/nivomoney/services/ledger/internal/models"
+	"github.com/1mb-dev/nivomoney/shared/errors"
 )
 
 // AccountRepositoryInterface defines the interface for account repository operations.

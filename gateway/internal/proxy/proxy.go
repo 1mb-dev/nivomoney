@@ -6,9 +6,9 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/vnykmshr/nivo/shared/errors"
-	"github.com/vnykmshr/nivo/shared/logger"
-	"github.com/vnykmshr/nivo/shared/response"
+	"github.com/1mb-dev/nivomoney/shared/errors"
+	"github.com/1mb-dev/nivomoney/shared/logger"
+	"github.com/1mb-dev/nivomoney/shared/response"
 )
 
 // Gateway handles proxying requests to backend services.

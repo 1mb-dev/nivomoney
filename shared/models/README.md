@@ -19,7 +19,7 @@ The `Money` type stores monetary amounts in the smallest currency unit (cents) t
 ### Basic Usage
 
 ```go
-import "github.com/vnykmshr/nivo/shared/models"
+import "github.com/1mb-dev/nivomoney/shared/models"
 
 // Create from paise (smallest unit for INR)
 money := models.NewMoney(10050, models.INR) // ₹100.50
@@ -263,7 +263,7 @@ package main
 
 import (
     "fmt"
-    "github.com/vnykmshr/nivo/shared/models"
+    "github.com/1mb-dev/nivomoney/shared/models"
 )
 
 func UPITransfer(senderBalance, receiverBalance, amount models.Money) error {
