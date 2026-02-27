@@ -3,7 +3,7 @@ layout: default
 title: Documentation
 nav_order: 1
 description: "Nivo - A production-ready neobank platform showcasing fintech engineering excellence"
-permalink: /docs/
+permalink: /docs
 ---
 
 # Nivo Documentation
