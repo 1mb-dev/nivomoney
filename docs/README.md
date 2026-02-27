@@ -4,7 +4,7 @@ This directory contains the documentation for the Nivo neobank platform, built w
 
 ## Live Documentation
 
-Visit: [docs.nivomoney.com](https://docs.nivomoney.com)
+Visit: [nivomoney.com/docs](https://nivomoney.com/docs/)
 
 ## Local Development
 
@@ -48,7 +48,8 @@ docs/
 ├── _sass/
 │   └── color_schemes/
 │       └── nivo.scss    # Custom Nivo theme colors
-├── index.md             # Home page
+├── index.html           # Landing page
+├── documentation.md     # Docs home page
 ├── quickstart.md        # Quick start guide
 ├── development.md       # Development guide
 ├── architecture.md      # System architecture
@@ -101,5 +102,5 @@ Content here...
 This documentation is automatically built and deployed by GitHub Pages when changes are pushed to the main branch.
 
 Configuration is in `_config.yml`:
-- Custom domain: `docs.nivomoney.com`
+- Custom domain: `nivomoney.com`
 - Remote theme: `just-the-docs/just-the-docs`

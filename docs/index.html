@@ -1,0 +1,884 @@
+---
+layout: none
+permalink: /
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nivo — Production-Grade Neobank Platform</title>
+  <meta name="description" content="A fintech engineering showcase: 9 Go microservices, double-entry ledger, React frontends, and production-ready architecture.">
+  <link rel="canonical" href="https://nivomoney.com">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Nivo — Production-Grade Neobank Platform">
+  <meta property="og:description" content="A fintech engineering showcase: 9 Go microservices, double-entry ledger, React frontends, and production-ready architecture.">
+  <meta property="og:url" content="https://nivomoney.com">
+  <meta property="og:image" content="/assets/og-image.svg">
+  <meta property="og:site_name" content="Nivo">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Nivo — Production-Grade Neobank Platform">
+  <meta name="twitter:description" content="A fintech engineering showcase: 9 Go microservices, double-entry ledger, React frontends, and production-ready architecture.">
+  <meta name="twitter:image" content="/assets/og-image.svg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='32' height='32' rx='8' fill='%2300ACB0'/%3E%3Cpath d='M8 25V7H11.5L17.5 15V7H21V25H17.5L11.5 17V25H8Z' fill='white'/%3E%3Cpath d='M23 11L26 14L23 17' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --nivo-brand: #00ACB0;
+      --nivo-400: #2dd4bf;
+      --nivo-300: #5eead4;
+      --nivo-200: #99f6e4;
+      --nivo-600: #0d9488;
+      --nivo-700: #0f766e;
+      --nivo-900: #134e4a;
+
+      --bg-base: #09090b;
+      --bg-elevated: #18181b;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --bg-card-hover: rgba(0, 172, 176, 0.05);
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(0, 172, 176, 0.25);
+
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #8b8b93;
+
+      --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-base);
+      color: var(--text-secondary);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Skip link - accessibility */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 16px;
+      z-index: 100;
+      padding: 12px 24px;
+      background: var(--nivo-brand);
+      color: #fff;
+      border-radius: 0 0 8px 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: top 0.2s;
+    }
+    .skip-link:focus {
+      top: 0;
+      outline: 2px solid var(--nivo-300);
+      outline-offset: 2px;
+    }
+
+    /* Focus indicators */
+    :focus-visible {
+      outline: 2px solid var(--nivo-400);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    a { color: var(--nivo-400); text-decoration: none; transition: color 0.2s ease; }
+    a:hover { color: var(--nivo-300); }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+
+
+    /* ── Nav ── */
+    .site-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: rgba(9, 9, 11, 0.95);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .nav-brand:hover { color: var(--text-primary); }
+    .nav-brand svg { flex-shrink: 0; }
+    .nav-wordmark {
+      font-weight: 700;
+      font-size: 1.125rem;
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-links a:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .nav-links .nav-cta {
+      color: var(--nivo-brand);
+      border: 1px solid rgba(0, 172, 176, 0.3);
+      background: rgba(0, 172, 176, 0.06);
+    }
+    .nav-links .nav-cta:hover {
+      color: var(--nivo-300);
+      border-color: rgba(0, 172, 176, 0.5);
+      background: rgba(0, 172, 176, 0.1);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0, 172, 176, 0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 75% 85%, rgba(0, 172, 176, 0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 20% 60%, rgba(0, 172, 176, 0.04) 0%, transparent 60%);
+    }
+
+    .hero-content { max-width: 720px; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px 5px 10px;
+      border-radius: 999px;
+      background: rgba(0, 172, 176, 0.08);
+      border: 1px solid rgba(0, 172, 176, 0.15);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--nivo-400);
+      letter-spacing: 0.01em;
+      margin-bottom: 40px;
+    }
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--nivo-brand);
+      box-shadow: 0 0 8px rgba(0, 172, 176, 0.6);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.75rem, 7vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+    .hero .gradient-text {
+      background: linear-gradient(135deg, var(--nivo-400) 0%, var(--nivo-300) 50%, var(--nivo-200) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 540px;
+      margin: 0 auto 44px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 26px;
+      border-radius: 10px;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--nivo-brand);
+      color: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 20px rgba(0, 172, 176, 0.2);
+    }
+    .btn-primary:hover {
+      background: var(--nivo-600);
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0, 172, 176, 0.3);
+    }
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text-primary);
+      border-color: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+    .btn svg { flex-shrink: 0; }
+
+    /* ── Stats strip ── */
+    .stats-section {
+      position: relative;
+      z-index: 1;
+      padding-bottom: 100px;
+    }
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--bg-elevated);
+    }
+    .stats-strip .stat-cell {
+      padding: 26px 20px;
+      text-align: center;
+      position: relative;
+    }
+    .stats-strip .stat-cell + .stat-cell::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      height: 60%;
+      width: 1px;
+      background: var(--border-subtle);
+    }
+    .stat-value {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: 2px;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+    }
+
+    /* ── Section chrome ── */
+    .content-section {
+      position: relative;
+      z-index: 1;
+      padding: 80px 0;
+    }
+    .content-section + .content-section {
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--nivo-brand);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 14px;
+    }
+    .section-heading {
+      font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+      line-height: 1.15;
+    }
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin-bottom: 48px;
+      line-height: 1.65;
+    }
+    .section-center { text-align: center; }
+    .section-center .section-desc { margin-left: auto; margin-right: auto; }
+
+    /* ── Architecture grid ── */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .arch-cell {
+      background: var(--bg-base);
+      padding: 26px 24px;
+      transition: background 0.25s ease;
+    }
+    .arch-cell:hover { background: var(--bg-card-hover); }
+    .arch-cell-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .arch-cell-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+    .arch-cell-port {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--nivo-brand);
+      background: rgba(0, 172, 176, 0.08);
+      padding: 2px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+    }
+    .arch-cell-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Highlight cards ── */
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .hl-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 32px 28px;
+      transition: border-color 0.25s ease, background 0.25s ease;
+    }
+    .hl-card:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+    }
+    .hl-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+      background: rgba(0, 172, 176, 0.08);
+      border: 1px solid rgba(0, 172, 176, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--nivo-400);
+    }
+    .hl-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+    .hl-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── Tech pills ── */
+    .tech-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .tech-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .tech-pill:hover {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+      background: var(--bg-card-hover);
+    }
+    .tech-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Link cards ── */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .link-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      text-decoration: none;
+      transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+    }
+    .link-card:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+    .link-card:hover h3 { color: var(--nivo-400); }
+    .link-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(0, 172, 176, 0.08);
+      border: 1px solid rgba(0, 172, 176, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--nivo-400);
+    }
+    .link-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+      transition: color 0.2s;
+    }
+    .link-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border-subtle);
+      padding: 48px 0 40px;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .footer-brand {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--text-secondary); }
+    .footer-note {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .arch-grid { grid-template-columns: repeat(2, 1fr); }
+      .highlights-grid { grid-template-columns: 1fr; }
+      .links-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero { padding: 100px 20px 60px; min-height: auto; }
+      .hero h1 { letter-spacing: -0.025em; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .stats-strip .stat-cell:last-child { grid-column: 1 / -1; }
+      .stats-strip .stat-cell + .stat-cell::before { display: none; }
+      .stats-strip .stat-cell { border-top: 1px solid var(--border-subtle); }
+      .stats-strip .stat-cell:nth-child(-n+2) { border-top: none; }
+      .stat-value { font-size: 1.15rem; }
+      .arch-grid { grid-template-columns: 1fr; }
+      .content-section { padding: 60px 0; }
+      .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <!-- Nav -->
+  <nav class="site-nav" aria-label="Primary">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand" aria-label="Nivo — Home">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="40" height="40" rx="10" fill="#00ACB0"/>
+          <path d="M11 28V12H15L22 21V12H26V28H22L15 19V28H11Z" fill="white"/>
+          <path d="M29 15L32 18L29 21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="nav-wordmark">Nivo</span>
+      </a>
+      <div class="nav-links">
+        <a href="/docs/">Docs</a>
+        <a href="/architecture">Architecture</a>
+        <a href="/adr/">ADRs</a>
+        <a href="https://github.com/1mb-dev/nivomoney" class="nav-cta" target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <!-- Hero -->
+    <section class="hero" aria-label="Introduction">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot" aria-hidden="true"></span>
+          Archived Portfolio Project
+        </div>
+        <h1 class="animate-fade-up">
+          Production-Grade<br>
+          <span class="gradient-text">Neobank Platform</span>
+        </h1>
+        <p class="hero-desc">
+          A fintech engineering showcase — 9 Go microservices, double-entry ledger,
+          React frontends, and the architecture patterns behind real digital banking.
+        </p>
+        <div class="hero-actions">
+          <a href="https://github.com/1mb-dev/nivomoney" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            View Source
+          </a>
+          <a href="/docs/" class="btn btn-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Documentation
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section" aria-label="Project statistics">
+      <div class="container">
+        <div class="stats-strip">
+          <div class="stat-cell">
+            <div class="stat-value">9</div>
+            <div class="stat-label">Microservices</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-value">Go 1.24</div>
+            <div class="stat-label">Backend</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-value">React 19</div>
+            <div class="stat-label">Frontend</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-value">PostgreSQL</div>
+            <div class="stat-label">Database</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-value">100%</div>
+            <div class="stat-label">Open Source</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture -->
+    <section class="content-section" aria-labelledby="arch-heading">
+      <div class="container">
+        <p class="section-eyebrow">Architecture</p>
+        <h2 class="section-heading" id="arch-heading">9 Services, One Platform</h2>
+        <p class="section-desc">Each service owns its domain, database schema, and API surface. Communication via internal HTTP with circuit breakers.</p>
+        <div class="arch-grid">
+          <div class="arch-cell">
+            <div class="arch-cell-header">
+              <span class="arch-cell-name">Gateway</span>
+              <span class="arch-cell-port">:8000</span>
+            </div>
+            <p class="arch-cell-desc">API routing, auth verification, SSE real-time updates</p>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-header">
+              <span class="arch-cell-name">Identity</span>
+              <span class="arch-cell-port">:8080</span>
+            </div>
+            <p class="arch-cell-desc">User registration, JWT authentication, KYC verification</p>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-header">
+              <span class="arch-cell-name">Ledger</span>
+              <span class="arch-cell-port">:8081</span>
+            </div>
+            <p class="arch-cell-desc">Double-entry accounting with balanced journal entries</p>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-header">
+              <span class="arch-cell-name">RBAC</span>
+              <span class="arch-cell-port">:8082</span>
+            </div>
+            <p class="arch-cell-desc">Role-based access control, granular permissions</p>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-header">
+              <span class="arch-cell-name">Wallet</span>
+              <span class="arch-cell-port">:8083</span>
+            </div>
+            <p class="arch-cell-desc">Balance management, wallet lifecycle, fund operations</p>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-header">
+              <span class="arch-cell-name">Transaction</span>
+              <span class="arch-cell-port">:8084</span>
+            </div>
+            <p class="arch-cell-desc">Peer-to-peer transfers, payment processing, UPI</p>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-header">
+              <span class="arch-cell-name">Risk</span>
+              <span class="arch-cell-port">:8085</span>
+            </div>
+            <p class="arch-cell-desc">Fraud detection, velocity limits, risk scoring</p>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-header">
+              <span class="arch-cell-name">Simulation</span>
+              <span class="arch-cell-port">:8086</span>
+            </div>
+            <p class="arch-cell-desc">Synthetic data generation, test scenario automation</p>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-header">
+              <span class="arch-cell-name">Notification</span>
+              <span class="arch-cell-port">:8087</span>
+            </div>
+            <p class="arch-cell-desc">Multi-channel alerts — email, SMS, in-app messaging</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Engineering Highlights -->
+    <section class="content-section" aria-labelledby="eng-heading">
+      <div class="container">
+        <p class="section-eyebrow">Engineering</p>
+        <h2 class="section-heading" id="eng-heading">Built Like Production</h2>
+        <p class="section-desc">Every component follows production-grade patterns from real fintech platforms.</p>
+        <div class="highlights-grid">
+          <article class="hl-card">
+            <div class="hl-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 9.5h20"/></svg>
+            </div>
+            <h3>Double-Entry Ledger</h3>
+            <p>Proper accounting with balanced debit/credit entries. Every transaction creates immutable journal entries that always sum to zero.</p>
+          </article>
+          <article class="hl-card">
+            <div class="hl-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            </div>
+            <h3>JWT + RBAC</h3>
+            <p>Secure authentication with role-based access control. Granular permissions, token refresh, and admin/user role separation.</p>
+          </article>
+          <article class="hl-card">
+            <div class="hl-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3>Risk Engine</h3>
+            <p>Transaction risk scoring, velocity limits, and fraud detection. Rule-based engine evaluating every financial operation in real-time.</p>
+          </article>
+          <article class="hl-card">
+            <div class="hl-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <h3>Event-Driven</h3>
+            <p>Asynchronous event processing with SSE for real-time updates. Services communicate through events with durable delivery guarantees.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="content-section section-center" aria-labelledby="stack-heading">
+      <div class="container">
+        <p class="section-eyebrow">Stack</p>
+        <h2 class="section-heading" id="stack-heading">Modern, Battle-Tested</h2>
+        <p class="section-desc">A carefully chosen stack balancing performance, developer experience, and production readiness.</p>
+        <div class="tech-grid" role="list">
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#00ADD8" aria-hidden="true"></span>Go 1.24</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#61DAFB" aria-hidden="true"></span>React 19</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#3178C6" aria-hidden="true"></span>TypeScript</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#336791" aria-hidden="true"></span>PostgreSQL 15</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#DC382D" aria-hidden="true"></span>Redis</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#06B6D4" aria-hidden="true"></span>TailwindCSS 4</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#646CFF" aria-hidden="true"></span>Vite</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#2496ED" aria-hidden="true"></span>Docker</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#E6522C" aria-hidden="true"></span>Prometheus</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#F46800" aria-hidden="true"></span>Grafana</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#d4d4d8" aria-hidden="true"></span>JWT</span>
+          <span class="tech-pill" role="listitem"><span class="tech-dot" style="background:#22C55E" aria-hidden="true"></span>bcrypt</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Explore -->
+    <section class="content-section" aria-labelledby="explore-heading">
+      <div class="container">
+        <p class="section-eyebrow">Explore</p>
+        <h2 class="section-heading" id="explore-heading">Dive Deeper</h2>
+        <p class="section-desc">Everything is open source. Read the code, explore the docs, understand the decisions.</p>
+        <div class="links-grid">
+          <a href="https://github.com/1mb-dev/nivomoney" class="link-card" target="_blank" rel="noopener noreferrer">
+            <div class="link-card-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            </div>
+            <div>
+              <h3>GitHub Repository</h3>
+              <p>Source code, issues, and contributions</p>
+            </div>
+          </a>
+          <a href="/docs/" class="link-card">
+            <div class="link-card-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <div>
+              <h3>Documentation</h3>
+              <p>Architecture, API flows, and setup guides</p>
+            </div>
+          </a>
+          <a href="/adr/" class="link-card">
+            <div class="link-card-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div>
+              <h3>Architecture Decisions</h3>
+              <p>ADRs explaining key technical choices</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <svg width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="40" height="40" rx="10" fill="#00ACB0"/>
+            <path d="M11 28V12H15L22 21V12H26V28H22L15 19V28H11Z" fill="white"/>
+            <path d="M29 15L32 18L29 21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="footer-brand">Nivo &copy; 2026</span>
+        </div>
+        <nav class="footer-links" aria-label="Footer">
+          <a href="/docs/">Docs</a>
+          <a href="/architecture">Architecture</a>
+          <a href="/adr/">ADRs</a>
+          <a href="/quickstart">Quick Start</a>
+          <a href="https://github.com/1mb-dev/nivomoney" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </nav>
+      </div>
+      <p class="footer-note">An archived fintech engineering showcase. Run locally for the full demo experience.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

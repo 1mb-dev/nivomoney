@@ -20,7 +20,7 @@ make test
 ## Development
 
 - **Prerequisites:** Go 1.24+, Docker, Node.js 18+
-- **Full guide:** [docs.nivomoney.com/development](https://docs.nivomoney.com/development)
+- **Full guide:** [nivomoney.com/development](https://nivomoney.com/development)
 
 ### Quick reference
 

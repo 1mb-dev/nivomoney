@@ -1,21 +1,20 @@
 // Nivo Dark Color Scheme
-// Matches user-app styling - Blue primary theme on dark background
+// Unified teal brand (#00ACB0) — matches landing page and logo
 
-// Primary colors from user-app (same as light)
-$primary-50: #eff6ff;
-$primary-100: #dbeafe;
-$primary-200: #bfdbfe;
-$primary-300: #93c5fd;
-$primary-400: #60a5fa;
-$primary-500: #3b82f6;
-$primary-600: #2563eb;
-$primary-700: #1d4ed8;
-$primary-800: #1e40af;
-$primary-900: #1e3a8a;
+// Brand teal palette
+$teal-50:  #f0fdfa;
+$teal-100: #ccfbf1;
+$teal-200: #99f6e4;
+$teal-300: #5eead4;
+$teal-400: #2dd4bf;
+$teal-500: #14b8a6;
+$teal-600: #0d9488;
+$teal-700: #0f766e;
+$teal-800: #115e59;
+$teal-900: #134e4a;
 
-// Secondary colors
-$secondary-500: #6366f1;
-$secondary-600: #4f46e5;
+// Nivo brand accent
+$nivo-brand: #00ACB0;
 
 // Success
 $success-500: #22c55e;
@@ -29,56 +28,60 @@ $warning-600: #d97706;
 $error-500: #ef4444;
 $error-600: #dc2626;
 
-// Gray scale - inverted for dark mode
-$gray-50: #111827;
-$gray-100: #1f2937;
-$gray-200: #374151;
-$gray-300: #4b5563;
-$gray-400: #6b7280;
-$gray-500: #9ca3af;
-$gray-600: #d1d5db;
-$gray-700: #e5e7eb;
-$gray-800: #f3f4f6;
-$gray-900: #f9fafb;
+// Gray scale — zinc (matches landing page)
+$gray-50:  #18181b;   // inverted for dark mode
+$gray-100: #27272a;
+$gray-200: #3f3f46;
+$gray-300: #52525b;
+$gray-400: #71717a;
+$gray-500: #a1a1aa;
+$gray-600: #d4d4d8;
+$gray-700: #e4e4e7;
+$gray-800: #f4f4f5;
+$gray-900: #fafafa;
 
-// Just the Docs theme variables - DARK MODE
-$link-color: $primary-400;
-$btn-primary-color: $primary-500;
+// Theme variables
+$link-color: $teal-400;
+$btn-primary-color: $teal-500;
 
 // Navigation width
 $nav-width: 16.5rem;
 
-// Sidebar - dark background with light text
-$sidebar-color: #0f172a;
+// Sidebar
+$sidebar-color: #09090b;
 
-// Body - Dark background
-$body-background-color: #111827;
-$body-text-color: #e5e7eb;
-$body-heading-color: #f9fafb;
+// Body
+$body-background-color: #18181b;
+$body-text-color: #d4d4d8;
+$body-heading-color: #fafafa;
 
-// Code - dark theme
-$code-background-color: #1e293b;
+// Code
+$code-background-color: #27272a;
 
 // Search
-$search-background-color: #1f2937;
+$search-background-color: #27272a;
 
-// Buttons
-$btn-primary-color: $primary-500;
+// CSS variables
+:root {
+  --nivo-brand: #{$nivo-brand};
+  --nivo-primary: #{$teal-500};
+  --nivo-primary-light: #{$teal-400};
+  --nivo-primary-dark: #{$teal-600};
+  --nivo-success: #{$success-500};
+  --nivo-warning: #{$warning-500};
+  --nivo-error: #{$error-500};
+  --sidebar-border-color: #{$gray-200};
+}
 
-// Links
-$link-color: $primary-400;
-
-// Sidebar styling for dark mode
+// ── Sidebar ──
 .side-bar {
   background-color: $sidebar-color;
-  color: $gray-600;
+  color: $gray-500;
 
   a {
-    color: $gray-600 !important;
+    color: $gray-500 !important;
 
-    &:hover {
-      color: #ffffff !important;
-    }
+    &:hover { color: #ffffff !important; }
   }
 
   .site-footer,
@@ -87,38 +90,33 @@ $link-color: $primary-400;
     border-top-color: $gray-200;
 
     a {
-      color: $primary-400 !important;
-
-      &:hover {
-        color: $primary-300 !important;
-      }
+      color: $teal-400 !important;
+      &:hover { color: $teal-300 !important; }
     }
   }
 }
 
-// Site title
+// ── Site title ──
 .site-title {
-  color: $primary-400 !important;
+  color: $nivo-brand !important;
   font-weight: 700;
 }
 
-// Navigation styling
+// ── Navigation ──
 .site-nav {
   .nav-list-item {
     .nav-list-link {
-      color: $gray-600 !important;
+      color: $gray-500 !important;
 
-      &:hover {
-        color: #ffffff !important;
-      }
+      &:hover { color: #ffffff !important; }
 
       &.active {
-        color: $primary-400 !important;
+        color: $teal-400 !important;
         font-weight: 600;
       }
 
       &:focus {
-        outline: 2px solid $primary-400;
+        outline: 2px solid $teal-400;
         outline-offset: 2px;
         border-radius: 0.25rem;
       }
@@ -126,7 +124,7 @@ $link-color: $primary-400;
   }
 }
 
-// Main content styling
+// ── Main content ──
 .main-content {
   background-color: $body-background-color;
 
@@ -141,26 +139,25 @@ $link-color: $primary-400;
   }
 
   a {
-    color: $primary-400;
+    color: $teal-400;
     text-decoration: none;
 
     &:hover {
-      color: $primary-300;
+      color: $teal-300;
       text-decoration: underline;
     }
   }
 
-  // Code blocks - dark theme
   code {
     background-color: $code-background-color;
     border-radius: 0.25rem;
     padding: 0.125rem 0.375rem;
     font-size: 0.875em;
-    color: #e2e8f0;
+    color: #e4e4e7;
   }
 
   pre {
-    background-color: #0f172a;
+    background-color: #09090b !important;
     border-radius: 0.5rem;
     padding: 1rem;
     overflow-x: auto;
@@ -169,36 +166,41 @@ $link-color: $primary-400;
     code {
       background-color: transparent;
       padding: 0;
-      color: #e2e8f0;
+      color: #e4e4e7;
     }
   }
 
-  // Tables - explicit backgrounds for dark mode
+  // Code block overrides — div.highlighter-rouge only (not inline code)
+  div.highlighter-rouge {
+    background-color: #09090b !important;
+
+    .highlight, pre.highlight, pre {
+      background: #09090b !important;
+      color: #e4e4e7;
+    }
+
+    div.highlight {
+      border-color: $gray-200;
+    }
+
+    code {
+      background-color: transparent;
+      color: #e4e4e7;
+    }
+  }
+
+  // Tables
   table {
     border-collapse: collapse;
     width: 100%;
     margin: 1rem 0;
     background-color: $body-background-color;
 
-    thead {
-      background-color: $gray-100;
-    }
-
-    tbody {
-      background-color: $body-background-color;
-    }
-
-    tr {
-      background-color: $body-background-color;
-    }
-
-    tr:nth-child(even) {
-      background-color: $gray-100;
-    }
-
-    tr:hover {
-      background-color: rgba($primary-500, 0.15);
-    }
+    thead { background-color: $gray-100; }
+    tbody { background-color: $body-background-color; }
+    tr { background-color: $body-background-color; }
+    tr:nth-child(even) { background-color: $gray-100; }
+    tr:hover { background-color: rgba($teal-500, 0.12); }
 
     th, td {
       border: 1px solid $gray-200;
@@ -213,22 +215,20 @@ $link-color: $primary-400;
       color: $body-heading-color;
     }
 
-    td {
-      color: $body-text-color;
-    }
+    td { color: $body-text-color; }
   }
 
   // Blockquotes
   blockquote {
-    border-left: 4px solid $primary-500;
-    background-color: rgba($primary-500, 0.1);
+    border-left: 4px solid $teal-500;
+    background-color: rgba($teal-500, 0.08);
     padding: 1rem;
     margin: 1rem 0;
     border-radius: 0 0.5rem 0.5rem 0;
 
     p {
       margin: 0;
-      color: $primary-200;
+      color: $teal-200;
     }
   }
 
@@ -248,42 +248,51 @@ $link-color: $primary-400;
   }
 }
 
-// Search input - dark
+// Code block theme overrides (outside .main-content for full specificity)
+div.highlighter-rouge,
+.highlight,
+pre.highlight {
+  background: #09090b !important;
+  color: #e4e4e7 !important;
+}
+
+.highlight pre {
+  background: #09090b !important;
+}
+
+// ── Search ──
 .search-input {
   background-color: $search-background-color;
   border: 1px solid $gray-200;
   border-radius: 0.5rem;
   color: $body-text-color;
 
-  &::placeholder {
-    color: $gray-400;
-  }
+  &::placeholder { color: $gray-500; }
 
   &:focus {
-    border-color: $primary-500;
-    box-shadow: 0 0 0 2px rgba($primary-500, 0.3);
+    border-color: $teal-500;
+    box-shadow: 0 0 0 2px rgba($teal-500, 0.25);
   }
 }
 
-// Search results
 .search-results {
   background-color: $gray-100;
   border: 1px solid $gray-200;
 }
 
-// Buttons
+// ── Buttons ──
 .btn-primary,
 .btn.btn-primary {
-  background-color: $primary-500 !important;
+  background-color: $teal-600 !important;
   color: #ffffff !important;
 
   &:hover {
-    background-color: $primary-600 !important;
+    background-color: $teal-700 !important;
     color: #ffffff !important;
   }
 }
 
-// Callout boxes
+// ── Callouts ──
 .callout {
   padding: 1rem;
   border-radius: 0.5rem;
@@ -291,43 +300,31 @@ $link-color: $primary-400;
   margin: 1rem 0;
 
   &.callout-info {
-    background-color: rgba($primary-500, 0.1);
-    border-color: $primary-500;
-
-    .callout-title {
-      color: $primary-300;
-    }
+    background-color: rgba($teal-500, 0.08);
+    border-color: $teal-500;
+    .callout-title { color: $teal-300; }
   }
 
   &.callout-success {
-    background-color: rgba($success-500, 0.1);
+    background-color: rgba($success-500, 0.08);
     border-color: $success-500;
-
-    .callout-title {
-      color: $success-500;
-    }
+    .callout-title { color: $success-500; }
   }
 
   &.callout-warning {
-    background-color: rgba($warning-500, 0.1);
+    background-color: rgba($warning-500, 0.08);
     border-color: $warning-500;
-
-    .callout-title {
-      color: $warning-500;
-    }
+    .callout-title { color: $warning-500; }
   }
 
   &.callout-danger {
-    background-color: rgba($error-500, 0.1);
+    background-color: rgba($error-500, 0.08);
     border-color: $error-500;
-
-    .callout-title {
-      color: $error-500;
-    }
+    .callout-title { color: $error-500; }
   }
 }
 
-// Badges
+// ── Badges ──
 .badge {
   display: inline-flex;
   align-items: center;
@@ -336,98 +333,65 @@ $link-color: $primary-400;
   font-size: 0.75rem;
   font-weight: 500;
 
-  &.badge-success {
-    background-color: rgba($success-500, 0.2);
-    color: $success-500;
-  }
-
-  &.badge-warning {
-    background-color: rgba($warning-500, 0.2);
-    color: $warning-500;
-  }
-
-  &.badge-error {
-    background-color: rgba($error-500, 0.2);
-    color: $error-500;
-  }
-
-  &.badge-info {
-    background-color: rgba($primary-500, 0.2);
-    color: $primary-400;
-  }
+  &.badge-success { background-color: rgba($success-500, 0.15); color: $success-500; }
+  &.badge-warning { background-color: rgba($warning-500, 0.15); color: $warning-500; }
+  &.badge-error   { background-color: rgba($error-500, 0.15); color: $error-500; }
+  &.badge-info    { background-color: rgba($teal-500, 0.15); color: $teal-400; }
 }
 
-// Footer
+// ── Footer ──
 .site-footer {
   border-top: 1px solid $gray-200;
   background-color: $sidebar-color;
   color: $gray-500;
 
-  a {
-    color: $primary-400;
-  }
+  a { color: $teal-400; }
 }
 
-// Focus indicators
+// ── Focus indicators ──
 a:focus,
 button:focus,
 input:focus,
 select:focus,
 textarea:focus,
 [tabindex]:focus {
-  outline: 2px solid $primary-500;
+  outline: 2px solid $teal-500;
   outline-offset: 2px;
 }
 
-// Aux nav (top right)
+// ── Aux nav ──
 .aux-nav,
 .site-button {
-  color: $primary-400;
-
-  &:hover {
-    color: $primary-300;
-  }
+  color: $teal-400;
+  &:hover { color: $teal-300; }
 }
 
-// Site header
+// ── Header ──
 .site-header {
   background-color: $sidebar-color;
   border-bottom: 1px solid $gray-200;
 }
 
-// Note/highlight boxes from Just the Docs
+// ── Note/highlight boxes ──
 .note,
 .highlight {
-  background-color: rgba($primary-500, 0.1);
-  border-left: 4px solid $primary-500;
+  background-color: rgba($teal-500, 0.08);
+  border-left: 4px solid $teal-500;
   padding: 1rem;
   border-radius: 0 0.5rem 0.5rem 0;
   color: $body-text-color;
 }
 
-// Responsive
+// ── Responsive ──
 @media (max-width: 768px) {
   .main-content {
     padding: 1rem;
 
-    h1 {
-      font-size: 1.75rem;
-    }
+    h1 { font-size: 1.75rem; }
 
     pre {
       padding: 0.75rem;
       font-size: 0.8rem;
     }
   }
-}
-
-// CSS variables for dark mode
-:root {
-  --nivo-primary: #{$primary-500};
-  --nivo-primary-light: #{$primary-400};
-  --nivo-primary-dark: #{$primary-600};
-  --nivo-success: #{$success-500};
-  --nivo-warning: #{$warning-500};
-  --nivo-error: #{$error-500};
-  --sidebar-border-color: #{$gray-200};
 }

@@ -143,3 +143,13 @@ certbot/
 
 # Backups
 backups/
+
+# =============================================================================
+# Jekyll (docs/)
+# =============================================================================
+
+# Build output
+docs/_site/
+
+# Bundle lock (Ruby version-specific)
+docs/Gemfile.lock

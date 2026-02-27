@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Home
+title: Documentation
 nav_order: 1
 description: "Nivo - A production-ready neobank platform showcasing fintech engineering excellence"
-permalink: /
+permalink: /docs/
 ---
 
 # Nivo Documentation
@@ -12,7 +12,7 @@ permalink: /
 A portfolio-grade neobank platform demonstrating production-ready microservices architecture with fintech domain expertise.
 {: .fs-6 .fw-300 }
 
-[Live Demo](https://nivomoney.com){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 }
+[Run Locally](quickstart){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 }
 
 ---
 
@@ -101,30 +101,21 @@ Nivo is a **showcase neobank platform** built to demonstrate engineering excelle
 
 ---
 
-## Demo Access
+## Demo Accounts
 
-Try the live demo with pre-seeded accounts:
+{: .warning }
+> The live demo has been **archived**. Run the platform locally to explore all features. See [Quick Start](quickstart) for setup instructions.
 
-| App | URL | Description |
-|:----|:----|:------------|
-| **User App** | [nivomoney.com](https://nivomoney.com) | Customer banking experience |
-| **Verify Portal** | [verify.nivomoney.com](https://verify.nivomoney.com) | OTP verification for paired users |
-| **Admin Dashboard** | [admin.nivomoney.com](https://admin.nivomoney.com) | Operations & KYC management |
+Use these pre-seeded accounts when running locally:
 
-**User App** — [nivomoney.com](https://nivomoney.com)
-```
-Email: raj.kumar@gmail.com
-Password: raj123
-Balance: ₹50,000
-```
+| Persona | Email | Password | Balance |
+|:--------|:------|:---------|:--------|
+| Regular User | raj.kumar@gmail.com | raj123 | ₹50,000 |
+| Business Owner | priya.electronics@business.com | priya123 | ₹1,50,000 |
+| Freelancer | arjun.design@freelance.com | arjun123 | ₹75,000 |
+| Student | neha.singh@student.com | neha123 | ₹25,000 |
 
-**Verify Portal** — [verify.nivomoney.com](https://verify.nivomoney.com)
-```
-Email: priya.electronics@business.com
-Password: priya123
-```
-
-**Admin Dashboard** — [admin.nivomoney.com](https://admin.nivomoney.com)
+**Admin Dashboard:**
 ```
 Email: admin@nivo.local
 Password: (generated at seed time - see .secrets/credentials.txt)
@@ -179,4 +170,4 @@ This project demonstrates:
 Nivo is a portfolio project showcasing fintech engineering capabilities including microservices architecture, double-entry ledger systems, and modern frontend development.
 
 {: .fs-2 }
-Nivo &copy; 2026 | [Live Demo](https://nivomoney.com) | [Why Nivo?](/why-nivo)
+Nivo &copy; 2026 | [Landing Page](/) | [Why Nivo?](/why-nivo)

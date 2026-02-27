@@ -2,13 +2,16 @@
 
 A production-grade neobank platform demonstrating fintech architecture with Go microservices.
 
-[![Documentation](https://img.shields.io/badge/docs-docs.nivomoney.com-blue)](https://docs.nivomoney.com)
+[![Documentation](https://img.shields.io/badge/docs-nivomoney.com-blue)](https://nivomoney.com/docs/)
 [![Go](https://img.shields.io/badge/go-1.24+-00ADD8)](https://go.dev)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Status](https://img.shields.io/badge/status-archived%20showcase-orange)]()
 
 ## Overview
 
 Nivo is a portfolio project implementing a complete digital banking system. It demonstrates microservices architecture, double-entry accounting, and fintech domain patterns in a working, deployable application.
+
+> **Archived Showcase** — The live demo at nivomoney.com has been retired. The domain now serves a [static landing page](https://nivomoney.com). Run the platform locally for the full demo experience.
 
 **What it includes:**
 - 9 Go microservices with domain-driven boundaries
@@ -17,9 +20,34 @@ Nivo is a portfolio project implementing a complete digital banking system. It d
 - React frontends for users and admins
 - Full observability stack (Prometheus, Grafana)
 
-## Live Demo
+## Quick Start
 
-Try it at [nivomoney.com](https://nivomoney.com):
+### Prerequisites
+
+- Go 1.24+
+- Docker & Docker Compose
+- Node.js 18+
+
+### Setup
+
+```bash
+git clone https://github.com/1mb-dev/nivomoney.git
+cd nivomoney
+cp .env.example .env
+
+# Start all services (postgres, redis, microservices, gateway)
+make dev
+
+# Seed database with demo data
+make seed
+
+# Start frontend (separate terminal)
+cd frontend/user-app && npm install && npm run dev
+```
+
+Open http://localhost:5173 and login with demo credentials.
+
+### Demo Accounts
 
 | Email | Password | Balance |
 |-------|----------|---------|
@@ -50,33 +78,6 @@ frontend/
 └── admin-app/      # Admin dashboard
 ```
 
-## Quick Start
-
-### Prerequisites
-
-- Go 1.24+
-- Docker & Docker Compose
-- Node.js 18+
-
-### Setup
-
-```bash
-git clone https://github.com/1mb-dev/nivomoney.git
-cd nivomoney
-cp .env.example .env
-
-# Start all services (postgres, redis, microservices, gateway)
-make dev
-
-# Seed database with demo data
-make seed
-
-# Start frontend (separate terminal)
-cd frontend/user-app && npm install && npm run dev
-```
-
-Open http://localhost:5173 and login with demo credentials.
-
 ## Tech Stack
 
 | Component | Technology |
@@ -99,12 +100,12 @@ Open http://localhost:5173 and login with demo credentials.
 
 ## Documentation
 
-Full documentation: [docs.nivomoney.com](https://docs.nivomoney.com)
+Full documentation: [nivomoney.com/docs](https://nivomoney.com/docs/)
 
-- [Quick Start](https://docs.nivomoney.com/quickstart)
-- [Architecture](https://docs.nivomoney.com/architecture)
-- [API Flows](https://docs.nivomoney.com/flows)
-- [ADRs](https://docs.nivomoney.com/adr)
+- [Quick Start](https://nivomoney.com/quickstart)
+- [Architecture](https://nivomoney.com/architecture)
+- [API Flows](https://nivomoney.com/flows)
+- [ADRs](https://nivomoney.com/adr)
 
 ## Project Scope
 

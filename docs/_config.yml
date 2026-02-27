@@ -4,7 +4,7 @@
 title: Nivo Docs
 description: Technical documentation for Nivo - a showcase neobank platform demonstrating production-ready fintech architecture.
 baseurl: ""
-url: "https://docs.nivomoney.com"
+url: "https://nivomoney.com"
 
 # Theme - Just the Docs v0.12.0
 theme: just-the-docs
@@ -23,13 +23,13 @@ mermaid:
 
 # Aux links (top right navigation)
 aux_links:
-  "Live Demo":
-    - "https://nivomoney.com"
+  "GitHub":
+    - "https://github.com/1mb-dev/nivomoney"
 
 aux_links_new_tab: true
 
 # Footer
-footer_content: "Nivo &copy; 2026. A fintech engineering showcase."
+footer_content: "Nivo &copy; 2026. A fintech engineering showcase. <a href='/'>Home</a>"
 
 # Back to top link
 back_to_top: true

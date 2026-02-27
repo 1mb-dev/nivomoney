@@ -12,6 +12,9 @@ permalink: /demo
 Experience Nivo's features with pre-configured demo accounts.
 {: .fs-6 .fw-300 }
 
+{: .warning }
+> The live demo has been **archived**. All URLs below refer to your **local** environment. See [Quick Start](/quickstart) to get the platform running locally.
+
 ---
 
 ## Table of Contents
@@ -43,7 +46,7 @@ All demo accounts have verified KYC and active wallets ready to use:
 
 ### Step 1: Login
 
-1. Go to [nivomoney.com](https://nivomoney.com)
+1. Go to [localhost:5173](http://localhost:5173)
 2. Click **Login** or **Get Started**
 3. Enter credentials: `raj.kumar@gmail.com` / `raj123`
 4. You'll land on the dashboard
@@ -129,7 +132,7 @@ Logout and login as a different persona to see varied balances:
 
 The Verify Portal is for trusted verifiers (family members, guardians) who help paired users approve transactions:
 
-1. Go to [verify.nivomoney.com](https://verify.nivomoney.com)
+1. Go to [localhost:5174](http://localhost:5174) (verify portal)
 2. Login as `priya.electronics@business.com` / `priya123`
 3. Explore:
    - Pending verifications dashboard
@@ -150,7 +153,7 @@ This accessibility feature allows shared account management for users who need a
 
 For admin features, login to the admin app:
 
-1. Go to [admin.nivomoney.com](https://admin.nivomoney.com)
+1. Go to [localhost:5175](http://localhost:5175) (admin dashboard)
 2. Login with generated admin credentials (see below)
 3. Explore:
    - User management
@@ -182,13 +185,13 @@ For admin features, login to the admin app:
 Want to explore the APIs directly? Use the demo credentials with:
 
 ```bash
-# Login and get JWT token
-curl -X POST https://api.nivomoney.com/api/v1/identity/auth/login \
+# Login and get JWT token (local)
+curl -X POST http://localhost:8000/api/v1/identity/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email": "raj.kumar@gmail.com", "password": "raj123"}'
 
 # Use the token for authenticated requests
-curl https://api.nivomoney.com/api/v1/wallet/wallets \
+curl http://localhost:8000/api/v1/wallet/wallets \
   -H "Authorization: Bearer <your-token>"
 ```
 

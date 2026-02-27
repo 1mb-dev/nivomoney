@@ -1,21 +1,20 @@
-// Nivo Custom Color Scheme
-// Matches user-app styling - Blue primary theme
+// Nivo Light Color Scheme
+// Unified teal brand (#00ACB0) — matches landing page and logo
 
-// Primary colors from user-app
-$primary-50: #eff6ff;
-$primary-100: #dbeafe;
-$primary-200: #bfdbfe;
-$primary-300: #93c5fd;
-$primary-400: #60a5fa;
-$primary-500: #3b82f6;  // Main brand blue
-$primary-600: #2563eb;
-$primary-700: #1d4ed8;
-$primary-800: #1e40af;
-$primary-900: #1e3a8a;
+// Brand teal palette (derived from Tailwind teal, centered on #00ACB0)
+$teal-50:  #f0fdfa;
+$teal-100: #ccfbf1;
+$teal-200: #99f6e4;
+$teal-300: #5eead4;
+$teal-400: #2dd4bf;
+$teal-500: #14b8a6;
+$teal-600: #0d9488;
+$teal-700: #0f766e;
+$teal-800: #115e59;
+$teal-900: #134e4a;
 
-// Secondary colors
-$secondary-500: #6366f1;
-$secondary-600: #4f46e5;
+// Nivo brand accent
+$nivo-brand: #00ACB0;
 
 // Success
 $success-500: #22c55e;
@@ -29,63 +28,32 @@ $warning-600: #d97706;
 $error-500: #ef4444;
 $error-600: #dc2626;
 
-// Gray scale
-$gray-50: #f9fafb;
-$gray-100: #f3f4f6;
-$gray-200: #e5e7eb;
-$gray-300: #d1d5db;
-$gray-400: #9ca3af;
-$gray-500: #6b7280;
-$gray-600: #4b5563;
-$gray-700: #374151;
-$gray-800: #1f2937;
-$gray-900: #111827;
+// Gray scale (neutral)
+$gray-50:  #fafafa;
+$gray-100: #f4f4f5;
+$gray-200: #e4e4e7;
+$gray-300: #d4d4d8;
+$gray-400: #a1a1aa;
+$gray-500: #71717a;
+$gray-600: #52525b;
+$gray-700: #3f3f46;
+$gray-800: #27272a;
+$gray-900: #18181b;
 
 // Just the Docs theme variables
-$link-color: $primary-600;
-$btn-primary-color: $primary-600;
+$link-color: $teal-700;       // 6.4:1 on white — passes AA
+$btn-primary-color: $teal-600;
 
-// Navigation - use rem to match theme calculations
+// Navigation width
 $nav-width: 16.5rem;
 
-// Sidebar - dark background needs light text
-$sidebar-color: $gray-800;
+// Sidebar — dark
+$sidebar-color: $gray-900;
 
-// Sidebar text colors - WCAG compliant for dark background
-.side-bar {
-  color: $gray-300;  // Light text on dark sidebar
-
-  a {
-    color: $gray-300 !important;
-
-    &:hover {
-      color: #ffffff !important;
-    }
-  }
-
-  // Footer text in sidebar
-  .site-footer,
-  footer {
-    color: $gray-400;  // Slightly muted but still readable
-
-    a {
-      color: $primary-400 !important;  // Brighter blue link
-
-      &:hover {
-        color: $primary-300 !important;
-      }
-    }
-  }
-}
-
-// Body - WCAG AA compliant contrast ratios
-// $gray-700 (#374151) on white = 7.5:1 contrast ratio (passes AAA)
+// Body
 $body-background-color: #ffffff;
-$body-text-color: $gray-700;
+$body-text-color: $gray-700;     // 7.1:1 on white — passes AAA
 $body-heading-color: $gray-900;
-
-// WCAG: Ensure text colors have sufficient contrast
-$base-text-color: $gray-700;  // 7.5:1 on white - passes AAA
 
 // Code
 $code-background-color: $gray-100;
@@ -93,37 +61,63 @@ $code-background-color: $gray-100;
 // Search
 $search-background-color: #ffffff;
 
-// Buttons - matching user-app btn-primary
-$btn-primary-color: $primary-600;
+// CSS variables
+:root {
+  --nivo-brand: #{$nivo-brand};
+  --nivo-primary: #{$teal-600};
+  --nivo-primary-light: #{$teal-100};
+  --nivo-primary-dark: #{$teal-800};
+  --nivo-success: #{$success-500};
+  --nivo-warning: #{$warning-500};
+  --nivo-error: #{$error-500};
+  --sidebar-border-color: #{$gray-800};
+}
 
-// Links
-$link-color: $primary-600;
+// ── Sidebar ──
+.side-bar {
+  color: $gray-400;
 
-// WCAG: Button text must contrast with button background
+  a {
+    color: $gray-400 !important;
+
+    &:hover {
+      color: #ffffff !important;
+    }
+  }
+
+  .site-footer,
+  footer {
+    color: $gray-500;
+
+    a {
+      color: $teal-400 !important;
+
+      &:hover {
+        color: $teal-300 !important;
+      }
+    }
+  }
+}
+
+// ── Site title — teal brand ──
+.site-title {
+  color: $nivo-brand !important;
+  font-weight: 700;
+}
+
+// ── Buttons ──
 .btn-primary,
 .btn.btn-primary {
-  background-color: $primary-600 !important;
-  color: #ffffff !important;  // White text on blue background
+  background-color: $teal-600 !important;
+  color: #ffffff !important;
 
   &:hover {
-    background-color: $primary-700 !important;
+    background-color: $teal-700 !important;
     color: #ffffff !important;
   }
 }
 
-// Custom additions for Nivo docs
-:root {
-  // CSS variables for easy reference
-  --nivo-primary: #{$primary-600};
-  --nivo-primary-light: #{$primary-100};
-  --nivo-primary-dark: #{$primary-800};
-  --nivo-success: #{$success-500};
-  --nivo-warning: #{$warning-500};
-  --nivo-error: #{$error-500};
-  --sidebar-border-color: #{$gray-700};
-}
-
-// Main content styling
+// ── Main content ──
 .main-content {
   h1, h2, h3, h4, h5, h6 {
     color: $gray-900;
@@ -136,25 +130,25 @@ $link-color: $primary-600;
   }
 
   a {
-    color: $primary-600;
+    color: $teal-700;
     text-decoration: none;
 
     &:hover {
-      color: $primary-700;
+      color: $teal-800;
       text-decoration: underline;
     }
   }
 
-  // Code blocks
   code {
     background-color: $gray-100;
     border-radius: 0.25rem;
     padding: 0.125rem 0.375rem;
     font-size: 0.875em;
+    color: $gray-800;
   }
 
   pre {
-    background-color: $gray-900;
+    background-color: $gray-900 !important;
     border-radius: 0.5rem;
     padding: 1rem;
     overflow-x: auto;
@@ -162,36 +156,22 @@ $link-color: $primary-600;
     code {
       background-color: transparent;
       padding: 0;
-      color: #e5e7eb;
+      color: #e4e4e7;
     }
   }
 
-  // Tables - WCAG AA compliant with explicit backgrounds
+  // Tables
   table {
     border-collapse: collapse;
     width: 100%;
     margin: 1rem 0;
     background-color: #ffffff;
 
-    thead {
-      background-color: $gray-50;
-    }
-
-    tbody {
-      background-color: #ffffff;
-    }
-
-    tr {
-      background-color: #ffffff;
-    }
-
-    tr:nth-child(even) {
-      background-color: $gray-50;
-    }
-
-    tr:hover {
-      background-color: $primary-50;
-    }
+    thead { background-color: $gray-50; }
+    tbody { background-color: #ffffff; }
+    tr { background-color: #ffffff; }
+    tr:nth-child(even) { background-color: $gray-50; }
+    tr:hover { background-color: $teal-50; }
 
     th, td {
       border: 1px solid $gray-200;
@@ -206,22 +186,20 @@ $link-color: $primary-600;
       color: $gray-900;
     }
 
-    td {
-      color: $gray-700;
-    }
+    td { color: $gray-700; }
   }
 
-  // Blockquotes - styled like user-app alerts
+  // Blockquotes
   blockquote {
-    border-left: 4px solid $primary-400;
-    background-color: $primary-50;
+    border-left: 4px solid $teal-400;
+    background-color: $teal-50;
     padding: 1rem;
     margin: 1rem 0;
     border-radius: 0 0.5rem 0.5rem 0;
 
     p {
       margin: 0;
-      color: $primary-900;
+      color: $teal-900;
     }
   }
 
@@ -230,31 +208,60 @@ $link-color: $primary-600;
     padding-left: 1.5rem;
     margin: 0.5rem 0;
 
-    li {
-      margin: 0.25rem 0;
+    li { margin: 0.25rem 0; }
+  }
+
+  p, li, span, td {
+    color: $gray-700;
+  }
+
+  // Code block overrides — div.highlighter-rouge only (not inline code)
+  div.highlighter-rouge {
+    background-color: $gray-900 !important;
+
+    .highlight, pre.highlight, pre {
+      background: $gray-900 !important;
+      color: #e4e4e7;
+    }
+
+    div.highlight {
+      border-color: $gray-700;
+    }
+
+    code {
+      background-color: transparent;
+      color: #e4e4e7;
     }
   }
 }
 
-// Navigation styling - WCAG AA compliant
-// Sidebar has dark background (#1f2937), so links must be LIGHT colored
+// Code block theme overrides (outside .main-content for full specificity)
+div.highlighter-rouge,
+.highlight,
+pre.highlight {
+  background: $gray-900 !important;
+  color: #e4e4e7 !important;
+}
+
+.highlight pre {
+  background: $gray-900 !important;
+}
+
+// ── Navigation ──
 .site-nav {
   .nav-list-item {
     .nav-list-link {
-      color: $gray-300 !important;  // Light gray on dark sidebar (contrast 9:1)
+      color: $gray-400 !important;
 
-      &:hover {
-        color: #ffffff !important;  // White on hover
-      }
+      &:hover { color: #ffffff !important; }
 
       &.active {
-        color: $primary-400 !important;  // Bright blue for active
+        color: $teal-400 !important;
         font-weight: 600;
       }
 
-      // WCAG 2.4.7: Visible focus indicator for keyboard navigation
       &:focus {
-        outline: 2px solid $primary-400;
+        outline: 2px solid $teal-400;
         outline-offset: 2px;
         border-radius: 0.25rem;
       }
@@ -262,40 +269,32 @@ $link-color: $primary-600;
   }
 }
 
-// Additional nav link overrides - LIGHT text for dark sidebar
 .site-nav a,
 .nav-list a,
 .nav-list-link {
-  color: $gray-300 !important;  // Light gray for dark background
+  color: $gray-400 !important;
 
-  &:hover {
-    color: #ffffff !important;
-  }
+  &:hover { color: #ffffff !important; }
 }
 
-// Site header - matching Nivo branding
+// ── Header ──
 .site-header {
   background-color: #ffffff;
   border-bottom: 1px solid $gray-200;
 }
 
-.site-title {
-  color: $primary-600 !important;
-  font-weight: 700;
-}
-
-// Search styling
+// ── Search ──
 .search-input {
   border: 1px solid $gray-300;
   border-radius: 0.5rem;
 
   &:focus {
-    border-color: $primary-500;
-    box-shadow: 0 0 0 2px rgba($primary-500, 0.2);
+    border-color: $teal-500;
+    box-shadow: 0 0 0 2px rgba($teal-500, 0.2);
   }
 }
 
-// Custom callout boxes (like user-app alerts)
+// ── Callouts ──
 .callout {
   padding: 1rem;
   border-radius: 0.5rem;
@@ -303,39 +302,27 @@ $link-color: $primary-600;
   margin: 1rem 0;
 
   &.callout-info {
-    background-color: $primary-50;
-    border-color: $primary-400;
-
-    .callout-title {
-      color: $primary-800;
-    }
+    background-color: $teal-50;
+    border-color: $teal-400;
+    .callout-title { color: $teal-800; }
   }
 
   &.callout-success {
     background-color: #f0fdf4;
     border-color: #4ade80;
-
-    .callout-title {
-      color: #166534;
-    }
+    .callout-title { color: #166534; }
   }
 
   &.callout-warning {
     background-color: #fffbeb;
     border-color: #fbbf24;
-
-    .callout-title {
-      color: #92400e;
-    }
+    .callout-title { color: #92400e; }
   }
 
   &.callout-danger {
     background-color: #fef2f2;
     border-color: #f87171;
-
-    .callout-title {
-      color: #991b1b;
-    }
+    .callout-title { color: #991b1b; }
   }
 
   .callout-title {
@@ -344,7 +331,7 @@ $link-color: $primary-600;
   }
 }
 
-// Badge styles matching user-app
+// ── Badges ──
 .badge {
   display: inline-flex;
   align-items: center;
@@ -353,79 +340,52 @@ $link-color: $primary-600;
   font-size: 0.75rem;
   font-weight: 500;
 
-  &.badge-success {
-    background-color: #dcfce7;
-    color: #166534;
-  }
-
-  &.badge-warning {
-    background-color: #fef3c7;
-    color: #92400e;
-  }
-
-  &.badge-error {
-    background-color: #fee2e2;
-    color: #991b1b;
-  }
-
-  &.badge-info {
-    background-color: #dbeafe;
-    color: #1e3a8a;
-  }
+  &.badge-success { background-color: #dcfce7; color: #166534; }
+  &.badge-warning { background-color: #fef3c7; color: #92400e; }
+  &.badge-error   { background-color: #fee2e2; color: #991b1b; }
+  &.badge-info    { background-color: $teal-100; color: $teal-900; }
 }
 
-// Footer - WCAG compliant
+// ── Footer ──
 .site-footer {
   border-top: 1px solid $gray-200;
   background-color: $gray-50;
-  color: $gray-700;  // WCAG: Ensure body text contrast
+  color: $gray-700;
 
-  a {
-    color: $primary-600;
-  }
+  a { color: $teal-700; }
 }
 
-// WCAG 2.4.7: Global focus indicators for keyboard accessibility
+// ── Aux nav ──
+.aux-nav,
+.site-button {
+  color: $teal-700;
+}
+
+// ── Focus indicators ──
 a:focus,
 button:focus,
 input:focus,
 select:focus,
 textarea:focus,
 [tabindex]:focus {
-  outline: 2px solid $primary-500;
+  outline: 2px solid $teal-500;
   outline-offset: 2px;
 }
 
-// Ensure all body text has sufficient contrast
-// Main content area (white background) - use dark text
-.main-content {
-  p, li, span, td {
-    color: $gray-700;  // 7.5:1 contrast ratio on white
-  }
-}
-
-// Sidebar area (dark background) - use light text
+// ── Sidebar text ──
 .site-nav,
 .side-bar {
   p, li, span {
-    color: $gray-300;  // Light text for dark background
+    color: $gray-400;
   }
 }
 
-// Auxiliary navigation (top right "Live Demo" link)
-.aux-nav,
-.site-button {
-  color: $primary-600;  // Blue on white header
-}
-
-// Responsive adjustments
+// ── Responsive ──
 @media (max-width: 768px) {
   .main-content {
     padding: 1rem;
 
-    h1 {
-      font-size: 1.75rem;
-    }
+    h1 { font-size: 1.75rem; }
 
     pre {
       padding: 0.75rem;
