@@ -12,7 +12,10 @@ permalink: /docs/
 A portfolio-grade neobank platform demonstrating production-ready microservices architecture with fintech domain expertise.
 {: .fs-6 .fw-300 }
 
-[Run Locally](quickstart){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 }
+[Run Locally](/quickstart){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 }
+
+> **Archived Project** — The live demo at nivomoney.com has been retired. All features are fully functional when run locally via Docker Compose. See [Quick Start](/quickstart) for setup.
+{: .note }
 
 ---
 

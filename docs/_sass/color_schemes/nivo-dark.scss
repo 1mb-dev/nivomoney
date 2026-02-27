@@ -372,9 +372,8 @@ textarea:focus,
   border-bottom: 1px solid $gray-200;
 }
 
-// ── Note/highlight boxes ──
-.note,
-.highlight {
+// ── Note boxes ──
+.note {
   background-color: rgba($teal-500, 0.08);
   border-left: 4px solid $teal-500;
   padding: 1rem;
