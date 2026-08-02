@@ -1,0 +1,28 @@
+[extend]
+useDefault = true
+
+# Scoped deliberately. Each entry allowlists a specific documentation shape, not a whole
+# rule -- muting `curl-auth-header` outright would hide a real pasted token later.
+[[rules]]
+id = "generic-api-key"
+[rules.allowlist]
+description = "Truncated JWT placeholders in documentation"
+regexTarget = "line"
+regexes = [
+  # A base64 JWT-header prefix followed by a literal ellipsis, e.g.
+  # `ADMIN_TOKEN=eyJhbGciOiJIUzI1NiIs...` or `"token": "eyJhbGciOiJI..."`.
+  # A real signed token is three dot-separated segments of real length and never ends
+  # in a literal `...`, so this shape can only be an elided example.
+  '''eyJ[A-Za-z0-9_-]*\.\.\.''',
+]
+
+[[rules]]
+id = "curl-auth-header"
+[rules.allowlist]
+description = "curl examples against localhost in documentation"
+regexTarget = "line"
+regexes = [
+  # Doc examples calling the local gateway. Restricted to localhost so a curl against a
+  # real host still trips the rule.
+  '''curl[^\n]*http://localhost:[0-9]+/''',
+]
