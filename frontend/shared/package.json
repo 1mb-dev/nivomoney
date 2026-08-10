@@ -45,7 +45,7 @@
     "@types/react-dom": "^19.0.0",
     "axios": "^1.18.1",
     "clsx": "^2.1.0",
-    "react-router-dom": "^6.30.4",
+    "react-router-dom": "^7.18.2",
     "tailwind-merge": "^2.2.0"
   },
   "devDependencies": {
