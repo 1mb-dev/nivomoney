@@ -1,20 +1,20 @@
 # Nivo
 
-A production-grade neobank platform demonstrating fintech architecture with Go microservices.
+A neobank demo showing fintech architecture with Go microservices.
 
-[![Documentation](https://img.shields.io/badge/docs-nivomoney.com-blue)](https://nivomoney.com/docs/)
-[![Go](https://img.shields.io/badge/go-1.24+-00ADD8)](https://go.dev)
+[![Documentation](https://img.shields.io/badge/docs-nivomoney.com-blue)](https://nivomoney.com/docs)
+[![Go](https://img.shields.io/badge/go-1.26+-00ADD8)](https://go.dev)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Status](https://img.shields.io/badge/status-archived%20showcase-orange)]()
 
 ## Overview
 
-Nivo is a portfolio project implementing a complete digital banking system. It demonstrates microservices architecture, double-entry accounting, and fintech domain patterns in a working, deployable application.
+Nivo is a portfolio project implementing the core systems of a digital bank. It demonstrates microservices architecture, double-entry accounting, and fintech domain patterns in a working, deployable application.
 
 > **Archived Showcase** — The live demo at nivomoney.com has been retired. The domain now serves a [static landing page](https://nivomoney.com). Run the platform locally for the full demo experience.
 
 **What it includes:**
-- 9 Go microservices with domain-driven boundaries
+- 8 Go services and an API gateway, with domain-driven boundaries
 - Double-entry ledger with balanced journal entries
 - JWT authentication with role-based access control
 - React frontends for users and admins
@@ -24,7 +24,7 @@ Nivo is a portfolio project implementing a complete digital banking system. It d
 
 ### Prerequisites
 
-- Go 1.24+
+- Go 1.26+
 - Docker & Docker Compose
 - Node.js 18+
 
@@ -34,11 +34,14 @@ Nivo is a portfolio project implementing a complete digital banking system. It d
 git clone https://github.com/1mb-dev/nivomoney.git
 cd nivomoney
 cp .env.example .env
+cp docker-compose.override.yml.example docker-compose.override.yml  # publishes ports
 
-# Start all services (postgres, redis, microservices, gateway)
+# Start all services. On a fresh database they race on migrations:
+# repeat this until `docker compose ps` shows them all healthy.
 make dev
 
-# Seed database with demo data
+# Seed database with demo data (reads config from the environment)
+set -a; . ./.env; set +a
 make seed
 
 # Start frontend (separate terminal)
@@ -82,7 +85,7 @@ frontend/
 
 | Component | Technology |
 |-----------|------------|
-| Services | Go 1.24, standard library net/http |
+| Services | Go 1.26, standard library net/http |
 | Database | PostgreSQL 15 |
 | Cache | Redis |
 | Auth | JWT, bcrypt |
@@ -92,15 +95,16 @@ frontend/
 
 ## Key Patterns
 
-- **Double-entry ledger** - Every transaction creates balanced debit/credit entries
-- **Idempotency keys** - Safe retry handling for financial operations
+- **Double-entry ledger** - Postgres refuses to post a journal entry that does not balance
+- **Idempotent transfers** - The wallet service dedupes internal transfers on transaction ID
 - **RBAC** - Granular permissions with role hierarchies
-- **Circuit breakers** - Fault isolation between services
-- **Event-driven** - Async processing with durable queues
+- **Real-time updates** - Server-sent events through the gateway
+
+Transfers do not reach the ledger: the transaction service's ledger client sends no credentials, so the ledger refuses the call. The failure is logged and the transfer still completes.
 
 ## Documentation
 
-Full documentation: [nivomoney.com/docs](https://nivomoney.com/docs/)
+Full documentation: [nivomoney.com/docs](https://nivomoney.com/docs)
 
 - [Quick Start](https://nivomoney.com/quickstart)
 - [Architecture](https://nivomoney.com/architecture)
@@ -111,10 +115,10 @@ Full documentation: [nivomoney.com/docs](https://nivomoney.com/docs/)
 
 | Category | Count |
 |----------|-------|
-| Microservices | 9 |
-| API Endpoints | 77+ |
-| Frontend Pages | 17 |
-| Database Migrations | 23 |
+| Services | 8 + gateway |
+| API Routes | 111 |
+| Frontend Pages | 23 |
+| Database Migrations | 8 |
 
 This is a portfolio demonstration, not a production bank. It shows how a neobank *would* be built.
 

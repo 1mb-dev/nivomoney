@@ -10,7 +10,7 @@ permalink: /quickstart
 
 ## Prerequisites
 
-- Go 1.24 or later
+- Go 1.26 or later
 - Docker and Docker Compose
 - Make
 
@@ -19,14 +19,22 @@ permalink: /quickstart
 ### 1. Start All Services
 
 ```bash
-# Start all infrastructure and services
-make docker-up
+cp .env.example .env
+cp docker-compose.override.yml.example docker-compose.override.yml  # publishes ports
+
+# Start all infrastructure and services. On a fresh database they race on
+# migrations: repeat this until `docker compose ps` shows them all healthy.
+make dev
+
+# Seed demo data (reads config from the environment)
+set -a; . ./.env; set +a
+make seed
 ```
 
 This will start:
 - **PostgreSQL** (port 5432) - Database
 - **Redis** (port 6379) - Caching
-- **All 9 microservices** (ports 8080-8087) - Backend services
+- **8 Go services** (ports 8080-8087) - Backend services
 - **API Gateway** (port 8000) - Request routing
 - **Prometheus** (port 9090) - Metrics (internal)
 - **Grafana** (port 3003) - Monitoring dashboard
@@ -45,7 +53,7 @@ curl http://localhost:8081/health
 
 ```bash
 # View all logs
-make docker-logs
+make logs
 
 # View specific service logs
 docker compose logs -f identity-service
@@ -55,7 +63,7 @@ docker compose logs -f ledger-service
 ### 4. Stop Services
 
 ```bash
-make docker-down
+make down
 ```
 
 ## Local Development (without Docker)
@@ -178,7 +186,7 @@ lsof -i :5432  # PostgreSQL
 docker compose ps
 
 # Rebuild images
-make docker-build
+make build
 ```
 
 ### Database migrations not running
@@ -320,7 +328,7 @@ For issues, check the logs:
 
 ```bash
 # All services
-make docker-logs
+make logs
 
 # Specific service
 docker compose logs identity-service
