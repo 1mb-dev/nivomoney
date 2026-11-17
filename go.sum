@@ -1,5 +1,5 @@
-github.com/1mb-dev/gopantic v1.4.1 h1:RZJeTpBPLZc2Hut9c3odwGx7TrCRz5d2jzfuWoHJbYw=
-github.com/1mb-dev/gopantic v1.4.1/go.mod h1:MjYh/T4pmA3+XXWlw/BwBmMGvbKI2mqv09jpLJZB/Ok=
+github.com/1mb-dev/gopantic v1.5.0 h1:fRQ6PKXxn2BpVj9Kvex7n7fHjFWalDhwX5Q+OYPzxxo=
+github.com/1mb-dev/gopantic v1.5.0/go.mod h1:SBWE8YPk04QEuexQITct9C2j2WbrIZMJAOtUjIR9JhA=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=
